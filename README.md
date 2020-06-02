@@ -1,5 +1,3 @@
 # tdlib-types
 
-## Installation
-
-## Configuration
+Types & Functions generated from tdlib api spec.
