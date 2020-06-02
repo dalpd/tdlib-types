@@ -1,18 +1,19 @@
-name:              tdlib-types
-version:           0.1.0
-github:            "poscat0x04/tdlib-types"
-license:           BSD3
-author:            Poscat 
-maintainer:        poscat@mail.poscat.moe
-copyright:         "(c) 2020 Poscat"
+name: tdlib-types
+version: 0.1.0
+github: "poscat0x04/tdlib-types"
+license: BSD3
+author: Poscat
+maintainer: poscat@mail.poscat.moe
+copyright: "(c) 2020 Poscat"
 
 extra-source-files:
   - README.md
   - CHANGELOG.md
+  - data/*
 
 # Metadata used when publishing your package
-# synopsis:            Short description of your package
-# category:            Web
+synopsis: Types and Functions generated from tdlib api spec
+category: Web
 
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
@@ -21,6 +22,16 @@ description: Please see the README on GitHub at <https://github.com/poscat0x04/t
 
 dependencies:
   - base >= 4.10 && < 5
+  - bytestring
+  - text
+  - base64-bytestring-type ^>= 1.0.1
+  - aeson >= 1.4.3 && <= 1.6
+  - polysemy ^>= 1.3.0.0
+  - polysemy-plugin ^>= 0.2.5.0
+  - tdlib-gen ^>= 0.1.0
+  - language-tl ^>= 0.1.0
+
+ghc-options: -fplugin=Polysemy.Plugin -flate-specialise -fspecialise-aggressively
 
 default-extensions:
   - OverloadedStrings
