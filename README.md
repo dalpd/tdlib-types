@@ -1,0 +1,5 @@
+# tdlib-types
+
+## Installation
+
+## Configuration
