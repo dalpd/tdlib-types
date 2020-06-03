@@ -11,7 +11,7 @@ import Polysemy
 import TDLib.Types.Common
 
 data TDLib (m :: Type -> Type) a where
-  RunCmd :: (ToJSON cmd, FromJSON res, FromJSON err) => cmd -> TDLib m (err ∪ res)
+  RunCmd :: (ToJSON cmd, FromJSON res) => cmd -> TDLib m res
   SetVerbosity :: Verbosity -> TDLib m ()
   SetFatalErrorCallback :: (ByteString -> IO ()) -> TDLib m ()
   SetLogPath :: ByteString -> TDLib m Bool
@@ -19,12 +19,13 @@ data TDLib (m :: Type -> Type) a where
 
 makeSem_ ''TDLib
 
+-- | runs a command and waits fot its result
 runCmd ::
-  forall cmd res err r.
-  (ToJSON cmd, FromJSON res, FromJSON err, Member TDLib r) =>
+  forall cmd res r.
+  (ToJSON cmd, FromJSON res, Member TDLib r) =>
   -- | Command
   cmd ->
-  Sem r (err ∪ res)
+  Sem r res
 
 setVerbosity :: forall r. Member TDLib r => Verbosity -> Sem r ()
 

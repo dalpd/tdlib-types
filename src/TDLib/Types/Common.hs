@@ -3,6 +3,7 @@ module TDLib.Types.Common where
 import Control.Applicative
 import Data.Aeson
 
+-- | Tagged union that parses to either a or b
 data a ∪ b
   = Inl a
   | Inr b
