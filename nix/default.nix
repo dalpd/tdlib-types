@@ -2,19 +2,13 @@
 let
   sources = import ./sources.nix;
   pkgs = import sources.nixpkgs { };
-  inherit (sources) language-tl tdlib-gen;
-
-  deps = {
-    language-tl = import language-tl { inherit compiler; };
-    tdlib-gen = import tdlib-gen { inherit compiler; };
-  };
 
   inherit (import sources.gitignore { inherit (pkgs) lib; }) gitignoreSource;
 
   hPkgs = pkgs.haskell.packages.${compiler}.override {
     overrides = self: super: {
       "tdlib-types" =
-        self.callCabal2nix "tdlib-types" (gitignoreSource ../.) deps;
+        self.callCabal2nix "tdlib-types" (gitignoreSource ../.) { };
     };
   };
 
@@ -25,6 +19,8 @@ let
       cabal-install
       ormolu
       hlint
+    ] ++ [
+      hPkgs.ghcide
     ];
   };
 
