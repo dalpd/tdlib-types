@@ -785,7 +785,7 @@ editMessageLiveLocation ::
   -- | The new message reply markup; for bots only 
   ReplyMarkup ->
   -- | New location content of the message; may be null. Pass null to stop sharing the live location
-  Location ->
+  (Maybe) (Location) ->
   Sem r (Error ∪ Message)
 editMessageLiveLocation _1 _2 _3 _4 = runCmd $ EditMessageLiveLocation _1 _2 _3 _4
 -- | Edits the content of a message with an animation, an audio, a document, a photo or a video. The media in the message can't be replaced if the message was set to self-destruct. Media can't be replaced by self-destructing media. Media in an album can be edited only to contain a photo or a video. Returns the edited message after the edit is completed on the server side
@@ -844,7 +844,7 @@ editInlineMessageLiveLocation ::
   -- | The new message reply markup 
   ReplyMarkup ->
   -- | New location content of the message; may be null. Pass null to stop sharing the live location
-  Location ->
+  (Maybe) (Location) ->
   Sem r (Error ∪ Ok)
 editInlineMessageLiveLocation _1 _2 _3 = runCmd $ EditInlineMessageLiveLocation _1 _2 _3
 -- | Edits the content of a message with an animation, an audio, a document, a photo or a video in an inline message sent via a bot; for bots only 
@@ -1331,7 +1331,7 @@ setChatDraftMessage ::
   -- | Chat identifier 
   I53 ->
   -- | New draft message; may be null
-  DraftMessage ->
+  (Maybe) (DraftMessage) ->
   Sem r (Error ∪ Ok)
 setChatDraftMessage _1 _2 = runCmd $ SetChatDraftMessage _1 _2
 -- | Changes the notification settings of a chat. Notification settings of a chat with the current user (Saved Messages) can't be changed

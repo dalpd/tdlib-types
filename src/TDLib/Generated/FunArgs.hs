@@ -34,7 +34,7 @@ data CheckDatabaseEncryptionKey
   = -- | Checks the database encryption key for correctness. Works only when the current authorization state is authorizationStateWaitEncryptionKey 
   CheckDatabaseEncryptionKey
     { -- | Encryption key to check or set up
-      encryption_key :: ByteString64
+      encryptionKey :: ByteString64
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function setAuthenticationPhoneNumber
@@ -42,7 +42,7 @@ data SetAuthenticationPhoneNumber
   = -- | Sets the phone number of the user and sends an authentication code to the user. Works only when the current authorization state is authorizationStateWaitPhoneNumber,
   SetAuthenticationPhoneNumber
     { -- | The phone number of the user, in international format 
-      phone_number :: T,
+      phoneNumber :: T,
       -- | Settings for the authentication of the user's phone number
       settings :: PhoneNumberAuthenticationSettings
     }
@@ -67,7 +67,7 @@ data RequestQrCodeAuthentication
   = -- | Requests QR code authentication by scanning a QR code on another logged in device. Works only when the current authorization state is authorizationStateWaitPhoneNumber 
   RequestQrCodeAuthentication
     { -- | List of user identifiers of other users currently using the client
-      other_user_ids :: [I32]
+      otherUserIds :: [I32]
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function registerUser
@@ -75,9 +75,9 @@ data RegisterUser
   = -- | Finishes user registration. Works only when the current authorization state is authorizationStateWaitRegistration
   RegisterUser
     { -- | The first name of the user; 1-64 characters 
-      first_name :: T,
+      firstName :: T,
       -- | The last name of the user; 0-64 characters
-      last_name :: T
+      lastName :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function checkAuthenticationPassword
@@ -100,7 +100,7 @@ data RecoverAuthenticationPassword
   = -- | Recovers the password with a password recovery code sent to an email address that was previously set up. Works only when the current authorization state is authorizationStateWaitPassword 
   RecoverAuthenticationPassword
     { -- | Recovery code to check
-      recovery_code :: T
+      recoveryCode :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function checkAuthenticationBotToken
@@ -152,7 +152,7 @@ data SetDatabaseEncryptionKey
   = -- | Changes the database encryption key. Usually the encryption key is never changed and is stored in some OS keychain 
   SetDatabaseEncryptionKey
     { -- | New encryption key
-      new_encryption_key :: ByteString64
+      newEncryptionKey :: ByteString64
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getPasswordState
@@ -167,15 +167,15 @@ data SetPassword
   = -- | Changes the password for the user. If a new recovery email address is specified, then the change will not be applied until the new recovery email address is confirmed
   SetPassword
     { -- | Previous password of the user 
-      old_password :: T,
+      oldPassword :: T,
       -- | New password of the user; may be empty to remove the password 
-      new_password :: T,
+      newPassword :: T,
       -- | New password hint; may be empty 
-      new_hint :: T,
+      newHint :: T,
       -- | Pass true if the recovery email address should be changed 
-      set_recovery_email_address :: Bool,
+      setRecoveryEmailAddress :: Bool,
       -- | New recovery email address; may be empty
-      new_recovery_email_address :: T
+      newRecoveryEmailAddress :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getRecoveryEmailAddress
@@ -191,7 +191,7 @@ data SetRecoveryEmailAddress
   = -- | Changes the 2-step verification recovery email address of the user. If a new recovery email address is specified, then the change will not be applied until the new recovery email address is confirmed.
   SetRecoveryEmailAddress
     { password :: T,
-      new_recovery_email_address :: T
+      newRecoveryEmailAddress :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function checkRecoveryEmailAddressCode
@@ -221,7 +221,7 @@ data RecoverPassword
   = -- | Recovers the password using a recovery code sent to an email address that was previously set up 
   RecoverPassword
     { -- | Recovery code to check
-      recovery_code :: T
+      recoveryCode :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function createTemporaryPassword
@@ -231,7 +231,7 @@ data CreateTemporaryPassword
     { -- | Persistent user password 
       password :: T,
       -- | Time during which the temporary password will be valid, in seconds; should be between 60 and 86400
-      valid_for :: I32
+      validFor :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getTemporaryPasswordState
@@ -253,7 +253,7 @@ data GetUser
   = -- | Returns information about a user by their identifier. This is an offline request if the current user is not a bot 
   GetUser
     { -- | User identifier
-      user_id :: I32
+      userId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getUserFullInfo
@@ -261,7 +261,7 @@ data GetUserFullInfo
   = -- | Returns full information about a user by their identifier 
   GetUserFullInfo
     { -- | User identifier
-      user_id :: I32
+      userId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getBasicGroup
@@ -269,7 +269,7 @@ data GetBasicGroup
   = -- | Returns information about a basic group by its identifier. This is an offline request if the current user is not a bot 
   GetBasicGroup
     { -- | Basic group identifier
-      basic_group_id :: I32
+      basicGroupId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getBasicGroupFullInfo
@@ -277,7 +277,7 @@ data GetBasicGroupFullInfo
   = -- | Returns full information about a basic group by its identifier 
   GetBasicGroupFullInfo
     { -- | Basic group identifier
-      basic_group_id :: I32
+      basicGroupId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getSupergroup
@@ -285,7 +285,7 @@ data GetSupergroup
   = -- | Returns information about a supergroup or a channel by its identifier. This is an offline request if the current user is not a bot 
   GetSupergroup
     { -- | Supergroup or channel identifier
-      supergroup_id :: I32
+      supergroupId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getSupergroupFullInfo
@@ -293,7 +293,7 @@ data GetSupergroupFullInfo
   = -- | Returns full information about a supergroup or a channel by its identifier, cached for up to 1 minute 
   GetSupergroupFullInfo
     { -- | Supergroup or channel identifier
-      supergroup_id :: I32
+      supergroupId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getSecretChat
@@ -301,7 +301,7 @@ data GetSecretChat
   = -- | Returns information about a secret chat by its identifier. This is an offline request 
   GetSecretChat
     { -- | Secret chat identifier
-      secret_chat_id :: I32
+      secretChatId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getChat
@@ -309,7 +309,7 @@ data GetChat
   = -- | Returns information about a chat by its identifier, this is an offline request if the current user is not a bot 
   GetChat
     { -- | Chat identifier
-      chat_id :: I53
+      chatId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getMessage
@@ -317,9 +317,9 @@ data GetMessage
   = -- | Returns information about a message 
   GetMessage
     { -- | Identifier of the chat the message belongs to 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the message to get
-      message_id :: I53
+      messageId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getMessageLocally
@@ -327,9 +327,9 @@ data GetMessageLocally
   = -- | Returns information about a message, if it is available locally without sending network request. This is an offline request 
   GetMessageLocally
     { -- | Identifier of the chat the message belongs to 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the message to get
-      message_id :: I53
+      messageId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getRepliedMessage
@@ -337,9 +337,9 @@ data GetRepliedMessage
   = -- | Returns information about a message that is replied by given message 
   GetRepliedMessage
     { -- | Identifier of the chat the message belongs to 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the message reply to which get
-      message_id :: I53
+      messageId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getChatPinnedMessage
@@ -347,7 +347,7 @@ data GetChatPinnedMessage
   = -- | Returns information about a pinned chat message 
   GetChatPinnedMessage
     { -- | Identifier of the chat the message belongs to
-      chat_id :: I53
+      chatId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getMessages
@@ -355,9 +355,9 @@ data GetMessages
   = -- | Returns information about messages. If a message is not found, returns null on the corresponding position of the result 
   GetMessages
     { -- | Identifier of the chat the messages belong to 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifiers of the messages to get
-      message_ids :: [I53]
+      messageIds :: [I53]
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getFile
@@ -365,7 +365,7 @@ data GetFile
   = -- | Returns information about a file; this is an offline request 
   GetFile
     { -- | Identifier of the file to get
-      file_id :: I32
+      fileId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getRemoteFile
@@ -373,9 +373,9 @@ data GetRemoteFile
   = -- | Returns information about a file by its remote ID; this is an offline request. Can be used to register a URL as a file for further uploading, or sending as a message. Even the request succeeds, the file can be used only if it is still accessible to the user.
   GetRemoteFile
     { -- | Remote identifier of the file to get 
-      remote_file_id :: T,
+      remoteFileId :: T,
       -- | File type, if known
-      file_type :: FileType
+      fileType :: FileType
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getChats
@@ -383,11 +383,11 @@ data GetChats
   = -- | Returns an ordered list of chats in a chat list. Chats are sorted by the pair (order, chat_id) in decreasing order. (For example, to get a list of chats from the beginning, the offset_order should be equal to a biggest signed 64-bit number 9223372036854775807 == 2^63 - 1).
   GetChats
     { -- | The chat list in which to return chats
-      chat_list :: ChatList,
+      chatList :: ChatList,
       -- | Chat order to return chats from 
-      offset_order :: I64,
+      offsetOrder :: I64,
       -- | Chat identifier to return chats from
-      offset_chat_id :: I53,
+      offsetChatId :: I53,
       -- | The maximum number of chats to be returned. It is possible that fewer chats than the limit are returned even if the end of the list is not reached
       limit :: I32
     }
@@ -453,7 +453,7 @@ data RemoveTopChat
     { -- | Category of frequently used chats 
       category :: TopChatCategory,
       -- | Chat identifier
-      chat_id :: I53
+      chatId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function addRecentlyFoundChat
@@ -461,7 +461,7 @@ data AddRecentlyFoundChat
   = -- | Adds a chat to the list of recently found chats. The chat is added to the beginning of the list. If the chat is already in the list, it will be removed from the list first 
   AddRecentlyFoundChat
     { -- | Identifier of the chat to add
-      chat_id :: I53
+      chatId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function removeRecentlyFoundChat
@@ -469,7 +469,7 @@ data RemoveRecentlyFoundChat
   = -- | Removes a chat from the list of recently found chats 
   RemoveRecentlyFoundChat
     { -- | Identifier of the chat to be removed
-      chat_id :: I53
+      chatId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function clearRecentlyFoundChats
@@ -484,7 +484,7 @@ data CheckChatUsername
   = -- | Checks whether a username can be set for a chat 
   CheckChatUsername
     { -- | Chat identifier; should be identifier of a supergroup chat, or a channel chat, or a private chat with self, or zero if chat is being created 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Username to be checked
       username :: T
     }
@@ -524,9 +524,9 @@ data GetGroupsInCommon
   = -- | Returns a list of common group chats with a given user. Chats are sorted by their type and creation date 
   GetGroupsInCommon
     { -- | User identifier 
-      user_id :: I32,
+      userId :: I32,
       -- | Chat identifier starting from which to return chats; use 0 for the first request 
-      offset_chat_id :: I53,
+      offsetChatId :: I53,
       -- | The maximum number of chats to be returned; up to 100
       limit :: I32
     }
@@ -536,15 +536,15 @@ data GetChatHistory
   = -- | Returns messages in a chat. The messages are returned in a reverse chronological order (i.e., in order of decreasing message_id).
   GetChatHistory
     { -- | Chat identifier
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the message starting from which history must be fetched; use 0 to get results from the last message
-      from_message_id :: I53,
+      fromMessageId :: I53,
       -- | Specify 0 to get results from exactly the from_message_id or a negative offset up to 99 to get additionally some newer messages
       offset :: I32,
       -- | The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater or equal to -offset. Fewer messages may be returned than specified by the limit, even if the end of the message history has not been reached
       limit :: I32,
       -- | If true, returns only messages that are available locally without sending network requests
-      only_local :: Bool
+      onlyLocal :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function deleteChatHistory
@@ -552,9 +552,9 @@ data DeleteChatHistory
   = -- | Deletes all messages in the chat. Use Chat.can_be_deleted_only_for_self and Chat.can_be_deleted_for_all_users fields to find whether and how the method can be applied to the chat
   DeleteChatHistory
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Pass true if the chat should be removed from the chat list 
-      remove_from_chat_list :: Bool,
+      removeFromChatList :: Bool,
       -- | Pass true to try to delete chat history for all users
       revoke :: Bool
     }
@@ -564,13 +564,13 @@ data SearchChatMessages
   = -- | Searches for messages with given words in the chat. Returns the results in reverse chronological order, i.e. in order of decreasing message_id. Cannot be used in secret chats with a non-empty query
   SearchChatMessages
     { -- | Identifier of the chat in which to search messages
-      chat_id :: I53,
+      chatId :: I53,
       -- | Query to search for
       query :: T,
       -- | If not 0, only messages sent by the specified user will be returned. Not supported in secret chats
-      sender_user_id :: I32,
+      senderUserId :: I32,
       -- | Identifier of the message starting from which history must be fetched; use 0 to get results from the last message
-      from_message_id :: I53,
+      fromMessageId :: I53,
       -- | Specify 0 to get results from exactly the from_message_id or a negative offset to get the specified message and some newer messages
       offset :: I32,
       -- | The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than -offset. Fewer messages may be returned than specified by the limit, even if the end of the message history has not been reached
@@ -584,15 +584,15 @@ data SearchMessages
   = -- | Searches for messages in all chats except secret chats. Returns the results in reverse chronological order (i.e., in order of decreasing (date, chat_id, message_id)).
   SearchMessages
     { -- | Chat list in which to search messages; pass null to search in all chats regardless of their chat list
-      chat_list :: ChatList,
+      chatList :: ChatList,
       -- | Query to search for
       query :: T,
       -- | The date of the message starting from which the results should be fetched. Use 0 or any date in the future to get results from the last message
-      offset_date :: I32,
+      offsetDate :: I32,
       -- | The chat identifier of the last found message, or 0 for the first request
-      offset_chat_id :: I53,
+      offsetChatId :: I53,
       -- | The message identifier of the last found message, or 0 for the first request
-      offset_message_id :: I53,
+      offsetMessageId :: I53,
       -- | The maximum number of messages to be returned, up to 100. Fewer messages may be returned than specified by the limit, even if the end of the message history has not been reached
       limit :: I32
     }
@@ -602,11 +602,11 @@ data SearchSecretMessages
   = -- | Searches for messages in secret chats. Returns the results in reverse chronological order. For optimal performance the number of returned messages is chosen by the library
   SearchSecretMessages
     { -- | Identifier of the chat in which to search. Specify 0 to search in all secret chats 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Query to search for. If empty, searchChatMessages should be used instead
       query :: T,
       -- | The identifier from the result of a previous request, use 0 to get results from the last message
-      from_search_id :: I64,
+      fromSearchId :: I64,
       -- | The maximum number of messages to be returned; up to 100. Fewer messages may be returned than specified by the limit, even if the end of the message history has not been reached
       limit :: I32,
       -- | A filter for the content of messages in the search results
@@ -618,11 +618,11 @@ data SearchCallMessages
   = -- | Searches for call messages. Returns the results in reverse chronological order (i. e., in order of decreasing message_id). For optimal performance the number of returned messages is chosen by the library
   SearchCallMessages
     { -- | Identifier of the message from which to search; use 0 to get results from the last message
-      from_message_id :: I53,
+      fromMessageId :: I53,
       -- | The maximum number of messages to be returned; up to 100. Fewer messages may be returned than specified by the limit, even if the end of the message history has not been reached 
       limit :: I32,
       -- | If true, returns only messages with missed calls
-      only_missed :: Bool
+      onlyMissed :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function searchChatRecentLocationMessages
@@ -630,7 +630,7 @@ data SearchChatRecentLocationMessages
   = -- | Returns information about the recent locations of chat members that were sent to the chat. Returns up to 1 location message per user 
   SearchChatRecentLocationMessages
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | The maximum number of messages to be returned
       limit :: I32
     }
@@ -647,7 +647,7 @@ data GetChatMessageByDate
   = -- | Returns the last message sent in a chat no later than the specified date 
   GetChatMessageByDate
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Point in time (Unix timestamp) relative to which to search for messages
       date :: I32
     }
@@ -657,11 +657,11 @@ data GetChatMessageCount
   = -- | Returns approximate number of messages of the specified type in the chat 
   GetChatMessageCount
     { -- | Identifier of the chat in which to count messages 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Filter for message content; searchMessagesFilterEmpty is unsupported in this function 
       filter :: SearchMessagesFilter,
       -- | If true, returns count that is available locally without sending network requests, returning -1 if the number of messages is unknown
-      return_local :: Bool
+      returnLocal :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getChatScheduledMessages
@@ -669,7 +669,7 @@ data GetChatScheduledMessages
   = -- | Returns all scheduled messages in a chat. The messages are returned in a reverse chronological order (i.e., in order of decreasing message_id) 
   GetChatScheduledMessages
     { -- | Chat identifier
-      chat_id :: I53
+      chatId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function removeNotification
@@ -677,9 +677,9 @@ data RemoveNotification
   = -- | Removes an active notification from notification list. Needs to be called only if the notification is removed by the current user 
   RemoveNotification
     { -- | Identifier of notification group to which the notification belongs 
-      notification_group_id :: I32,
+      notificationGroupId :: I32,
       -- | Identifier of removed notification
-      notification_id :: I32
+      notificationId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function removeNotificationGroup
@@ -687,9 +687,9 @@ data RemoveNotificationGroup
   = -- | Removes a group of active notifications. Needs to be called only if the notification group is removed by the current user 
   RemoveNotificationGroup
     { -- | Notification group identifier 
-      notification_group_id :: I32,
+      notificationGroupId :: I32,
       -- | The maximum identifier of removed notifications
-      max_notification_id :: I32
+      maxNotificationId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getPublicMessageLink
@@ -697,11 +697,11 @@ data GetPublicMessageLink
   = -- | Returns a public HTTPS link to a message. Available only for messages in supergroups and channels with a username
   GetPublicMessageLink
     { -- | Identifier of the chat to which the message belongs
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the message
-      message_id :: I53,
+      messageId :: I53,
       -- | Pass true if a link for a whole media album should be returned
-      for_album :: Bool
+      forAlbum :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getMessageLink
@@ -709,9 +709,9 @@ data GetMessageLink
   = -- | Returns a private HTTPS link to a message in a chat. Available only for already sent messages in supergroups and channels. The link will work only for members of the chat
   GetMessageLink
     { -- | Identifier of the chat to which the message belongs
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the message
-      message_id :: I53
+      messageId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getMessageLinkInfo
@@ -727,15 +727,15 @@ data SendMessage
   = -- | Sends a message. Returns the sent message
   SendMessage
     { -- | Target chat 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the message to reply to or 0
-      reply_to_message_id :: I53,
+      replyToMessageId :: I53,
       -- | Options to be used to send the message
       options :: SendMessageOptions,
       -- | Markup for replying to the message; for bots only 
-      reply_markup :: ReplyMarkup,
+      replyMarkup :: ReplyMarkup,
       -- | The content of the message to be sent
-      input_message_content :: InputMessageContent
+      inputMessageContent :: InputMessageContent
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function sendMessageAlbum
@@ -743,13 +743,13 @@ data SendMessageAlbum
   = -- | Sends messages grouped together into an album. Currently only photo and video messages can be grouped into an album. Returns sent messages
   SendMessageAlbum
     { -- | Target chat 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of a message to reply to or 0
-      reply_to_message_id :: I53,
+      replyToMessageId :: I53,
       -- | Options to be used to send the messages
       options :: SendMessageOptions,
       -- | Contents of messages to be sent
-      input_message_contents :: [InputMessageContent]
+      inputMessageContents :: [InputMessageContent]
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function sendBotStartMessage
@@ -757,9 +757,9 @@ data SendBotStartMessage
   = -- | Invites a bot to a chat (if it is not yet a member) and sends it the /start command. Bots can't be invited to a private chat other than the chat with the bot. Bots can't be invited to channels (although they can be added as admins) and secret chats. Returns the sent message
   SendBotStartMessage
     { -- | Identifier of the bot 
-      bot_user_id :: I32,
+      botUserId :: I32,
       -- | Identifier of the target chat 
-      chat_id :: I53,
+      chatId :: I53,
       -- | A hidden parameter sent to the bot for deep linking purposes (https://core.telegram.org/bots#deep-linking)
       parameter :: T
     }
@@ -769,17 +769,17 @@ data SendInlineQueryResultMessage
   = -- | Sends the result of an inline query as a message. Returns the sent message. Always clears a chat draft message
   SendInlineQueryResultMessage
     { -- | Target chat 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of a message to reply to or 0
-      reply_to_message_id :: I53,
+      replyToMessageId :: I53,
       -- | Options to be used to send the message
       options :: SendMessageOptions,
       -- | Identifier of the inline query 
-      query_id :: I64,
+      queryId :: I64,
       -- | Identifier of the inline result
-      result_id :: T,
+      resultId :: T,
       -- | If true, there will be no mention of a bot, via which the message is sent. Can be used only for bots GetOption("animation_search_bot_username"), GetOption("photo_search_bot_username") and GetOption("venue_search_bot_username")
-      hide_via_bot :: Bool
+      hideViaBot :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function forwardMessages
@@ -787,19 +787,19 @@ data ForwardMessages
   = -- | Forwards previously sent messages. Returns the forwarded messages in the same order as the message identifiers passed in message_ids. If a message can't be forwarded, null will be returned instead of the message
   ForwardMessages
     { -- | Identifier of the chat to which to forward messages 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the chat from which to forward messages 
-      from_chat_id :: I53,
+      fromChatId :: I53,
       -- | Identifiers of the messages to forward
-      message_ids :: [I53],
+      messageIds :: [I53],
       -- | Options to be used to send the messages
       options :: SendMessageOptions,
       -- | True, if the messages should be grouped into an album after forwarding. For this to work, no more than 10 messages may be forwarded, and all of them must be photo or video messages
-      as_album :: Bool,
+      asAlbum :: Bool,
       -- | True, if content of the messages needs to be copied without links to the original messages. Always true if the messages are forwarded to a secret chat
-      send_copy :: Bool,
+      sendCopy :: Bool,
       -- | True, if media captions of message copies needs to be removed. Ignored if send_copy is false
-      remove_caption :: Bool
+      removeCaption :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function resendMessages
@@ -807,9 +807,9 @@ data ResendMessages
   = -- | Resends messages which failed to send. Can be called only for messages for which messageSendingStateFailed.can_retry is true and after specified in messageSendingStateFailed.retry_after time passed.
   ResendMessages
     { -- | Identifier of the chat to send messages 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifiers of the messages to resend. Message identifiers must be in a strictly increasing order
-      message_ids :: [I53]
+      messageIds :: [I53]
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function sendChatSetTtlMessage
@@ -817,7 +817,7 @@ data SendChatSetTtlMessage
   = -- | Changes the current TTL setting (sets a new self-destruct timer) in a secret chat and sends the corresponding message 
   SendChatSetTtlMessage
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | New TTL value, in seconds
       ttl :: I32
     }
@@ -827,7 +827,7 @@ data SendChatScreenshotTakenNotification
   = -- | Sends a notification about a screenshot taken in a chat. Supported only in private and secret chats 
   SendChatScreenshotTakenNotification
     { -- | Chat identifier
-      chat_id :: I53
+      chatId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function addLocalMessage
@@ -835,15 +835,15 @@ data AddLocalMessage
   = -- | Adds a local message to a chat. The message is persistent across application restarts only if the message database is used. Returns the added message 
   AddLocalMessage
     { -- | Target chat 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the user who will be shown as the sender of the message; may be 0 for channel posts
-      sender_user_id :: I32,
+      senderUserId :: I32,
       -- | Identifier of the message to reply to or 0 
-      reply_to_message_id :: I53,
+      replyToMessageId :: I53,
       -- | Pass true to disable notification for the message 
-      disable_notification :: Bool,
+      disableNotification :: Bool,
       -- | The content of the message to be added
-      input_message_content :: InputMessageContent
+      inputMessageContent :: InputMessageContent
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function deleteMessages
@@ -851,9 +851,9 @@ data DeleteMessages
   = -- | Deletes messages 
   DeleteMessages
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifiers of the messages to be deleted 
-      message_ids :: [I53],
+      messageIds :: [I53],
       -- | Pass true to try to delete messages for all chat members. Always true for supergroups, channels and secret chats
       revoke :: Bool
     }
@@ -863,9 +863,9 @@ data DeleteChatMessagesFromUser
   = -- | Deletes all messages sent by the specified user to a chat. Supported only for supergroups; requires can_delete_messages administrator privileges 
   DeleteChatMessagesFromUser
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | User identifier
-      user_id :: I32
+      userId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function editMessageText
@@ -873,13 +873,13 @@ data EditMessageText
   = -- | Edits the text of a message (or a text of a game message). Returns the edited message after the edit is completed on the server side
   EditMessageText
     { -- | The chat the message belongs to 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the message 
-      message_id :: I53,
+      messageId :: I53,
       -- | The new message reply markup; for bots only 
-      reply_markup :: ReplyMarkup,
+      replyMarkup :: ReplyMarkup,
       -- | New text content of the message. Should be of type InputMessageText
-      input_message_content :: InputMessageContent
+      inputMessageContent :: InputMessageContent
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function editMessageLiveLocation
@@ -887,13 +887,13 @@ data EditMessageLiveLocation
   = -- | Edits the message content of a live location. Messages can be edited for a limited period of time specified in the live location. Returns the edited message after the edit is completed on the server side
   EditMessageLiveLocation
     { -- | The chat the message belongs to 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the message 
-      message_id :: I53,
+      messageId :: I53,
       -- | The new message reply markup; for bots only 
-      reply_markup :: ReplyMarkup,
+      replyMarkup :: ReplyMarkup,
       -- | New location content of the message; may be null. Pass null to stop sharing the live location
-      location :: Location
+      location :: (Maybe) (Location)
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function editMessageMedia
@@ -901,13 +901,13 @@ data EditMessageMedia
   = -- | Edits the content of a message with an animation, an audio, a document, a photo or a video. The media in the message can't be replaced if the message was set to self-destruct. Media can't be replaced by self-destructing media. Media in an album can be edited only to contain a photo or a video. Returns the edited message after the edit is completed on the server side
   EditMessageMedia
     { -- | The chat the message belongs to 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the message 
-      message_id :: I53,
+      messageId :: I53,
       -- | The new message reply markup; for bots only 
-      reply_markup :: ReplyMarkup,
+      replyMarkup :: ReplyMarkup,
       -- | New content of the message. Must be one of the following types: InputMessageAnimation, InputMessageAudio, InputMessageDocument, InputMessagePhoto or InputMessageVideo
-      input_message_content :: InputMessageContent
+      inputMessageContent :: InputMessageContent
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function editMessageCaption
@@ -915,11 +915,11 @@ data EditMessageCaption
   = -- | Edits the message content caption. Returns the edited message after the edit is completed on the server side
   EditMessageCaption
     { -- | The chat the message belongs to 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the message 
-      message_id :: I53,
+      messageId :: I53,
       -- | The new message reply markup; for bots only 
-      reply_markup :: ReplyMarkup,
+      replyMarkup :: ReplyMarkup,
       -- | New message content caption; 0-GetOption("message_caption_length_max") characters
       caption :: FormattedText
     }
@@ -929,11 +929,11 @@ data EditMessageReplyMarkup
   = -- | Edits the message reply markup; for bots only. Returns the edited message after the edit is completed on the server side
   EditMessageReplyMarkup
     { -- | The chat the message belongs to 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the message 
-      message_id :: I53,
+      messageId :: I53,
       -- | The new message reply markup
-      reply_markup :: ReplyMarkup
+      replyMarkup :: ReplyMarkup
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function editInlineMessageText
@@ -941,11 +941,11 @@ data EditInlineMessageText
   = -- | Edits the text of an inline text or game message sent via a bot; for bots only 
   EditInlineMessageText
     { -- | Inline message identifier 
-      inline_message_id :: T,
+      inlineMessageId :: T,
       -- | The new message reply markup 
-      reply_markup :: ReplyMarkup,
+      replyMarkup :: ReplyMarkup,
       -- | New text content of the message. Should be of type InputMessageText
-      input_message_content :: InputMessageContent
+      inputMessageContent :: InputMessageContent
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function editInlineMessageLiveLocation
@@ -953,11 +953,11 @@ data EditInlineMessageLiveLocation
   = -- | Edits the content of a live location in an inline message sent via a bot; for bots only 
   EditInlineMessageLiveLocation
     { -- | Inline message identifier 
-      inline_message_id :: T,
+      inlineMessageId :: T,
       -- | The new message reply markup 
-      reply_markup :: ReplyMarkup,
+      replyMarkup :: ReplyMarkup,
       -- | New location content of the message; may be null. Pass null to stop sharing the live location
-      location :: Location
+      location :: (Maybe) (Location)
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function editInlineMessageMedia
@@ -965,11 +965,11 @@ data EditInlineMessageMedia
   = -- | Edits the content of a message with an animation, an audio, a document, a photo or a video in an inline message sent via a bot; for bots only 
   EditInlineMessageMedia
     { -- | Inline message identifier
-      inline_message_id :: T,
+      inlineMessageId :: T,
       -- | The new message reply markup; for bots only 
-      reply_markup :: ReplyMarkup,
+      replyMarkup :: ReplyMarkup,
       -- | New content of the message. Must be one of the following types: InputMessageAnimation, InputMessageAudio, InputMessageDocument, InputMessagePhoto or InputMessageVideo
-      input_message_content :: InputMessageContent
+      inputMessageContent :: InputMessageContent
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function editInlineMessageCaption
@@ -977,9 +977,9 @@ data EditInlineMessageCaption
   = -- | Edits the caption of an inline message sent via a bot; for bots only 
   EditInlineMessageCaption
     { -- | Inline message identifier 
-      inline_message_id :: T,
+      inlineMessageId :: T,
       -- | The new message reply markup 
-      reply_markup :: ReplyMarkup,
+      replyMarkup :: ReplyMarkup,
       -- | New message content caption; 0-GetOption("message_caption_length_max") characters
       caption :: FormattedText
     }
@@ -989,9 +989,9 @@ data EditInlineMessageReplyMarkup
   = -- | Edits the reply markup of an inline message sent via a bot; for bots only 
   EditInlineMessageReplyMarkup
     { -- | Inline message identifier 
-      inline_message_id :: T,
+      inlineMessageId :: T,
       -- | The new message reply markup
-      reply_markup :: ReplyMarkup
+      replyMarkup :: ReplyMarkup
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function editMessageSchedulingState
@@ -999,11 +999,11 @@ data EditMessageSchedulingState
   = -- | Edits the time when a scheduled message will be sent. Scheduling state of all messages in the same album or forwarded together with the message will be also changed 
   EditMessageSchedulingState
     { -- | The chat the message belongs to 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the message 
-      message_id :: I53,
+      messageId :: I53,
       -- | The new message scheduling state. Pass null to send the message immediately
-      scheduling_state :: MessageSchedulingState
+      schedulingState :: MessageSchedulingState
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getTextEntities
@@ -1021,7 +1021,7 @@ data ParseTextEntities
     { -- | The text to parse 
       text :: T,
       -- | Text parse mode
-      parse_mode :: TextParseMode
+      parseMode :: TextParseMode
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function parseMarkdown
@@ -1045,7 +1045,7 @@ data GetFileMimeType
   = -- | Returns the MIME type of a file, guessed by its extension. Returns an empty string on failure. This is an offline method. Can be called before authorization. Can be called synchronously 
   GetFileMimeType
     { -- | The name of the file or path to the file
-      file_name :: T
+      fileName :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getFileExtension
@@ -1053,7 +1053,7 @@ data GetFileExtension
   = -- | Returns the extension of a file, guessed by its MIME type. Returns an empty string on failure. This is an offline method. Can be called before authorization. Can be called synchronously 
   GetFileExtension
     { -- | The MIME type of the file
-      mime_type :: T
+      mimeType :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function cleanFileName
@@ -1061,7 +1061,7 @@ data CleanFileName
   = -- | Removes potentially dangerous characters from the name of a file. The encoding of the file name is supposed to be UTF-8. Returns an empty string on failure. This is an offline method. Can be called before authorization. Can be called synchronously 
   CleanFileName
     { -- | File name or path to the file
-      file_name :: T
+      fileName :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getLanguagePackString
@@ -1069,11 +1069,11 @@ data GetLanguagePackString
   = -- | Returns a string stored in the local database from the specified localization target and language pack by its key. Returns a 404 error if the string is not found. This is an offline method. Can be called before authorization. Can be called synchronously
   GetLanguagePackString
     { -- | Path to the language pack database in which strings are stored 
-      language_pack_database_path :: T,
+      languagePackDatabasePath :: T,
       -- | Localization target to which the language pack belongs 
-      localization_target :: T,
+      localizationTarget :: T,
       -- | Language pack identifier 
-      language_pack_id :: T,
+      languagePackId :: T,
       -- | Language pack key of the string to be returned
       key :: T
     }
@@ -1091,7 +1091,7 @@ data GetJsonString
   = -- | Converts a JsonValue object to corresponding JSON-serialized string. This is an offline method. Can be called before authorization. Can be called synchronously 
   GetJsonString
     { -- | The JsonValue object
-      json_value :: JsonValue
+      jsonValue :: JsonValue
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function setPollAnswer
@@ -1099,11 +1099,11 @@ data SetPollAnswer
   = -- | Changes the user answer to a poll. A poll in quiz mode can be answered only once
   SetPollAnswer
     { -- | Identifier of the chat to which the poll belongs 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the message containing the poll
-      message_id :: I53,
+      messageId :: I53,
       -- | 0-based identifiers of answer options, chosen by the user. User can choose more than 1 answer option only is the poll allows multiple answers
-      option_ids :: [I32]
+      optionIds :: [I32]
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getPollVoters
@@ -1111,11 +1111,11 @@ data GetPollVoters
   = -- | Returns users voted for the specified option in a non-anonymous polls. For the optimal performance the number of returned users is chosen by the library
   GetPollVoters
     { -- | Identifier of the chat to which the poll belongs 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the message containing the poll
-      message_id :: I53,
+      messageId :: I53,
       -- | 0-based identifier of the answer option
-      option_id :: I32,
+      optionId :: I32,
       -- | Number of users to skip in the result; must be non-negative
       offset :: I32,
       -- | The maximum number of users to be returned; must be positive and can't be greater than 50. Fewer users may be returned than specified by the limit, even if the end of the voter list has not been reached
@@ -1127,11 +1127,11 @@ data StopPoll
   = -- | Stops a poll. A poll in a message can be stopped when the message has can_be_edited flag set
   StopPoll
     { -- | Identifier of the chat to which the poll belongs 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the message containing the poll 
-      message_id :: I53,
+      messageId :: I53,
       -- | The new message reply markup; for bots only
-      reply_markup :: ReplyMarkup
+      replyMarkup :: ReplyMarkup
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getLoginUrlInfo
@@ -1139,11 +1139,11 @@ data GetLoginUrlInfo
   = -- | Returns information about a button of type inlineKeyboardButtonTypeLoginUrl. The method needs to be called when the user presses the button
   GetLoginUrlInfo
     { -- | Chat identifier of the message with the button 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Message identifier of the message with the button 
-      message_id :: I53,
+      messageId :: I53,
       -- | Button identifier
-      button_id :: I32
+      buttonId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getLoginUrl
@@ -1151,13 +1151,13 @@ data GetLoginUrl
   = -- | Returns an HTTP URL which can be used to automatically authorize the user on a website after clicking an inline button of type inlineKeyboardButtonTypeLoginUrl.
   GetLoginUrl
     { -- | Chat identifier of the message with the button 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Message identifier of the message with the button 
-      message_id :: I53,
+      messageId :: I53,
       -- | Button identifier
-      button_id :: I32,
+      buttonId :: I32,
       -- | True, if the user allowed the bot to send them messages
-      allow_write_access :: Bool
+      allowWriteAccess :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getInlineQueryResults
@@ -1165,11 +1165,11 @@ data GetInlineQueryResults
   = -- | Sends an inline query to a bot and returns its results. Returns an error with code 502 if the bot fails to answer the query before the query timeout expires 
   GetInlineQueryResults
     { -- | The identifier of the target bot
-      bot_user_id :: I32,
+      botUserId :: I32,
       -- | Identifier of the chat where the query was sent 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Location of the user, only if needed 
-      user_location :: Location,
+      userLocation :: Location,
       -- | Text of the query 
       query :: T,
       -- | Offset of the first entry to return
@@ -1181,19 +1181,19 @@ data AnswerInlineQuery
   = -- | Sets the result of an inline query; for bots only 
   AnswerInlineQuery
     { -- | Identifier of the inline query 
-      inline_query_id :: I64,
+      inlineQueryId :: I64,
       -- | True, if the result of the query can be cached for the specified user
-      is_personal :: Bool,
+      isPersonal :: Bool,
       -- | The results of the query 
       results :: [InputInlineQueryResult],
       -- | Allowed time to cache the results of the query, in seconds 
-      cache_time :: I32,
+      cacheTime :: I32,
       -- | Offset for the next inline query; pass an empty string if there are no more results
-      next_offset :: T,
+      nextOffset :: T,
       -- | If non-empty, this text should be shown on the button that opens a private chat with the bot and sends a start message to the bot with the parameter switch_pm_parameter 
-      switch_pm_text :: T,
+      switchPmText :: T,
       -- | The parameter for the bot start message
-      switch_pm_parameter :: T
+      switchPmParameter :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getCallbackQueryAnswer
@@ -1201,9 +1201,9 @@ data GetCallbackQueryAnswer
   = -- | Sends a callback query to a bot and returns an answer. Returns an error with code 502 if the bot fails to answer the query before the query timeout expires 
   GetCallbackQueryAnswer
     { -- | Identifier of the chat with the message 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the message from which the query originated 
-      message_id :: I53,
+      messageId :: I53,
       -- | Query payload
       payload :: CallbackQueryPayload
     }
@@ -1213,15 +1213,15 @@ data AnswerCallbackQuery
   = -- | Sets the result of a callback query; for bots only 
   AnswerCallbackQuery
     { -- | Identifier of the callback query 
-      callback_query_id :: I64,
+      callbackQueryId :: I64,
       -- | Text of the answer 
       text :: T,
       -- | If true, an alert should be shown to the user instead of a toast notification 
-      show_alert :: Bool,
+      showAlert :: Bool,
       -- | URL to be opened 
       url :: T,
       -- | Time during which the result of the query can be cached, in seconds
-      cache_time :: I32
+      cacheTime :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function answerShippingQuery
@@ -1229,11 +1229,11 @@ data AnswerShippingQuery
   = -- | Sets the result of a shipping query; for bots only 
   AnswerShippingQuery
     { -- | Identifier of the shipping query 
-      shipping_query_id :: I64,
+      shippingQueryId :: I64,
       -- | Available shipping options 
-      shipping_options :: [ShippingOption],
+      shippingOptions :: [ShippingOption],
       -- | An error message, empty on success
-      error_message :: T
+      errorMessage :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function answerPreCheckoutQuery
@@ -1241,9 +1241,9 @@ data AnswerPreCheckoutQuery
   = -- | Sets the result of a pre-checkout query; for bots only 
   AnswerPreCheckoutQuery
     { -- | Identifier of the pre-checkout query 
-      pre_checkout_query_id :: I64,
+      preCheckoutQueryId :: I64,
       -- | An error message, empty on success
-      error_message :: T
+      errorMessage :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function setGameScore
@@ -1251,13 +1251,13 @@ data SetGameScore
   = -- | Updates the game score of the specified user in the game; for bots only 
   SetGameScore
     { -- | The chat to which the message with the game belongs 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the message 
-      message_id :: I53,
+      messageId :: I53,
       -- | True, if the message should be edited 
-      edit_message :: Bool,
+      editMessage :: Bool,
       -- | User identifier 
-      user_id :: I32,
+      userId :: I32,
       -- | The new score
       score :: I32,
       -- | Pass true to update the score even if it decreases. If the score is 0, the user will be deleted from the high score table
@@ -1269,11 +1269,11 @@ data SetInlineGameScore
   = -- | Updates the game score of the specified user in a game; for bots only 
   SetInlineGameScore
     { -- | Inline message identifier 
-      inline_message_id :: T,
+      inlineMessageId :: T,
       -- | True, if the message should be edited 
-      edit_message :: Bool,
+      editMessage :: Bool,
       -- | User identifier 
-      user_id :: I32,
+      userId :: I32,
       -- | The new score
       score :: I32,
       -- | Pass true to update the score even if it decreases. If the score is 0, the user will be deleted from the high score table
@@ -1285,11 +1285,11 @@ data GetGameHighScores
   = -- | Returns the high scores for a game and some part of the high score table in the range of the specified user; for bots only 
   GetGameHighScores
     { -- | The chat that contains the message with the game 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the message 
-      message_id :: I53,
+      messageId :: I53,
       -- | User identifier
-      user_id :: I32
+      userId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getInlineGameHighScores
@@ -1297,9 +1297,9 @@ data GetInlineGameHighScores
   = -- | Returns game high scores and some part of the high score table in the range of the specified user; for bots only 
   GetInlineGameHighScores
     { -- | Inline message identifier 
-      inline_message_id :: T,
+      inlineMessageId :: T,
       -- | User identifier
-      user_id :: I32
+      userId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function deleteChatReplyMarkup
@@ -1307,9 +1307,9 @@ data DeleteChatReplyMarkup
   = -- | Deletes the default reply markup from a chat. Must be called after a one-time keyboard or a ForceReply reply markup has been used. UpdateChatReplyMarkup will be sent if the reply markup will be changed 
   DeleteChatReplyMarkup
     { -- | Chat identifier
-      chat_id :: I53,
+      chatId :: I53,
       -- | The message identifier of the used keyboard
-      message_id :: I53
+      messageId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function sendChatAction
@@ -1317,7 +1317,7 @@ data SendChatAction
   = -- | Sends a notification about user activity in a chat 
   SendChatAction
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | The action description
       action :: ChatAction
     }
@@ -1327,7 +1327,7 @@ data OpenChat
   = -- | Informs TDLib that the chat is opened by the user. Many useful activities depend on the chat being opened or closed (e.g., in supergroups and channels all updates are received only for opened chats) 
   OpenChat
     { -- | Chat identifier
-      chat_id :: I53
+      chatId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function closeChat
@@ -1335,7 +1335,7 @@ data CloseChat
   = -- | Informs TDLib that the chat is closed by the user. Many useful activities depend on the chat being opened or closed 
   CloseChat
     { -- | Chat identifier
-      chat_id :: I53
+      chatId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function viewMessages
@@ -1343,11 +1343,11 @@ data ViewMessages
   = -- | Informs TDLib that messages are being viewed by the user. Many useful activities depend on whether the messages are currently being viewed or not (e.g., marking messages as read, incrementing a view counter, updating a view counter, removing deleted messages in supergroups and channels) 
   ViewMessages
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | The identifiers of the messages being viewed
-      message_ids :: [I53],
+      messageIds :: [I53],
       -- | True, if messages in closed chats should be marked as read
-      force_read :: Bool
+      forceRead :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function openMessageContent
@@ -1355,9 +1355,9 @@ data OpenMessageContent
   = -- | Informs TDLib that the message content has been opened (e.g., the user has opened a photo, video, document, location or venue, or has listened to an audio file or voice note message). An updateMessageContentOpened update will be generated if something has changed 
   OpenMessageContent
     { -- | Chat identifier of the message 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the message with the opened content
-      message_id :: I53
+      messageId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function readAllChatMentions
@@ -1365,7 +1365,7 @@ data ReadAllChatMentions
   = -- | Marks all mentions in a chat as read 
   ReadAllChatMentions
     { -- | Chat identifier
-      chat_id :: I53
+      chatId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function createPrivateChat
@@ -1373,7 +1373,7 @@ data CreatePrivateChat
   = -- | Returns an existing chat corresponding to a given user 
   CreatePrivateChat
     { -- | User identifier 
-      user_id :: I32,
+      userId :: I32,
       -- | If true, the chat will be created without network request. In this case all information about the chat except its type, title and photo can be incorrect
       force :: Bool
     }
@@ -1383,7 +1383,7 @@ data CreateBasicGroupChat
   = -- | Returns an existing chat corresponding to a known basic group 
   CreateBasicGroupChat
     { -- | Basic group identifier 
-      basic_group_id :: I32,
+      basicGroupId :: I32,
       -- | If true, the chat will be created without network request. In this case all information about the chat except its type, title and photo can be incorrect
       force :: Bool
     }
@@ -1393,7 +1393,7 @@ data CreateSupergroupChat
   = -- | Returns an existing chat corresponding to a known supergroup or channel 
   CreateSupergroupChat
     { -- | Supergroup or channel identifier 
-      supergroup_id :: I32,
+      supergroupId :: I32,
       -- | If true, the chat will be created without network request. In this case all information about the chat except its type, title and photo can be incorrect
       force :: Bool
     }
@@ -1403,7 +1403,7 @@ data CreateSecretChat
   = -- | Returns an existing chat corresponding to a known secret chat 
   CreateSecretChat
     { -- | Secret chat identifier
-      secret_chat_id :: I32
+      secretChatId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function createNewBasicGroupChat
@@ -1411,7 +1411,7 @@ data CreateNewBasicGroupChat
   = -- | Creates a new basic group and sends a corresponding messageBasicGroupChatCreate. Returns the newly created chat 
   CreateNewBasicGroupChat
     { -- | Identifiers of users to be added to the basic group 
-      user_ids :: [I32],
+      userIds :: [I32],
       -- | Title of the new basic group; 1-128 characters
       title :: T
     }
@@ -1423,7 +1423,7 @@ data CreateNewSupergroupChat
     { -- | Title of the new chat; 1-128 characters 
       title :: T,
       -- | True, if a channel chat should be created 
-      is_channel :: Bool,
+      isChannel :: Bool,
       -- | Creates a new supergroup or channel and sends a corresponding messageSupergroupChatCreate. Returns the newly created chat 
       description :: T,
       -- | Chat location if a location-based supergroup is being created
@@ -1435,7 +1435,7 @@ data CreateNewSecretChat
   = -- | Creates a new secret chat. Returns the newly created chat 
   CreateNewSecretChat
     { -- | Identifier of the target user
-      user_id :: I32
+      userId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function upgradeBasicGroupChatToSupergroupChat
@@ -1443,7 +1443,7 @@ data UpgradeBasicGroupChatToSupergroupChat
   = -- | Creates a new supergroup from an existing basic group and sends a corresponding messageChatUpgradeTo and messageChatUpgradeFrom; requires creator privileges. Deactivates the original basic group 
   UpgradeBasicGroupChatToSupergroupChat
     { -- | Identifier of the chat to upgrade
-      chat_id :: I53
+      chatId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function setChatChatList
@@ -1451,9 +1451,9 @@ data SetChatChatList
   = -- | Moves a chat to a different chat list. Current chat list of the chat must ne non-null 
   SetChatChatList
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | New chat list of the chat. The chat with the current user (Saved Messages) and the chat 777000 (Telegram) can't be moved to the Archive chat list
-      chat_list :: ChatList
+      chatList :: ChatList
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function setChatTitle
@@ -1461,7 +1461,7 @@ data SetChatTitle
   = -- | Changes the chat title. Supported only for basic groups, supergroups and channels. Requires can_change_info rights. The title will not be changed until the request to the server has been completed
   SetChatTitle
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | New title of the chat; 1-128 characters
       title :: T
     }
@@ -1471,7 +1471,7 @@ data SetChatPhoto
   = -- | Changes the photo of a chat. Supported only for basic groups, supergroups and channels. Requires can_change_info rights. The photo will not be changed before request to the server has been completed
   SetChatPhoto
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | New chat photo. You can use a zero InputFileId to delete the chat photo. Files that are accessible only by HTTP URL are not acceptable
       photo :: InputFile
     }
@@ -1481,7 +1481,7 @@ data SetChatPermissions
   = -- | Changes the chat members permissions. Supported only for basic groups and supergroups. Requires can_restrict_members administrator right
   SetChatPermissions
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | New non-administrator members permissions in the chat
       permissions :: ChatPermissions
     }
@@ -1491,9 +1491,9 @@ data SetChatDraftMessage
   = -- | Changes the draft message in a chat 
   SetChatDraftMessage
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | New draft message; may be null
-      draft_message :: DraftMessage
+      draftMessage :: (Maybe) (DraftMessage)
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function setChatNotificationSettings
@@ -1501,9 +1501,9 @@ data SetChatNotificationSettings
   = -- | Changes the notification settings of a chat. Notification settings of a chat with the current user (Saved Messages) can't be changed
   SetChatNotificationSettings
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | New notification settings for the chat. If the chat is muted for more than 1 week, it is considered to be muted forever
-      notification_settings :: ChatNotificationSettings
+      notificationSettings :: ChatNotificationSettings
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function toggleChatIsPinned
@@ -1511,9 +1511,9 @@ data ToggleChatIsPinned
   = -- | Changes the pinned state of a chat. You can pin up to GetOption("pinned_chat_count_max")/GetOption("pinned_archived_chat_count_max") non-secret chats and the same number of secret chats in the main/archive chat list 
   ToggleChatIsPinned
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | New value of is_pinned
-      is_pinned :: Bool
+      isPinned :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function toggleChatIsMarkedAsUnread
@@ -1521,9 +1521,9 @@ data ToggleChatIsMarkedAsUnread
   = -- | Changes the marked as unread state of a chat 
   ToggleChatIsMarkedAsUnread
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | New value of is_marked_as_unread
-      is_marked_as_unread :: Bool
+      isMarkedAsUnread :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function toggleChatDefaultDisableNotification
@@ -1531,9 +1531,9 @@ data ToggleChatDefaultDisableNotification
   = -- | Changes the value of the default disable_notification parameter, used when a message is sent to a chat 
   ToggleChatDefaultDisableNotification
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | New value of default_disable_notification
-      default_disable_notification :: Bool
+      defaultDisableNotification :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function setChatClientData
@@ -1541,9 +1541,9 @@ data SetChatClientData
   = -- | Changes client data associated with a chat 
   SetChatClientData
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | New value of client_data
-      client_data :: T
+      clientData :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function setChatDescription
@@ -1551,7 +1551,7 @@ data SetChatDescription
   = -- | Changes information about a chat. Available for basic groups, supergroups, and channels. Requires can_change_info rights 
   SetChatDescription
     { -- | Identifier of the chat 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Changes information about a chat. Available for basic groups, supergroups, and channels. Requires can_change_info rights 
       description :: T
     }
@@ -1561,9 +1561,9 @@ data SetChatDiscussionGroup
   = -- | Changes the discussion group of a channel chat; requires can_change_info rights in the channel if it is specified 
   SetChatDiscussionGroup
     { -- | Identifier of the channel chat. Pass 0 to remove a link from the supergroup passed in the second argument to a linked channel chat (requires can_pin_messages rights in the supergroup) 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of a new channel's discussion group. Use 0 to remove the discussion group.
-      discussion_chat_id :: I53
+      discussionChatId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function setChatLocation
@@ -1571,7 +1571,7 @@ data SetChatLocation
   = -- | Changes the location of a chat. Available only for some location-based supergroups, use supergroupFullInfo.can_set_location to check whether the method is allowed to use 
   SetChatLocation
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | New location for the chat; must be valid and not null
       location :: ChatLocation
     }
@@ -1581,9 +1581,9 @@ data SetChatSlowModeDelay
   = -- | Changes the slow mode delay of a chat. Available only for supergroups; requires can_restrict_members rights 
   SetChatSlowModeDelay
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | New slow mode delay for the chat; must be one of 0, 10, 30, 60, 300, 900, 3600
-      slow_mode_delay :: I32
+      slowModeDelay :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function pinChatMessage
@@ -1591,11 +1591,11 @@ data PinChatMessage
   = -- | Pins a message in a chat; requires can_pin_messages rights 
   PinChatMessage
     { -- | Identifier of the chat 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the new pinned message 
-      message_id :: I53,
+      messageId :: I53,
       -- | True, if there should be no notification about the pinned message
-      disable_notification :: Bool
+      disableNotification :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function unpinChatMessage
@@ -1603,7 +1603,7 @@ data UnpinChatMessage
   = -- | Removes the pinned message from a chat; requires can_pin_messages rights in the group or channel 
   UnpinChatMessage
     { -- | Identifier of the chat
-      chat_id :: I53
+      chatId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function joinChat
@@ -1611,7 +1611,7 @@ data JoinChat
   = -- | Adds current user as a new member to a chat. Private and secret chats can't be joined using this method 
   JoinChat
     { -- | Chat identifier
-      chat_id :: I53
+      chatId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function leaveChat
@@ -1619,7 +1619,7 @@ data LeaveChat
   = -- | Removes current user from chat members. Private and secret chats can't be left using this method 
   LeaveChat
     { -- | Chat identifier
-      chat_id :: I53
+      chatId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function addChatMember
@@ -1627,11 +1627,11 @@ data AddChatMember
   = -- | Adds a new member to a chat. Members can't be added to private or secret chats. Members will not be added until the chat state has been synchronized with the server
   AddChatMember
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the user 
-      user_id :: I32,
+      userId :: I32,
       -- | The number of earlier messages from the chat to be forwarded to the new member; up to 100. Ignored for supergroups and channels
-      forward_limit :: I32
+      forwardLimit :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function addChatMembers
@@ -1639,9 +1639,9 @@ data AddChatMembers
   = -- | Adds multiple new members to a chat. Currently this option is only available for supergroups and channels. This option can't be used to join a chat. Members can't be added to a channel if it has more than 200 members. Members will not be added until the chat state has been synchronized with the server
   AddChatMembers
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifiers of the users to be added to the chat
-      user_ids :: [I32]
+      userIds :: [I32]
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function setChatMemberStatus
@@ -1649,9 +1649,9 @@ data SetChatMemberStatus
   = -- | Changes the status of a chat member, needs appropriate privileges. This function is currently not suitable for adding new members to the chat and transferring chat ownership; instead, use addChatMember or transferChatOwnership. The chat member status will not be changed until it has been synchronized with the server
   SetChatMemberStatus
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | User identifier 
-      user_id :: I32,
+      userId :: I32,
       -- | The new status of the member in the chat
       status :: ChatMemberStatus
     }
@@ -1668,9 +1668,9 @@ data TransferChatOwnership
   = -- | Changes the owner of a chat. The current user must be a current owner of the chat. Use the method canTransferOwnership to check whether the ownership can be transferred from the current session. Available only for supergroups and channel chats
   TransferChatOwnership
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the user to which transfer the ownership. The ownership can't be transferred to a bot or to a deleted user 
-      user_id :: I32,
+      userId :: I32,
       -- | The password of the current user
       password :: T
     }
@@ -1680,9 +1680,9 @@ data GetChatMember
   = -- | Returns information about a single member of a chat 
   GetChatMember
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | User identifier
-      user_id :: I32
+      userId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function searchChatMembers
@@ -1690,7 +1690,7 @@ data SearchChatMembers
   = -- | Searches for a specified query in the first name, last name and username of the members of a specified chat. Requires administrator rights in channels 
   SearchChatMembers
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Query to search for 
       query :: T,
       -- | The maximum number of users to be returned 
@@ -1704,7 +1704,7 @@ data GetChatAdministrators
   = -- | Returns a list of administrators of the chat with their custom titles 
   GetChatAdministrators
     { -- | Chat identifier
-      chat_id :: I53
+      chatId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function clearAllDraftMessages
@@ -1712,7 +1712,7 @@ data ClearAllDraftMessages
   = -- | Clears draft messages in all chats 
   ClearAllDraftMessages
     { -- | If true, local draft messages in secret chats will not be cleared
-      exclude_secret_chats :: Bool
+      excludeSecretChats :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getChatNotificationSettingsExceptions
@@ -1722,7 +1722,7 @@ data GetChatNotificationSettingsExceptions
     { -- | If specified, only chats from the specified scope will be returned 
       scope :: NotificationSettingsScope,
       -- | If true, also chats with non-default sound will be returned
-      compare_sound :: Bool
+      compareSound :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getScopeNotificationSettings
@@ -1740,7 +1740,7 @@ data SetScopeNotificationSettings
     { -- | Types of chats for which to change the notification settings 
       scope :: NotificationSettingsScope,
       -- | The new notification settings for the given scope
-      notification_settings :: ScopeNotificationSettings
+      notificationSettings :: ScopeNotificationSettings
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function resetAllNotificationSettings
@@ -1755,9 +1755,9 @@ data SetPinnedChats
   = -- | Changes the order of pinned chats 
   SetPinnedChats
     { -- | Chat list in which to change the order of pinned chats 
-      chat_list :: ChatList,
+      chatList :: ChatList,
       -- | The new list of pinned chats
-      chat_ids :: [I53]
+      chatIds :: [I53]
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function downloadFile
@@ -1765,7 +1765,7 @@ data DownloadFile
   = -- | Downloads a file from the cloud. Download progress and completion of the download will be notified through updateFile updates
   DownloadFile
     { -- | Identifier of the file to download
-      file_id :: I32,
+      fileId :: I32,
       -- | Priority of the download (1-32). The higher the priority, the earlier the file will be downloaded. If the priorities of two files are equal, then the last one for which downloadFile was called will be downloaded first
       priority :: I32,
       -- | The starting position from which the file should be downloaded
@@ -1781,7 +1781,7 @@ data GetFileDownloadedPrefixSize
   = -- | Returns file downloaded prefix size from a given offset 
   GetFileDownloadedPrefixSize
     { -- | Identifier of the file 
-      file_id :: I32,
+      fileId :: I32,
       -- | Offset from which downloaded prefix size should be calculated
       offset :: I32
     }
@@ -1791,9 +1791,9 @@ data CancelDownloadFile
   = -- | Stops the downloading of a file. If a file has already been downloaded, does nothing 
   CancelDownloadFile
     { -- | Identifier of a file to stop downloading 
-      file_id :: I32,
+      fileId :: I32,
       -- | Pass true to stop downloading only if it hasn't been started, i.e. request hasn't been sent to server
-      only_if_pending :: Bool
+      onlyIfPending :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function uploadFile
@@ -1803,7 +1803,7 @@ data UploadFile
     { -- | File to upload 
       file :: InputFile,
       -- | File type
-      file_type :: FileType,
+      fileType :: FileType,
       -- | Priority of the upload (1-32). The higher the priority, the earlier the file will be uploaded. If the priorities of two files are equal, then the first one for which uploadFile was called will be uploaded first
       priority :: I32
     }
@@ -1813,7 +1813,7 @@ data CancelUploadFile
   = -- | Stops the uploading of a file. Supported only for files uploaded by using uploadFile. For other files the behavior is undefined 
   CancelUploadFile
     { -- | Identifier of the file to stop uploading
-      file_id :: I32
+      fileId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function writeGeneratedFilePart
@@ -1821,7 +1821,7 @@ data WriteGeneratedFilePart
   = -- | Writes a part of a generated file. This method is intended to be used only if the client has no direct access to TDLib's file system, because it is usually slower than a direct write to the destination file
   WriteGeneratedFilePart
     { -- | The identifier of the generation process 
-      generation_id :: I64,
+      generationId :: I64,
       -- | The offset from which to write the data to the file 
       offset :: I32,
       -- | The data to write
@@ -1833,11 +1833,11 @@ data SetFileGenerationProgress
   = -- | Informs TDLib on a file generation progress
   SetFileGenerationProgress
     { -- | The identifier of the generation process
-      generation_id :: I64,
+      generationId :: I64,
       -- | Expected size of the generated file, in bytes; 0 if unknown
-      expected_size :: I32,
+      expectedSize :: I32,
       -- | The number of bytes already generated
-      local_prefix_size :: I32
+      localPrefixSize :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function finishFileGeneration
@@ -1845,7 +1845,7 @@ data FinishFileGeneration
   = -- | Finishes the file generation
   FinishFileGeneration
     { -- | The identifier of the generation process
-      generation_id :: I64,
+      generationId :: I64,
       -- | If set, means that file generation has failed and should be terminated
       error :: Error
     }
@@ -1855,7 +1855,7 @@ data ReadFilePart
   = -- | Reads a part of a file from the TDLib file cache and returns read bytes. This method is intended to be used only if the client has no direct access to TDLib's file system, because it is usually slower than a direct read from the file
   ReadFilePart
     { -- | Identifier of the file. The file must be located in the TDLib file cache
-      file_id :: I32,
+      fileId :: I32,
       -- | The offset from which to read the file
       offset :: I32,
       -- | Number of bytes to read. An error will be returned if there are not enough bytes available in the file from the specified position. Pass 0 to read all available data from the specified position
@@ -1867,7 +1867,7 @@ data DeleteFile
   = -- | Deletes a file from the TDLib file cache 
   DeleteFile
     { -- | Identifier of the file to delete
-      file_id :: I32
+      fileId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function generateChatInviteLink
@@ -1875,7 +1875,7 @@ data GenerateChatInviteLink
   = -- | Generates a new invite link for a chat; the previously generated link is revoked. Available for basic groups, supergroups, and channels. Requires administrator privileges and can_invite_users right 
   GenerateChatInviteLink
     { -- | Chat identifier
-      chat_id :: I53
+      chatId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function checkChatInviteLink
@@ -1883,7 +1883,7 @@ data CheckChatInviteLink
   = -- | Checks the validity of an invite link for a chat and returns information about the corresponding chat 
   CheckChatInviteLink
     { -- | Invite link to be checked; should begin with "https://t.me/joinchat/", "https://telegram.me/joinchat/", or "https://telegram.dog/joinchat/"
-      invite_link :: T
+      inviteLink :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function joinChatByInviteLink
@@ -1891,7 +1891,7 @@ data JoinChatByInviteLink
   = -- | Uses an invite link to add the current user to the chat if possible. The new member will not be added until the chat state has been synchronized with the server
   JoinChatByInviteLink
     { -- | Invite link to import; should begin with "https://t.me/joinchat/", "https://telegram.me/joinchat/", or "https://telegram.dog/joinchat/"
-      invite_link :: T
+      inviteLink :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function createCall
@@ -1899,7 +1899,7 @@ data CreateCall
   = -- | Creates a new call 
   CreateCall
     { -- | Identifier of the user to be called 
-      user_id :: I32,
+      userId :: I32,
       -- | Description of the call protocols supported by the client
       protocol :: CallProtocol
     }
@@ -1909,7 +1909,7 @@ data AcceptCall
   = -- | Accepts an incoming call 
   AcceptCall
     { -- | Call identifier 
-      call_id :: I32,
+      callId :: I32,
       -- | Description of the call protocols supported by the client
       protocol :: CallProtocol
     }
@@ -1919,13 +1919,13 @@ data DiscardCall
   = -- | Discards a call 
   DiscardCall
     { -- | Call identifier 
-      call_id :: I32,
+      callId :: I32,
       -- | True, if the user was disconnected 
-      is_disconnected :: Bool,
+      isDisconnected :: Bool,
       -- | The call duration, in seconds 
       duration :: I32,
       -- | Identifier of the connection used during the call
-      connection_id :: I64
+      connectionId :: I64
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function sendCallRating
@@ -1933,7 +1933,7 @@ data SendCallRating
   = -- | Sends a call rating 
   SendCallRating
     { -- | Call identifier 
-      call_id :: I32,
+      callId :: I32,
       -- | Call rating; 1-5 
       rating :: I32,
       -- | An optional user comment if the rating is less than 5 
@@ -1947,9 +1947,9 @@ data SendCallDebugInformation
   = -- | Sends debug information for a call 
   SendCallDebugInformation
     { -- | Call identifier 
-      call_id :: I32,
+      callId :: I32,
       -- | Debug information in application-specific format
-      debug_information :: T
+      debugInformation :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function blockUser
@@ -1957,7 +1957,7 @@ data BlockUser
   = -- | Adds a user to the blacklist 
   BlockUser
     { -- | User identifier
-      user_id :: I32
+      userId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function unblockUser
@@ -1965,7 +1965,7 @@ data UnblockUser
   = -- | Removes a user from the blacklist 
   UnblockUser
     { -- | User identifier
-      user_id :: I32
+      userId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getBlockedUsers
@@ -1985,7 +1985,7 @@ data AddContact
     { -- | The contact to add or edit; phone number can be empty and needs to be specified only if known, vCard is ignored
       contact :: Contact,
       -- | True, if the new contact needs to be allowed to see current user's phone number. A corresponding rule to userPrivacySettingShowPhoneNumber will be added if needed. Use the field UserFullInfo.need_phone_number_privacy_exception to check whether the current user needs to be asked to share their phone number
-      share_phone_number :: Bool
+      sharePhoneNumber :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function importContacts
@@ -2018,7 +2018,7 @@ data RemoveContacts
   = -- | Removes users from the contact list 
   RemoveContacts
     { -- | Identifiers of users to be deleted
-      user_ids :: [I32]
+      userIds :: [I32]
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getImportedContactCount
@@ -2047,7 +2047,7 @@ data SharePhoneNumber
   = -- | Shares the phone number of the current user with a mutual contact. Supposed to be called when the user clicks on chatActionBarSharePhoneNumber 
   SharePhoneNumber
     { -- | Identifier of the user with whom to share the phone number. The user must be a mutual contact
-      user_id :: I32
+      userId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getUserProfilePhotos
@@ -2055,7 +2055,7 @@ data GetUserProfilePhotos
   = -- | Returns the profile photos of a user. The result of this query may be outdated: some photos might have been deleted already 
   GetUserProfilePhotos
     { -- | User identifier 
-      user_id :: I32,
+      userId :: I32,
       -- | The number of photos to skip; must be non-negative 
       offset :: I32,
       -- | The maximum number of photos to be returned; up to 100
@@ -2087,7 +2087,7 @@ data GetInstalledStickerSets
   = -- | Returns a list of installed sticker sets 
   GetInstalledStickerSets
     { -- | Pass true to return mask sticker sets; pass false to return ordinary sticker sets
-      is_masks :: Bool
+      isMasks :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getArchivedStickerSets
@@ -2095,9 +2095,9 @@ data GetArchivedStickerSets
   = -- | Returns a list of archived sticker sets 
   GetArchivedStickerSets
     { -- | Pass true to return mask stickers sets; pass false to return ordinary sticker sets 
-      is_masks :: Bool,
+      isMasks :: Bool,
       -- | Identifier of the sticker set from which to return the result 
-      offset_sticker_set_id :: I64,
+      offsetStickerSetId :: I64,
       -- | The maximum number of sticker sets to return
       limit :: I32
     }
@@ -2117,7 +2117,7 @@ data GetAttachedStickerSets
   = -- | Returns a list of sticker sets attached to a file. Currently only photos and videos can have attached sticker sets 
   GetAttachedStickerSets
     { -- | File identifier
-      file_id :: I32
+      fileId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getStickerSet
@@ -2125,7 +2125,7 @@ data GetStickerSet
   = -- | Returns information about a sticker set by its identifier 
   GetStickerSet
     { -- | Identifier of the sticker set
-      set_id :: I64
+      setId :: I64
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function searchStickerSet
@@ -2141,7 +2141,7 @@ data SearchInstalledStickerSets
   = -- | Searches for installed sticker sets by looking for specified query in their title and name 
   SearchInstalledStickerSets
     { -- | Pass true to return mask sticker sets; pass false to return ordinary sticker sets 
-      is_masks :: Bool,
+      isMasks :: Bool,
       -- | Query to search for 
       query :: T,
       -- | The maximum number of sticker sets to return
@@ -2161,11 +2161,11 @@ data ChangeStickerSet
   = -- | Installs/uninstalls or activates/archives a sticker set 
   ChangeStickerSet
     { -- | Identifier of the sticker set 
-      set_id :: I64,
+      setId :: I64,
       -- | The new value of is_installed 
-      is_installed :: Bool,
+      isInstalled :: Bool,
       -- | The new value of is_archived. A sticker set can't be installed and archived simultaneously
-      is_archived :: Bool
+      isArchived :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function viewTrendingStickerSets
@@ -2173,7 +2173,7 @@ data ViewTrendingStickerSets
   = -- | Informs the server that some trending sticker sets have been viewed by the user 
   ViewTrendingStickerSets
     { -- | Identifiers of viewed trending sticker sets
-      sticker_set_ids :: [I64]
+      stickerSetIds :: [I64]
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function reorderInstalledStickerSets
@@ -2181,9 +2181,9 @@ data ReorderInstalledStickerSets
   = -- | Changes the order of installed sticker sets 
   ReorderInstalledStickerSets
     { -- | Pass true to change the order of mask sticker sets; pass false to change the order of ordinary sticker sets 
-      is_masks :: Bool,
+      isMasks :: Bool,
       -- | Identifiers of installed sticker sets in the new correct order
-      sticker_set_ids :: [I64]
+      stickerSetIds :: [I64]
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getRecentStickers
@@ -2191,7 +2191,7 @@ data GetRecentStickers
   = -- | Returns a list of recently used stickers 
   GetRecentStickers
     { -- | Pass true to return stickers and masks that were recently attached to photos or video files; pass false to return recently sent stickers
-      is_attached :: Bool
+      isAttached :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function addRecentSticker
@@ -2199,7 +2199,7 @@ data AddRecentSticker
   = -- | Manually adds a new sticker to the list of recently used stickers. The new sticker is added to the top of the list. If the sticker was already in the list, it is removed from the list first. Only stickers belonging to a sticker set can be added to this list
   AddRecentSticker
     { -- | Pass true to add the sticker to the list of stickers recently attached to photo or video files; pass false to add the sticker to the list of recently sent stickers 
-      is_attached :: Bool,
+      isAttached :: Bool,
       -- | Sticker file to add
       sticker :: InputFile
     }
@@ -2209,7 +2209,7 @@ data RemoveRecentSticker
   = -- | Removes a sticker from the list of recently used stickers 
   RemoveRecentSticker
     { -- | Pass true to remove the sticker from the list of stickers recently attached to photo or video files; pass false to remove the sticker from the list of recently sent stickers 
-      is_attached :: Bool,
+      isAttached :: Bool,
       -- | Sticker file to delete
       sticker :: InputFile
     }
@@ -2219,7 +2219,7 @@ data ClearRecentStickers
   = -- | Clears the list of recently used stickers 
   ClearRecentStickers
     { -- | Pass true to clear the list of stickers recently attached to photo or video files; pass false to clear the list of recently sent stickers
-      is_attached :: Bool
+      isAttached :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getFavoriteStickers
@@ -2260,9 +2260,9 @@ data SearchEmojis
     { -- | Text to search for 
       text :: T,
       -- | True, if only emojis, which exactly match text needs to be returned 
-      exact_match :: Bool,
+      exactMatch :: Bool,
       -- | List of possible IETF language tags of the user's input language; may be empty if unknown
-      input_language_codes :: [T]
+      inputLanguageCodes :: [T]
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getEmojiSuggestionsUrl
@@ -2270,7 +2270,7 @@ data GetEmojiSuggestionsUrl
   = -- | Returns an HTTP URL which can be used to automatically log in to the translation platform and suggest new emoji replacements. The URL will be valid for 30 seconds after generation 
   GetEmojiSuggestionsUrl
     { -- | Language code for which the emoji replacements will be suggested
-      language_code :: T
+      languageCode :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getSavedAnimations
@@ -2336,7 +2336,7 @@ data GetWebPageInstantView
     { -- | The web page URL 
       url :: T,
       -- | If true, the full instant view for the web page will be returned
-      force_full :: Bool
+      forceFull :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function setProfilePhoto
@@ -2352,7 +2352,7 @@ data DeleteProfilePhoto
   = -- | Deletes a profile photo. If something changes, updateUser will be sent 
   DeleteProfilePhoto
     { -- | Identifier of the profile photo to delete
-      profile_photo_id :: I64
+      profilePhotoId :: I64
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function setName
@@ -2360,9 +2360,9 @@ data SetName
   = -- | Changes the first and last name of the current user. If something changes, updateUser will be sent 
   SetName
     { -- | The new value of the first name for the user; 1-64 characters 
-      first_name :: T,
+      firstName :: T,
       -- | The new value of the optional last name for the user; 0-64 characters
-      last_name :: T
+      lastName :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function setBio
@@ -2394,7 +2394,7 @@ data ChangePhoneNumber
   = -- | Changes the phone number of the user and sends an authentication code to the user's new phone number. On success, returns information about the sent code
   ChangePhoneNumber
     { -- | The new phone number of the user in international format 
-      phone_number :: T,
+      phoneNumber :: T,
       -- | Settings for the authentication of the user's phone number
       settings :: PhoneNumberAuthenticationSettings
     }
@@ -2434,7 +2434,7 @@ data TerminateSession
   = -- | Terminates a session of the current user 
   TerminateSession
     { -- | Session identifier
-      session_id :: I64
+      sessionId :: I64
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function terminateAllOtherSessions
@@ -2456,7 +2456,7 @@ data DisconnectWebsite
   = -- | Disconnects website from the current user's Telegram account 
   DisconnectWebsite
     { -- | Website identifier
-      website_id :: I64
+      websiteId :: I64
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function disconnectAllWebsites
@@ -2471,7 +2471,7 @@ data SetSupergroupUsername
   = -- | Changes the username of a supergroup or channel, requires owner privileges in the supergroup or channel 
   SetSupergroupUsername
     { -- | Identifier of the supergroup or channel 
-      supergroup_id :: I32,
+      supergroupId :: I32,
       -- | New value of the username. Use an empty string to remove the username
       username :: T
     }
@@ -2481,9 +2481,9 @@ data SetSupergroupStickerSet
   = -- | Changes the sticker set of a supergroup; requires can_change_info rights 
   SetSupergroupStickerSet
     { -- | Identifier of the supergroup 
-      supergroup_id :: I32,
+      supergroupId :: I32,
       -- | New value of the supergroup sticker set identifier. Use 0 to remove the supergroup sticker set
-      sticker_set_id :: I64
+      stickerSetId :: I64
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function toggleSupergroupSignMessages
@@ -2491,9 +2491,9 @@ data ToggleSupergroupSignMessages
   = -- | Toggles sender signatures messages sent in a channel; requires can_change_info rights 
   ToggleSupergroupSignMessages
     { -- | Identifier of the channel 
-      supergroup_id :: I32,
+      supergroupId :: I32,
       -- | New value of sign_messages
-      sign_messages :: Bool
+      signMessages :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function toggleSupergroupIsAllHistoryAvailable
@@ -2501,9 +2501,9 @@ data ToggleSupergroupIsAllHistoryAvailable
   = -- | Toggles whether the message history of a supergroup is available to new members; requires can_change_info rights 
   ToggleSupergroupIsAllHistoryAvailable
     { -- | The identifier of the supergroup 
-      supergroup_id :: I32,
+      supergroupId :: I32,
       -- | The new value of is_all_history_available
-      is_all_history_available :: Bool
+      isAllHistoryAvailable :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function reportSupergroupSpam
@@ -2511,11 +2511,11 @@ data ReportSupergroupSpam
   = -- | Reports some messages from a user in a supergroup as spam; requires administrator rights in the supergroup 
   ReportSupergroupSpam
     { -- | Supergroup identifier 
-      supergroup_id :: I32,
+      supergroupId :: I32,
       -- | User identifier 
-      user_id :: I32,
+      userId :: I32,
       -- | Identifiers of messages sent in the supergroup by the user. This list must be non-empty
-      message_ids :: [I53]
+      messageIds :: [I53]
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getSupergroupMembers
@@ -2523,7 +2523,7 @@ data GetSupergroupMembers
   = -- | Returns information about members or banned users in a supergroup or channel. Can be used only if SupergroupFullInfo.can_get_members == true; additionally, administrator privileges may be required for some filters 
   GetSupergroupMembers
     { -- | Identifier of the supergroup or channel
-      supergroup_id :: I32,
+      supergroupId :: I32,
       -- | The type of users to return. By default, supergroupMembersRecent 
       filter :: SupergroupMembersFilter,
       -- | Number of users to skip 
@@ -2537,7 +2537,7 @@ data DeleteSupergroup
   = -- | Deletes a supergroup or channel along with all messages in the corresponding chat. This will release the supergroup or channel username and remove all members; requires owner privileges in the supergroup or channel. Chats with more than 1000 members can't be deleted using this method 
   DeleteSupergroup
     { -- | Identifier of the supergroup or channel
-      supergroup_id :: I32
+      supergroupId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function closeSecretChat
@@ -2545,7 +2545,7 @@ data CloseSecretChat
   = -- | Closes a secret chat, effectively transferring its state to secretChatStateClosed 
   CloseSecretChat
     { -- | Secret chat identifier
-      secret_chat_id :: I32
+      secretChatId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getChatEventLog
@@ -2553,17 +2553,17 @@ data GetChatEventLog
   = -- | Returns a list of service actions taken by chat members and administrators in the last 48 hours. Available only for supergroups and channels. Requires administrator rights. Returns results in reverse chronological order (i. e., in order of decreasing event_id)
   GetChatEventLog
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Search query by which to filter events 
       query :: T,
       -- | Identifier of an event from which to return results. Use 0 to get results from the latest events 
-      from_event_id :: I64,
+      fromEventId :: I64,
       -- | The maximum number of events to return; up to 100
       limit :: I32,
       -- | The types of events to return. By default, all types will be returned 
       filters :: ChatEventLogFilters,
       -- | User identifiers by which to filter events. By default, events relating to all users will be returned
-      user_ids :: [I32]
+      userIds :: [I32]
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getPaymentForm
@@ -2571,9 +2571,9 @@ data GetPaymentForm
   = -- | Returns an invoice payment form. This method should be called when the user presses inlineKeyboardButtonBuy 
   GetPaymentForm
     { -- | Chat identifier of the Invoice message 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Message identifier
-      message_id :: I53
+      messageId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function validateOrderInfo
@@ -2581,13 +2581,13 @@ data ValidateOrderInfo
   = -- | Validates the order information provided by a user and returns the available shipping options for a flexible invoice 
   ValidateOrderInfo
     { -- | Chat identifier of the Invoice message 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Message identifier 
-      message_id :: I53,
+      messageId :: I53,
       -- | The order information, provided by the user 
-      order_info :: OrderInfo,
+      orderInfo :: OrderInfo,
       -- | True, if the order information can be saved
-      allow_save :: Bool
+      allowSave :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function sendPaymentForm
@@ -2595,13 +2595,13 @@ data SendPaymentForm
   = -- | Sends a filled-out payment form to the bot for final verification 
   SendPaymentForm
     { -- | Chat identifier of the Invoice message 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Message identifier 
-      message_id :: I53,
+      messageId :: I53,
       -- | Identifier returned by ValidateOrderInfo, or an empty string 
-      order_info_id :: T,
+      orderInfoId :: T,
       -- | Identifier of a chosen shipping option, if applicable
-      shipping_option_id :: T,
+      shippingOptionId :: T,
       -- | The credentials chosen by user for payment
       credentials :: InputCredentials
     }
@@ -2611,9 +2611,9 @@ data GetPaymentReceipt
   = -- | Returns information about a successful payment 
   GetPaymentReceipt
     { -- | Chat identifier of the PaymentSuccessful message 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Message identifier
-      message_id :: I53
+      messageId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getSavedOrderInfo
@@ -2649,7 +2649,7 @@ data GetBackgrounds
   = -- | Returns backgrounds installed by the user 
   GetBackgrounds
     { -- | True, if the backgrounds needs to be ordered for dark theme
-      for_dark_theme :: Bool
+      forDarkTheme :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getBackgroundUrl
@@ -2679,7 +2679,7 @@ data SetBackground
       -- | Background type; null for default background. The method will return error 404 if type is null
       type_ :: BackgroundType,
       -- | True, if the background is chosen for dark theme
-      for_dark_theme :: Bool
+      forDarkTheme :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function removeBackground
@@ -2687,7 +2687,7 @@ data RemoveBackground
   = -- | Removes background from the list of installed backgrounds 
   RemoveBackground
     { -- | The background identifier
-      background_id :: I64
+      backgroundId :: I64
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function resetBackgrounds
@@ -2702,7 +2702,7 @@ data GetLocalizationTargetInfo
   = -- | Returns information about the current localization target. This is an offline request if only_local is true. Can be called before authorization 
   GetLocalizationTargetInfo
     { -- | If true, returns only locally available information without sending network requests
-      only_local :: Bool
+      onlyLocal :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getLanguagePackInfo
@@ -2710,7 +2710,7 @@ data GetLanguagePackInfo
   = -- | Returns information about a language pack. Returned language pack identifier may be different from a provided one. Can be called before authorization 
   GetLanguagePackInfo
     { -- | Language pack identifier
-      language_pack_id :: T
+      languagePackId :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getLanguagePackStrings
@@ -2718,7 +2718,7 @@ data GetLanguagePackStrings
   = -- | Returns strings from a language pack in the current localization target by their keys. Can be called before authorization 
   GetLanguagePackStrings
     { -- | Language pack identifier of the strings to be returned 
-      language_pack_id :: T,
+      languagePackId :: T,
       -- | Language pack keys of the strings to be returned; leave empty to request all available strings
       keys :: [T]
     }
@@ -2728,7 +2728,7 @@ data SynchronizeLanguagePack
   = -- | Fetches the latest versions of all strings from a language pack in the current localization target from the server. This method doesn't need to be called explicitly for the current used/base language packs. Can be called before authorization 
   SynchronizeLanguagePack
     { -- | Language pack identifier
-      language_pack_id :: T
+      languagePackId :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function addCustomServerLanguagePack
@@ -2736,7 +2736,7 @@ data AddCustomServerLanguagePack
   = -- | Adds a custom server language pack to the list of installed language packs in current localization target. Can be called before authorization 
   AddCustomServerLanguagePack
     { -- | Identifier of a language pack to be added; may be different from a name that is used in an "https://t.me/setlanguage/" link
-      language_pack_id :: T
+      languagePackId :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function setCustomLanguagePack
@@ -2762,9 +2762,9 @@ data SetCustomLanguagePackString
   = -- | Adds, edits or deletes a string in a custom local language pack. Can be called before authorization 
   SetCustomLanguagePackString
     { -- | Identifier of a previously added custom local language pack in the current localization target 
-      language_pack_id :: T,
+      languagePackId :: T,
       -- | New language pack string
-      new_string :: LanguagePackString
+      newString :: LanguagePackString
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function deleteLanguagePack
@@ -2772,7 +2772,7 @@ data DeleteLanguagePack
   = -- | Deletes all information about a language pack in the current localization target. The language pack which is currently in use (including base language pack) or is being synchronized can't be deleted. Can be called before authorization 
   DeleteLanguagePack
     { -- | Identifier of the language pack to delete
-      language_pack_id :: T
+      languagePackId :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function registerDevice
@@ -2780,9 +2780,9 @@ data RegisterDevice
   = -- | Registers the currently used device for receiving push notifications. Returns a globally unique identifier of the push notification subscription 
   RegisterDevice
     { -- | Device token 
-      device_token :: DeviceToken,
+      deviceToken :: DeviceToken,
       -- | List of user identifiers of other users currently using the client
-      other_user_ids :: [I32]
+      otherUserIds :: [I32]
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function processPushNotification
@@ -2873,7 +2873,7 @@ data RemoveChatActionBar
   = -- | Removes a chat action bar without any other action 
   RemoveChatActionBar
     { -- | Chat identifier
-      chat_id :: I53
+      chatId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function reportChat
@@ -2881,11 +2881,11 @@ data ReportChat
   = -- | Reports a chat to the Telegram moderators. A chat can be reported only from the chat action bar, or if this is a private chats with a bot, a private chat with a user sharing their location, a supergroup, or a channel, since other chats can't be checked by moderators 
   ReportChat
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | The reason for reporting the chat 
       reason :: ChatReportReason,
       -- | Identifiers of reported messages, if any
-      message_ids :: [I53]
+      messageIds :: [I53]
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getChatStatisticsUrl
@@ -2893,11 +2893,11 @@ data GetChatStatisticsUrl
   = -- | Returns an HTTP URL with the chat statistics. Currently this method of getting the statistics is disabled and can be deleted in the future 
   GetChatStatisticsUrl
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Parameters from "tg://statsrefresh?params=******" link 
       parameters :: T,
       -- | Pass true if a URL with the dark theme must be returned
-      is_dark :: Bool
+      isDark :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getChatStatistics
@@ -2905,9 +2905,9 @@ data GetChatStatistics
   = -- | Returns detailed statistics about a chat. Currently this method can be used only for channels. Requires administrator rights in the channel 
   GetChatStatistics
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Pass true if a dark theme is used by the app
-      is_dark :: Bool
+      isDark :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getChatStatisticsGraph
@@ -2915,7 +2915,7 @@ data GetChatStatisticsGraph
   = -- | Loads asynchronous or zoomed in chat statistics graph 
   GetChatStatisticsGraph
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | The token for graph loading 
       token :: T,
       -- | X-value for zoomed in graph or 0 otherwise
@@ -2927,7 +2927,7 @@ data GetStorageStatistics
   = -- | Returns storage usage statistics. Can be called before authorization 
   GetStorageStatistics
     { -- | The maximum number of chats with the largest storage usage for which separate statistics should be returned. All other chats will be grouped in entries with chat_id == 0. If the chat info database is not used, the chat_limit is ignored and is always set to 0
-      chat_limit :: I32
+      chatLimit :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getStorageStatisticsFast
@@ -2955,17 +2955,17 @@ data OptimizeStorage
       -- | Limit on the total count of files after deletion. Pass -1 to use the default limit
       count :: I32,
       -- | The amount of time after the creation of a file during which it can't be deleted, in seconds. Pass -1 to use the default value
-      immunity_delay :: I32,
+      immunityDelay :: I32,
       -- | If not empty, only files with the given type(s) are considered. By default, all types except thumbnails, profile photos, stickers and wallpapers are deleted
-      file_types :: [FileType],
+      fileTypes :: [FileType],
       -- | If not empty, only files from the given chats are considered. Use 0 as chat identifier to delete files not belonging to any chat (e.g., profile photos)
-      chat_ids :: [I53],
+      chatIds :: [I53],
       -- | If not empty, files from the given chats are excluded. Use 0 as chat identifier to exclude all files not belonging to any chat (e.g., profile photos)
-      exclude_chat_ids :: [I53],
+      excludeChatIds :: [I53],
       -- | Pass true if deleted file statistics needs to be returned instead of the whole storage usage statistics. Affects only returned statistics
-      return_deleted_file_statistics :: Bool,
+      returnDeletedFileStatistics :: Bool,
       -- | Same as in getStorageStatistics. Affects only returned statistics
-      chat_limit :: I32
+      chatLimit :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function setNetworkType
@@ -2980,7 +2980,7 @@ data GetNetworkStatistics
   = -- | Returns network data usage statistics. Can be called before authorization 
   GetNetworkStatistics
     { -- | If true, returns only data for the current library launch
-      only_current :: Bool
+      onlyCurrent :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function addNetworkStatistics
@@ -3020,7 +3020,7 @@ data GetBankCardInfo
   = -- | Returns information about a bank card 
   GetBankCardInfo
     { -- | The bank card number
-      bank_card_number :: T
+      bankCardNumber :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getPassportElement
@@ -3064,7 +3064,7 @@ data SetPassportElementErrors
   = -- | Informs the user that some of the elements in their Telegram Passport contain errors; for bots only. The user will not be able to resend the elements, until the errors are fixed 
   SetPassportElementErrors
     { -- | User identifier 
-      user_id :: I32,
+      userId :: I32,
       -- | The errors
       errors :: [InputPassportElementError]
     }
@@ -3074,7 +3074,7 @@ data GetPreferredCountryLanguage
   = -- | Returns an IETF language tag of the language preferred in the country, which should be used to fill native fields in Telegram Passport personal details. Returns a 404 error if unknown 
   GetPreferredCountryLanguage
     { -- | A two-letter ISO 3166-1 alpha-2 country code
-      country_code :: T
+      countryCode :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function sendPhoneNumberVerificationCode
@@ -3082,7 +3082,7 @@ data SendPhoneNumberVerificationCode
   = -- | Sends a code to verify a phone number to be added to a user's Telegram Passport
   SendPhoneNumberVerificationCode
     { -- | The phone number of the user, in international format 
-      phone_number :: T,
+      phoneNumber :: T,
       -- | Settings for the authentication of the user's phone number
       settings :: PhoneNumberAuthenticationSettings
     }
@@ -3107,7 +3107,7 @@ data SendEmailAddressVerificationCode
   = -- | Sends a code to verify an email address to be added to a user's Telegram Passport 
   SendEmailAddressVerificationCode
     { -- | Email address
-      email_address :: T
+      emailAddress :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function resendEmailAddressVerificationCode
@@ -3130,11 +3130,11 @@ data GetPassportAuthorizationForm
   = -- | Returns a Telegram Passport authorization form for sharing data with a service 
   GetPassportAuthorizationForm
     { -- | User identifier of the service's bot 
-      bot_user_id :: I32,
+      botUserId :: I32,
       -- | Telegram Passport element types requested by the service 
       scope :: T,
       -- | Service's public_key 
-      public_key :: T,
+      publicKey :: T,
       -- | Authorization form nonce provided by the service
       nonce :: T
     }
@@ -3144,7 +3144,7 @@ data GetPassportAuthorizationFormAvailableElements
   = -- | Returns already available Telegram Passport elements suitable for completing a Telegram Passport authorization form. Result can be received only once for each authorization form 
   GetPassportAuthorizationFormAvailableElements
     { -- | Authorization form identifier 
-      autorization_form_id :: I32,
+      autorizationFormId :: I32,
       -- | Password of the current user
       password :: T
     }
@@ -3154,7 +3154,7 @@ data SendPassportAuthorizationForm
   = -- | Sends a Telegram Passport authorization form, effectively sharing data with the service. This method must be called after getPassportAuthorizationFormAvailableElements if some previously available elements need to be used
   SendPassportAuthorizationForm
     { -- | Authorization form identifier 
-      autorization_form_id :: I32,
+      autorizationFormId :: I32,
       -- | Types of Telegram Passport elements chosen by user to complete the authorization form
       types :: [PassportElementType]
     }
@@ -3166,7 +3166,7 @@ data SendPhoneNumberConfirmationCode
     { -- | Value of the "hash" parameter from the link
       hash :: T,
       -- | Value of the "phone" parameter from the link 
-      phone_number :: T,
+      phoneNumber :: T,
       -- | Settings for the authentication of the user's phone number
       settings :: PhoneNumberAuthenticationSettings
     }
@@ -3191,9 +3191,9 @@ data SetBotUpdatesStatus
   = -- | Informs the server about the number of pending bot updates if they haven't been processed for a long time; for bots only 
   SetBotUpdatesStatus
     { -- | The number of pending updates 
-      pending_update_count :: I32,
+      pendingUpdateCount :: I32,
       -- | The last error message
-      error_message :: T
+      errorMessage :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function uploadStickerFile
@@ -3201,9 +3201,9 @@ data UploadStickerFile
   = -- | Uploads a PNG image with a sticker; for bots only; returns the uploaded file
   UploadStickerFile
     { -- | Sticker file owner 
-      user_id :: I32,
+      userId :: I32,
       -- | PNG image with the sticker; must be up to 512 KB in size and fit in 512x512 square
-      png_sticker :: InputFile
+      pngSticker :: InputFile
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function createNewStickerSet
@@ -3211,13 +3211,13 @@ data CreateNewStickerSet
   = -- | Creates a new sticker set; for bots only. Returns the newly created sticker set
   CreateNewStickerSet
     { -- | Sticker set owner
-      user_id :: I32,
+      userId :: I32,
       -- | Sticker set title; 1-64 characters
       title :: T,
       -- | Sticker set name. Can contain only English letters, digits and underscores. Must end with *"_by_<bot username>"* (*<bot_username>* is case insensitive); 1-64 characters
       name :: T,
       -- | True, if stickers are masks. Animated stickers can't be masks
-      is_masks :: Bool,
+      isMasks :: Bool,
       -- | List of stickers to be added to the set; must be non-empty. All stickers must be of the same type
       stickers :: [InputSticker]
     }
@@ -3227,7 +3227,7 @@ data AddStickerToSet
   = -- | Adds a new sticker to a set; for bots only. Returns the sticker set
   AddStickerToSet
     { -- | Sticker set owner 
-      user_id :: I32,
+      userId :: I32,
       -- | Sticker set name 
       name :: T,
       -- | Sticker to add to the set
@@ -3239,7 +3239,7 @@ data SetStickerSetThumbnail
   = -- | Sets a sticker set thumbnail; for bots only. Returns the sticker set
   SetStickerSetThumbnail
     { -- | Sticker set owner 
-      user_id :: I32,
+      userId :: I32,
       -- | Sticker set name
       name :: T,
       -- | Thumbnail to set in PNG or TGS format. Animated thumbnail must be set for animated sticker sets and only for them. You can use a zero InputFileId to delete the thumbnail
@@ -3279,7 +3279,7 @@ data GetMapThumbnailFile
       -- | Map scale; 1-3 
       scale :: I32,
       -- | Identifier of a chat, in which the thumbnail will be shown. Use 0 if unknown
-      chat_id :: I53
+      chatId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function acceptTermsOfService
@@ -3287,7 +3287,7 @@ data AcceptTermsOfService
   = -- | Accepts Telegram terms of services 
   AcceptTermsOfService
     { -- | Terms of service identifier
-      terms_of_service_id :: T
+      termsOfServiceId :: T
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function sendCustomRequest
@@ -3305,7 +3305,7 @@ data AnswerCustomQuery
   = -- | Answers a custom query; for bots only 
   AnswerCustomQuery
     { -- | Identifier of a custom query 
-      custom_query_id :: I64,
+      customQueryId :: I64,
       -- | JSON-serialized answer to the query
       data_ :: T
     }
@@ -3354,7 +3354,7 @@ data SaveApplicationLogEvent
     { -- | Event type 
       type_ :: T,
       -- | Optional chat identifier, associated with the event 
-      chat_id :: I53,
+      chatId :: I53,
       -- | The log event data
       data_ :: JsonValue
     }
@@ -3378,7 +3378,7 @@ data EditProxy
   = -- | Edits an existing proxy server for network requests. Can be called before authorization 
   EditProxy
     { -- | Proxy identifier 
-      proxy_id :: I32,
+      proxyId :: I32,
       -- | Proxy server IP address 
       server :: T,
       -- | Proxy server port 
@@ -3394,7 +3394,7 @@ data EnableProxy
   = -- | Enables a proxy. Only one proxy can be enabled at a time. Can be called before authorization 
   EnableProxy
     { -- | Proxy identifier
-      proxy_id :: I32
+      proxyId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function disableProxy
@@ -3409,7 +3409,7 @@ data RemoveProxy
   = -- | Removes a proxy server. Can be called before authorization 
   RemoveProxy
     { -- | Proxy identifier
-      proxy_id :: I32
+      proxyId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getProxies
@@ -3424,7 +3424,7 @@ data GetProxyLink
   = -- | Returns an HTTPS link, which can be used to add a proxy. Available only for SOCKS5 and MTProto proxies. Can be called before authorization 
   GetProxyLink
     { -- | Proxy identifier
-      proxy_id :: I32
+      proxyId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function pingProxy
@@ -3432,7 +3432,7 @@ data PingProxy
   = -- | Computes time needed to receive a response from a Telegram server through a proxy. Can be called before authorization 
   PingProxy
     { -- | Proxy identifier. Use 0 to ping a Telegram server without a proxy
-      proxy_id :: I32
+      proxyId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function setLogStream
@@ -3440,7 +3440,7 @@ data SetLogStream
   = -- | Sets new log stream for internal logging of TDLib. This is an offline method. Can be called before authorization. Can be called synchronously 
   SetLogStream
     { -- | New log stream
-      log_stream :: LogStream
+      logStream :: LogStream
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getLogStream
@@ -3455,7 +3455,7 @@ data SetLogVerbosityLevel
   = -- | Sets the verbosity level of the internal logging of TDLib. This is an offline method. Can be called before authorization. Can be called synchronously
   SetLogVerbosityLevel
     { -- | New value of the verbosity level for logging. Value 0 corresponds to fatal errors, value 1 corresponds to errors, value 2 corresponds to warnings and debug warnings, value 3 corresponds to informational, value 4 corresponds to debug, value 5 corresponds to verbose debug, value greater than 5 and up to 1023 can be used to enable even more logging
-      new_verbosity_level :: I32
+      newVerbosityLevel :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getLogVerbosityLevel
@@ -3479,7 +3479,7 @@ data SetLogTagVerbosityLevel
     { -- | Logging tag to change verbosity level 
       tag :: T,
       -- | New verbosity level; 1-1024
-      new_verbosity_level :: I32
+      newVerbosityLevel :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getLogTagVerbosityLevel
@@ -3495,7 +3495,7 @@ data AddLogMessage
   = -- | Adds a message to TDLib internal log. This is an offline method. Can be called before authorization. Can be called synchronously
   AddLogMessage
     { -- | The minimum verbosity level needed for the message to be logged, 0-1023 
-      verbosity_level :: I32,
+      verbosityLevel :: I32,
       -- | Text of a message to log
       text :: T
     }
@@ -3581,7 +3581,7 @@ data TestProxy
       -- | Proxy type
       type_ :: ProxyType,
       -- | Identifier of a datacenter, with which to test connection 
-      dc_id :: I32,
+      dcId :: I32,
       -- | The maximum overall timeout for the request
       timeout :: Double
     }

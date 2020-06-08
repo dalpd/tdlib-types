@@ -28,7 +28,7 @@ dependencies:
   - aeson >= 1.4.3 && <= 1.6
   - polysemy ^>= 1.3.0.0
   - polysemy-plugin ^>= 0.2.5.0
-  - tdlib-gen ^>= 0.2.0
+  - tdlib-gen ^>= 0.4.0
   - language-tl ^>= 0.1.0
 
 ghc-options:

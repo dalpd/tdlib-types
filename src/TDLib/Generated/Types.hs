@@ -37,35 +37,35 @@ data TdlibParameters
   = -- | Contains parameters for TDLib initialization
   TdlibParameters
     { -- | If set to true, the Telegram test environment will be used instead of the production environment
-      use_test_dc :: Bool,
+      useTestDc :: Bool,
       -- | The path to the directory for the persistent database; if empty, the current working directory will be used
-      database_directory :: T,
+      databaseDirectory :: T,
       -- | The path to the directory for storing files; if empty, database_directory will be used
-      files_directory :: T,
+      filesDirectory :: T,
       -- | If set to true, information about downloaded and uploaded files will be saved between application restarts
-      use_file_database :: Bool,
+      useFileDatabase :: Bool,
       -- | If set to true, the library will maintain a cache of users, basic groups, supergroups, channels and secret chats. Implies use_file_database
-      use_chat_info_database :: Bool,
+      useChatInfoDatabase :: Bool,
       -- | If set to true, the library will maintain a cache of chats and messages. Implies use_chat_info_database
-      use_message_database :: Bool,
+      useMessageDatabase :: Bool,
       -- | If set to true, support for secret chats will be enabled
-      use_secret_chats :: Bool,
+      useSecretChats :: Bool,
       -- | Application identifier for Telegram API access, which can be obtained at https://my.telegram.org
-      api_id :: I32,
+      apiId :: I32,
       -- | Application identifier hash for Telegram API access, which can be obtained at https://my.telegram.org
-      api_hash :: T,
+      apiHash :: T,
       -- | IETF language tag of the user's operating system language; must be non-empty
-      system_language_code :: T,
+      systemLanguageCode :: T,
       -- | Model of the device the application is being run on; must be non-empty
-      device_model :: T,
+      deviceModel :: T,
       -- | Version of the operating system the application is being run on; must be non-empty
-      system_version :: T,
+      systemVersion :: T,
       -- | Application version; must be non-empty
-      application_version :: T,
+      applicationVersion :: T,
       -- | If set to true, old files will automatically be deleted
-      enable_storage_optimizer :: Bool,
+      enableStorageOptimizer :: Bool,
       -- | If set to true, original file names will be ignored. Otherwise, downloaded files will be saved under names as close as possible to the original name
-      ignore_file_names :: Bool
+      ignoreFileNames :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Provides information about the method by which an authentication code is delivered to the user
@@ -95,11 +95,11 @@ data AuthenticationCodeInfo
   = -- | Information about the authentication code that was sent 
   AuthenticationCodeInfo
     { -- | A phone number that is being authenticated 
-      phone_number :: T,
+      phoneNumber :: T,
       -- | Describes the way the code was sent to the user 
       type_ :: AuthenticationCodeType,
       -- | Describes the way the next code will be sent to the user; may be null 
-      next_type :: AuthenticationCodeType,
+      nextType :: (Maybe) (AuthenticationCodeType),
       -- | Timeout before the code should be re-sent, in seconds
       timeout :: I32
     }
@@ -108,7 +108,7 @@ data EmailAddressAuthenticationCodeInfo
   = -- | Information about the email address authentication code that was sent 
   EmailAddressAuthenticationCodeInfo
     { -- | Pattern of the email address to which an authentication code was sent 
-      email_address_pattern :: T,
+      emailAddressPattern :: T,
       -- | Length of the code; 0 if unknown
       length :: I32
     }
@@ -146,9 +146,9 @@ data TermsOfService
     { -- | Text of the terms of service 
       text :: FormattedText,
       -- | The minimum age of a user to be able to accept the terms; 0 if any 
-      min_user_age :: I32,
+      minUserAge :: I32,
       -- | True, if a blocking popup with terms of service must be shown to the user
-      show_popup :: Bool
+      showPopup :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Represents the current authorization state of the client
@@ -160,7 +160,7 @@ data AuthorizationState
   | -- | TDLib needs an encryption key to decrypt the local database 
   AuthorizationStateWaitEncryptionKey
     { -- | True, if the database is currently encrypted
-      is_encrypted :: Bool
+      isEncrypted :: Bool
     }
   | -- | TDLib needs the user's phone number to authorize. Call `setAuthenticationPhoneNumber` to provide the phone number, or use `requestQrCodeAuthentication`, or `checkAuthenticationBotToken` for other authentication options
   AuthorizationStateWaitPhoneNumber
@@ -169,7 +169,7 @@ data AuthorizationState
   | -- | TDLib needs the user's authentication code to authorize 
   AuthorizationStateWaitCode
     { -- | Information about the authorization code that was sent
-      code_info :: AuthenticationCodeInfo
+      codeInfo :: AuthenticationCodeInfo
     }
   | -- | The user needs to confirm authorization on another logged in device by scanning a QR code with the provided link 
   AuthorizationStateWaitOtherDeviceConfirmation
@@ -179,16 +179,16 @@ data AuthorizationState
   | -- | The user is unregistered and need to accept terms of service and enter their first name and last name to finish registration 
   AuthorizationStateWaitRegistration
     { -- | Telegram terms of service
-      terms_of_service :: TermsOfService
+      termsOfService :: TermsOfService
     }
   | -- | The user has been authorized, but needs to enter a password to start using the application 
   AuthorizationStateWaitPassword
     { -- | Hint for the password; may be empty 
-      password_hint :: T,
+      passwordHint :: T,
       -- | True, if a recovery email address has been set up
-      has_recovery_email_address :: Bool,
+      hasRecoveryEmailAddress :: Bool,
       -- | Pattern of the email address to which the recovery email was sent; empty until a recovery email has been sent
-      recovery_email_address_pattern :: T
+      recoveryEmailAddressPattern :: T
     }
   | -- | The user has been successfully authorized. TDLib is now ready to answer queries
   AuthorizationStateReady
@@ -211,31 +211,31 @@ data PasswordState
   = -- | Represents the current state of 2-step verification 
   PasswordState
     { -- | True, if a 2-step verification password is set 
-      has_password :: Bool,
+      hasPassword :: Bool,
       -- | Hint for the password; may be empty
-      password_hint :: T,
+      passwordHint :: T,
       -- | True, if a recovery email is set 
-      has_recovery_email_address :: Bool,
+      hasRecoveryEmailAddress :: Bool,
       -- | True, if some Telegram Passport elements were saved
-      has_passport_data :: Bool,
+      hasPassportData :: Bool,
       -- | Information about the recovery email address to which the confirmation email was sent; may be null
-      recovery_email_address_code_info :: EmailAddressAuthenticationCodeInfo
+      recoveryEmailAddressCodeInfo :: (Maybe) (EmailAddressAuthenticationCodeInfo)
     }
   deriving (Show, Eq, Generic)
 data RecoveryEmailAddress
   = -- | Contains information about the current recovery email address 
   RecoveryEmailAddress
     { -- | Recovery email address
-      recovery_email_address :: T
+      recoveryEmailAddress :: T
     }
   deriving (Show, Eq, Generic)
 data TemporaryPasswordState
   = -- | Returns information about the availability of a temporary password, which can be used for payments 
   TemporaryPasswordState
     { -- | True, if a temporary password is available 
-      has_password :: Bool,
+      hasPassword :: Bool,
       -- | Time left before the temporary password expires, in seconds
-      valid_for :: I32
+      validFor :: I32
     }
   deriving (Show, Eq, Generic)
 data LocalFile
@@ -244,19 +244,19 @@ data LocalFile
     { -- | Local path to the locally available file part; may be empty
       path :: T,
       -- | True, if it is possible to try to download or generate the file
-      can_be_downloaded :: Bool,
+      canBeDownloaded :: Bool,
       -- | True, if the file can be deleted
-      can_be_deleted :: Bool,
+      canBeDeleted :: Bool,
       -- | True, if the file is currently being downloaded (or a local copy is being generated by some other means)
-      is_downloading_active :: Bool,
+      isDownloadingActive :: Bool,
       -- | True, if the local copy is fully available
-      is_downloading_completed :: Bool,
+      isDownloadingCompleted :: Bool,
       -- | Download will be started from this offset. downloaded_prefix_size is calculated from this offset
-      download_offset :: I32,
+      downloadOffset :: I32,
       -- | If is_downloading_completed is false, then only some prefix of the file starting from download_offset is ready to be read. downloaded_prefix_size is the size of that prefix
-      downloaded_prefix_size :: I32,
+      downloadedPrefixSize :: I32,
       -- | Total downloaded file bytes. Should be used only for calculating download progress. The actual file size may be bigger, and some parts of it may contain garbage
-      downloaded_size :: I32
+      downloadedSize :: I32
     }
   deriving (Show, Eq, Generic)
 data RemoteFile
@@ -265,13 +265,13 @@ data RemoteFile
     { -- | Remote file identifier; may be empty. Can be used by the current user across application restarts or even from other devices. Uniquely identifies a file, but a file can have a lot of different valid identifiers.
       id :: T,
       -- | Unique file identifier; may be empty if unknown. The unique file identifier which is the same for the same file even for different users and is persistent over time
-      unique_id :: T,
+      uniqueId :: T,
       -- | True, if the file is currently being uploaded (or a remote copy is being generated by some other means)
-      is_uploading_active :: Bool,
+      isUploadingActive :: Bool,
       -- | True, if a remote copy is fully available
-      is_uploading_completed :: Bool,
+      isUploadingCompleted :: Bool,
       -- | Size of the remote available part of the file; 0 if unknown
-      uploaded_size :: I32
+      uploadedSize :: I32
     }
   deriving (Show, Eq, Generic)
 data File
@@ -282,7 +282,7 @@ data File
       -- | File size; 0 if unknown
       size :: I32,
       -- | Expected file size in case the exact file size is unknown, but an approximate size is known. Can be used to show download/upload progress
-      expected_size :: I32,
+      expectedSize :: I32,
       -- | Information about the local copy of the file
       local :: LocalFile,
       -- | Information about the remote copy of the file
@@ -309,11 +309,11 @@ data InputFile
   | -- | A file generated by the client 
   InputFileGenerated
     { -- | Local path to a file from which the file is generated; may be empty if there is no such file
-      original_path :: T,
+      originalPath :: T,
       -- | String specifying the conversion applied to the original file; should be persistent across application restarts. Conversions beginning with '#' are reserved for internal TDLib usage
       conversion :: T,
       -- | Expected size of the generated file; 0 if unknown
-      expected_size :: I32
+      expectedSize :: I32
     }
   deriving (Show, Eq, Generic)
 data PhotoSize
@@ -365,9 +365,9 @@ data MaskPosition
     { -- | Part of the face, relative to which the mask should be placed
       point :: MaskPoint,
       -- | Shift by X-axis measured in widths of the mask scaled to the face size, from left to right. (For example, -1.0 will place the mask just to the left of the default mask position)
-      x_shift :: Double,
+      xShift :: Double,
       -- | Shift by Y-axis measured in heights of the mask scaled to the face size, from top to bottom. (For example, 1.0 will place the mask just below the default mask position)
-      y_shift :: Double,
+      yShift :: Double,
       -- | Mask scaling coefficient. (For example, 2.0 means a doubled size)
       scale :: Double
     }
@@ -378,13 +378,13 @@ data PollOption
     { -- | Option text, 1-100 characters 
       text :: T,
       -- | Number of voters for this option, available only for closed or voted polls 
-      voter_count :: I32,
+      voterCount :: I32,
       -- | The percentage of votes for this option, 0-100
-      vote_percentage :: I32,
+      votePercentage :: I32,
       -- | True, if the option was chosen by the user 
-      is_chosen :: Bool,
+      isChosen :: Bool,
       -- | True, if the option is being chosen by a pending setPollAnswer request
-      is_being_chosen :: Bool
+      isBeingChosen :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Describes the type of a poll
@@ -392,12 +392,12 @@ data PollType
   = -- | A regular poll 
   PollTypeRegular
     { -- | True, if multiple answer options can be chosen simultaneously
-      allow_multiple_answers :: Bool
+      allowMultipleAnswers :: Bool
     }
   | -- | A poll in quiz mode, which has exactly one correct answer option and can be answered only once
   PollTypeQuiz
     { -- | 0-based identifier of the correct answer option; -1 for a yet unanswered poll
-      correct_option_id :: I32,
+      correctOptionId :: I32,
       -- | Text that is shown when the user chooses an incorrect answer or taps on the lamp icon, 0-200 characters with at most 2 line feeds; empty for a yet unanswered poll
       explanation :: FormattedText
     }
@@ -412,13 +412,13 @@ data Animation
       -- | Height of the animation
       height :: I32,
       -- | Original name of the file; as defined by the sender 
-      file_name :: T,
+      fileName :: T,
       -- | MIME type of the file, usually "image/gif" or "video/mp4"
-      mime_type :: T,
+      mimeType :: T,
       -- | Animation minithumbnail; may be null 
-      minithumbnail :: Minithumbnail,
+      minithumbnail :: (Maybe) (Minithumbnail),
       -- | Animation thumbnail; may be null 
-      thumbnail :: PhotoSize,
+      thumbnail :: (Maybe) (PhotoSize),
       -- | File containing the animation
       animation :: File
     }
@@ -433,13 +433,13 @@ data Audio
       -- | Performer of the audio; as defined by the sender
       performer :: T,
       -- | Original name of the file; as defined by the sender 
-      file_name :: T,
+      fileName :: T,
       -- | The MIME type of the file; as defined by the sender 
-      mime_type :: T,
+      mimeType :: T,
       -- | The minithumbnail of the album cover; may be null 
-      album_cover_minithumbnail :: Minithumbnail,
+      albumCoverMinithumbnail :: (Maybe) (Minithumbnail),
       -- | The thumbnail of the album cover; as defined by the sender. The full size thumbnail should be extracted from the downloaded file; may be null 
-      album_cover_thumbnail :: PhotoSize,
+      albumCoverThumbnail :: (Maybe) (PhotoSize),
       -- | File containing the audio
       audio :: File
     }
@@ -448,13 +448,13 @@ data Document
   = -- | Describes a document of any type 
   Document
     { -- | Original name of the file; as defined by the sender 
-      file_name :: T,
+      fileName :: T,
       -- | MIME type of the file; as defined by the sender
-      mime_type :: T,
+      mimeType :: T,
       -- | Document minithumbnail; may be null 
-      minithumbnail :: Minithumbnail,
+      minithumbnail :: (Maybe) (Minithumbnail),
       -- | Document thumbnail in JPEG or PNG format (PNG will be used only for background patterns); as defined by the sender; may be null 
-      thumbnail :: PhotoSize,
+      thumbnail :: (Maybe) (PhotoSize),
       -- | File containing the document
       document :: File
     }
@@ -463,9 +463,9 @@ data Photo
   = -- | Describes a photo 
   Photo
     { -- | True, if stickers were added to the photo 
-      has_stickers :: Bool,
+      hasStickers :: Bool,
       -- | Photo minithumbnail; may be null 
-      minithumbnail :: Minithumbnail,
+      minithumbnail :: (Maybe) (Minithumbnail),
       -- | Available variants of the photo, in different sizes
       sizes :: [PhotoSize]
     }
@@ -474,7 +474,7 @@ data Sticker
   = -- | Describes a sticker 
   Sticker
     { -- | The identifier of the sticker set to which the sticker belongs; 0 if none 
-      set_id :: I64,
+      setId :: I64,
       -- | Sticker width; as defined by the sender 
       width :: I32,
       -- | Sticker height; as defined by the sender
@@ -482,13 +482,13 @@ data Sticker
       -- | Emoji corresponding to the sticker 
       emoji :: T,
       -- | True, if the sticker is an animated sticker in TGS format 
-      is_animated :: Bool,
+      isAnimated :: Bool,
       -- | True, if the sticker is a mask 
-      is_mask :: Bool,
+      isMask :: Bool,
       -- | Position where the mask should be placed; may be null 
-      mask_position :: MaskPosition,
+      maskPosition :: (Maybe) (MaskPosition),
       -- | Sticker thumbnail in WEBP or JPEG format; may be null 
-      thumbnail :: PhotoSize,
+      thumbnail :: (Maybe) (PhotoSize),
       -- | File containing the sticker
       sticker :: File
     }
@@ -503,17 +503,17 @@ data Video
       -- | Video height; as defined by the sender
       height :: I32,
       -- | Original name of the file; as defined by the sender 
-      file_name :: T,
+      fileName :: T,
       -- | MIME type of the file; as defined by the sender 
-      mime_type :: T,
+      mimeType :: T,
       -- | True, if stickers were added to the video
-      has_stickers :: Bool,
+      hasStickers :: Bool,
       -- | True, if the video should be tried to be streamed 
-      supports_streaming :: Bool,
+      supportsStreaming :: Bool,
       -- | Video minithumbnail; may be null 
-      minithumbnail :: Minithumbnail,
+      minithumbnail :: (Maybe) (Minithumbnail),
       -- | Video thumbnail; as defined by the sender; may be null 
-      thumbnail :: PhotoSize,
+      thumbnail :: (Maybe) (PhotoSize),
       -- | File containing the video
       video :: File
     }
@@ -526,9 +526,9 @@ data VideoNote
       -- | Video width and height; as defined by the sender 
       length :: I32,
       -- | Video minithumbnail; may be null 
-      minithumbnail :: Minithumbnail,
+      minithumbnail :: (Maybe) (Minithumbnail),
       -- | Video thumbnail; as defined by the sender; may be null 
-      thumbnail :: PhotoSize,
+      thumbnail :: (Maybe) (PhotoSize),
       -- | File containing the video
       video :: File
     }
@@ -541,7 +541,7 @@ data VoiceNote
       -- | A waveform representation of the voice note in 5-bit format 
       waveform :: ByteString64,
       -- | MIME type of the file; as defined by the sender 
-      mime_type :: T,
+      mimeType :: T,
       -- | File containing the voice note
       voice :: File
     }
@@ -550,15 +550,15 @@ data Contact
   = -- | Describes a user contact 
   Contact
     { -- | Phone number of the user 
-      phone_number :: T,
+      phoneNumber :: T,
       -- | First name of the user; 1-255 characters in length 
-      first_name :: T,
+      firstName :: T,
       -- | Last name of the user 
-      last_name :: T,
+      lastName :: T,
       -- | Additional data about the user in a form of vCard; 0-2048 bytes in length 
       vcard :: T,
       -- | Identifier of the user, if known; otherwise 0
-      user_id :: I32
+      userId :: I32
     }
   deriving (Show, Eq, Generic)
 data Location
@@ -593,7 +593,7 @@ data Game
     { -- | Game ID 
       id :: I64,
       -- | Game short name. To share a game use the URL https://t.me/{bot_username}?game={game_short_name} 
-      short_name :: T,
+      shortName :: T,
       -- | Game title 
       title :: T,
       -- | Game text, usually containing scoreboards for a game
@@ -603,7 +603,7 @@ data Game
       -- | Game photo 
       photo :: Photo,
       -- | Game animation; may be null
-      animation :: Animation
+      animation :: (Maybe) (Animation)
     }
   deriving (Show, Eq, Generic)
 data Poll
@@ -616,19 +616,19 @@ data Poll
       -- | List of poll answer options
       options :: [PollOption],
       -- | Total number of voters, participating in the poll 
-      total_voter_count :: I32,
+      totalVoterCount :: I32,
       -- | User identifiers of recent voters, if the poll is non-anonymous
-      recent_voter_user_ids :: [I32],
+      recentVoterUserIds :: [I32],
       -- | True, if the poll is anonymous 
-      is_anonymous :: Bool,
+      isAnonymous :: Bool,
       -- | Type of the poll
       type_ :: PollType,
       -- | Amount of time the poll will be active after creation, in seconds 
-      open_period :: I32,
+      openPeriod :: I32,
       -- | Point in time (Unix timestamp) when the poll will be automatically closed 
-      close_date :: I32,
+      closeDate :: I32,
       -- | True, if the poll is closed
-      is_closed :: Bool
+      isClosed :: Bool
     }
   deriving (Show, Eq, Generic)
 data ProfilePhoto
@@ -664,15 +664,15 @@ data UserType
   | -- | A bot (see https://core.telegram.org/bots) 
   UserTypeBot
     { -- | True, if the bot can be invited to basic group and supergroup chats
-      can_join_groups :: Bool,
+      canJoinGroups :: Bool,
       -- | True, if the bot can read all messages in basic group or supergroup chats and not just those addressed to the bot. In private and channel chats a bot can always read all messages
-      can_read_all_group_messages :: Bool,
+      canReadAllGroupMessages :: Bool,
       -- | True, if the bot supports inline queries 
-      is_inline :: Bool,
+      isInline :: Bool,
       -- | Placeholder for inline queries (displayed on the client input field) 
-      inline_query_placeholder :: T,
+      inlineQueryPlaceholder :: T,
       -- | True, if the location of the user should be sent with every inline query to this bot
-      need_location :: Bool
+      needLocation :: Bool
     }
   | -- | No information on the user besides the user identifier is available, yet this user has not been deleted. This object is extremely rare and must be handled like a deleted user. It is not possible to perform any actions on users of this type
   UserTypeUnknown
@@ -712,56 +712,56 @@ data User
     { -- | User identifier 
       id :: I32,
       -- | First name of the user 
-      first_name :: T,
+      firstName :: T,
       -- | Last name of the user 
-      last_name :: T,
+      lastName :: T,
       -- | Username of the user
       username :: T,
       -- | Phone number of the user 
-      phone_number :: T,
+      phoneNumber :: T,
       -- | Current online status of the user 
       status :: UserStatus,
       -- | Profile photo of the user; may be null
-      profile_photo :: ProfilePhoto,
+      profilePhoto :: (Maybe) (ProfilePhoto),
       -- | The user is a contact of the current user
-      is_contact :: Bool,
+      isContact :: Bool,
       -- | The user is a contact of the current user and the current user is a contact of the user
-      is_mutual_contact :: Bool,
+      isMutualContact :: Bool,
       -- | True, if the user is verified 
-      is_verified :: Bool,
+      isVerified :: Bool,
       -- | True, if the user is Telegram support account
-      is_support :: Bool,
+      isSupport :: Bool,
       -- | If non-empty, it contains a human-readable description of the reason why access to this user must be restricted
-      restriction_reason :: T,
+      restrictionReason :: T,
       -- | True, if many users reported this user as a scam
-      is_scam :: Bool,
+      isScam :: Bool,
       -- | If false, the user is inaccessible, and the only information known about the user is inside this class. It can't be passed to any method except GetUser 
-      have_access :: Bool,
+      haveAccess :: Bool,
       -- | Type of the user 
       type_ :: UserType,
       -- | IETF language tag of the user's language; only available to bots
-      language_code :: T
+      languageCode :: T
     }
   deriving (Show, Eq, Generic)
 data UserFullInfo
   = -- | Contains full information about a user (except the full list of profile photos) 
   UserFullInfo
     { -- | True, if the user is blacklisted by the current user
-      is_blocked :: Bool,
+      isBlocked :: Bool,
       -- | True, if the user can be called 
-      can_be_called :: Bool,
+      canBeCalled :: Bool,
       -- | True, if the user can't be called due to their privacy settings
-      has_private_calls :: Bool,
+      hasPrivateCalls :: Bool,
       -- | True, if the current user needs to explicitly allow to share their phone number with the user when the method addContact is used
-      need_phone_number_privacy_exception :: Bool,
+      needPhoneNumberPrivacyException :: Bool,
       -- | A short user bio 
       bio :: T,
       -- | For bots, the text that is included with the link when users share the bot 
-      share_text :: T,
+      shareText :: T,
       -- | Number of group chats where both the other user and the current user are a member; 0 for the current user 
-      group_in_common_count :: I32,
+      groupInCommonCount :: I32,
       -- | If the user is a bot, information about the bot; may be null
-      bot_info :: BotInfo
+      botInfo :: (Maybe) (BotInfo)
     }
   deriving (Show, Eq, Generic)
 data UserProfilePhoto
@@ -770,7 +770,7 @@ data UserProfilePhoto
     { -- | Unique user profile photo identifier 
       id :: I64,
       -- | Point in time (Unix timestamp) when the photo has been added 
-      added_date :: I32,
+      addedDate :: I32,
       -- | Available variants of the user photo, in different sizes
       sizes :: [PhotoSize]
     }
@@ -779,7 +779,7 @@ data UserProfilePhotos
   = -- | Contains part of the list of user photos 
   UserProfilePhotos
     { -- | Total number of user profile photos 
-      total_count :: I32,
+      totalCount :: I32,
       -- | A list of photos
       photos :: [UserProfilePhoto]
     }
@@ -788,20 +788,20 @@ data Users
   = -- | Represents a list of users 
   Users
     { -- | Approximate total count of users found 
-      total_count :: I32,
+      totalCount :: I32,
       -- | A list of user identifiers
-      user_ids :: [I32]
+      userIds :: [I32]
     }
   deriving (Show, Eq, Generic)
 data ChatAdministrator
   = -- | Contains information about a chat administrator 
   ChatAdministrator
     { -- | User identifier of the administrator 
-      user_id :: I32,
+      userId :: I32,
       -- | Custom title of the administrator 
-      custom_title :: T,
+      customTitle :: T,
       -- | True, if the user is the owner of the chat
-      is_owner :: Bool
+      isOwner :: Bool
     }
   deriving (Show, Eq, Generic)
 data ChatAdministrators
@@ -815,21 +815,21 @@ data ChatPermissions
   = -- | Describes actions that a user is allowed to take in a chat
   ChatPermissions
     { -- | True, if the user can send text messages, contacts, locations, and venues
-      can_send_messages :: Bool,
+      canSendMessages :: Bool,
       -- | True, if the user can send audio files, documents, photos, videos, video notes, and voice notes. Implies can_send_messages permissions
-      can_send_media_messages :: Bool,
+      canSendMediaMessages :: Bool,
       -- | True, if the user can send polls. Implies can_send_messages permissions
-      can_send_polls :: Bool,
+      canSendPolls :: Bool,
       -- | True, if the user can send animations, games, and stickers and use inline bots. Implies can_send_messages permissions
-      can_send_other_messages :: Bool,
+      canSendOtherMessages :: Bool,
       -- | True, if the user may add a web page preview to their messages. Implies can_send_messages permissions
-      can_add_web_page_previews :: Bool,
+      canAddWebPagePreviews :: Bool,
       -- | True, if the user can change the chat title, photo, and other settings
-      can_change_info :: Bool,
+      canChangeInfo :: Bool,
       -- | True, if the user can invite new users to the chat
-      can_invite_users :: Bool,
+      canInviteUsers :: Bool,
       -- | True, if the user can pin messages
-      can_pin_messages :: Bool
+      canPinMessages :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Provides information about the status of a member in a chat
@@ -837,32 +837,32 @@ data ChatMemberStatus
   = -- | The user is the owner of a chat and has all the administrator privileges
   ChatMemberStatusCreator
     { -- | A custom title of the owner; 0-16 characters without emojis; applicable to supergroups only
-      custom_title :: T,
+      customTitle :: T,
       -- | True, if the user is a member of the chat
-      is_member :: Bool
+      isMember :: Bool
     }
   | -- | The user is a member of a chat and has some additional privileges. In basic groups, administrators can edit and delete messages sent by others, add new members, and ban unprivileged members. In supergroups and channels, there are more detailed options for administrator privileges
   ChatMemberStatusAdministrator
     { -- | A custom title of the administrator; 0-16 characters without emojis; applicable to supergroups only
-      custom_title :: T,
+      customTitle :: T,
       -- | True, if the current user can edit the administrator privileges for the called user
-      can_be_edited :: Bool,
+      canBeEdited :: Bool,
       -- | True, if the administrator can change the chat title, photo, and other settings
-      can_change_info :: Bool,
+      canChangeInfo :: Bool,
       -- | True, if the administrator can create channel posts; applicable to channels only
-      can_post_messages :: Bool,
+      canPostMessages :: Bool,
       -- | True, if the administrator can edit messages of other users and pin messages; applicable to channels only
-      can_edit_messages :: Bool,
+      canEditMessages :: Bool,
       -- | True, if the administrator can delete messages of other users
-      can_delete_messages :: Bool,
+      canDeleteMessages :: Bool,
       -- | True, if the administrator can invite new users to the chat
-      can_invite_users :: Bool,
+      canInviteUsers :: Bool,
       -- | True, if the administrator can restrict, ban, or unban chat members
-      can_restrict_members :: Bool,
+      canRestrictMembers :: Bool,
       -- | True, if the administrator can pin messages; applicable to groups only
-      can_pin_messages :: Bool,
+      canPinMessages :: Bool,
       -- | True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that were directly or indirectly promoted by them
-      can_promote_members :: Bool
+      canPromoteMembers :: Bool
     }
   | -- | The user is a member of a chat, without any additional privileges or restrictions
   ChatMemberStatusMember
@@ -871,9 +871,9 @@ data ChatMemberStatus
   | -- | The user is under certain restrictions in the chat. Not supported in basic groups and channels
   ChatMemberStatusRestricted
     { -- | True, if the user is a member of the chat
-      is_member :: Bool,
+      isMember :: Bool,
       -- | Point in time (Unix timestamp) when restrictions will be lifted from the user; 0 if never. If the user is restricted for more than 366 days or for less than 30 seconds from the current time, the user is considered to be restricted forever
-      restricted_until_date :: I32,
+      restrictedUntilDate :: I32,
       -- | User permissions in the chat
       permissions :: ChatPermissions
     }
@@ -884,29 +884,29 @@ data ChatMemberStatus
   | -- | The user was banned (and hence is not a member of the chat). Implies the user can't return to the chat or view messages
   ChatMemberStatusBanned
     { -- | Point in time (Unix timestamp) when the user will be unbanned; 0 if never. If the user is banned for more than 366 days or for less than 30 seconds from the current time, the user is considered to be banned forever
-      banned_until_date :: I32
+      bannedUntilDate :: I32
     }
   deriving (Show, Eq, Generic)
 data ChatMember
   = -- | A user with information about joining/leaving a chat 
   ChatMember
     { -- | User identifier of the chat member 
-      user_id :: I32,
+      userId :: I32,
       -- | Identifier of a user that invited/promoted/banned this member in the chat; 0 if unknown
-      inviter_user_id :: I32,
+      inviterUserId :: I32,
       -- | Point in time (Unix timestamp) when the user joined a chat 
-      joined_chat_date :: I32,
+      joinedChatDate :: I32,
       -- | Status of the member in the chat 
       status :: ChatMemberStatus,
       -- | If the user is a bot, information about the bot; may be null. Can be null even for a bot if the bot is not a chat member
-      bot_info :: BotInfo
+      botInfo :: (Maybe) (BotInfo)
     }
   deriving (Show, Eq, Generic)
 data ChatMembers
   = -- | Contains a list of chat members 
   ChatMembers
     { -- | Approximate total count of chat members found 
-      total_count :: I32,
+      totalCount :: I32,
       -- | A list of chat members
       members :: [ChatMember]
     }
@@ -979,13 +979,13 @@ data BasicGroup
     { -- | Group identifier
       id :: I32,
       -- | Number of members in the group
-      member_count :: I32,
+      memberCount :: I32,
       -- | Status of the current user in the group
       status :: ChatMemberStatus,
       -- | True, if the group is active
-      is_active :: Bool,
+      isActive :: Bool,
       -- | Identifier of the supergroup to which this group was upgraded; 0 if none
-      upgraded_to_supergroup_id :: I32
+      upgradedToSupergroupId :: I32
     }
   deriving (Show, Eq, Generic)
 data BasicGroupFullInfo
@@ -994,11 +994,11 @@ data BasicGroupFullInfo
     { -- | Contains full information about a basic group 
       description :: T,
       -- | User identifier of the creator of the group; 0 if unknown 
-      creator_user_id :: I32,
+      creatorUserId :: I32,
       -- | Group members 
       members :: [ChatMember],
       -- | Invite link for this group; available only after it has been generated at least once and only for the group creator
-      invite_link :: T
+      inviteLink :: T
     }
   deriving (Show, Eq, Generic)
 data Supergroup
@@ -1013,23 +1013,23 @@ data Supergroup
       -- | Status of the current user in the supergroup or channel; custom title will be always empty
       status :: ChatMemberStatus,
       -- | Number of members in the supergroup or channel; 0 if unknown. Currently it is guaranteed to be known only if the supergroup or channel was found through SearchPublicChats
-      member_count :: I32,
+      memberCount :: I32,
       -- | True, if the channel has a discussion group, or the supergroup is the designated discussion group for a channel
-      has_linked_chat :: Bool,
+      hasLinkedChat :: Bool,
       -- | True, if the supergroup is connected to a location, i.e. the supergroup is a location-based supergroup
-      has_location :: Bool,
+      hasLocation :: Bool,
       -- | True, if messages sent to the channel should contain information about the sender. This field is only applicable to channels
-      sign_messages :: Bool,
+      signMessages :: Bool,
       -- | True, if the slow mode is enabled in the supergroup
-      is_slow_mode_enabled :: Bool,
+      isSlowModeEnabled :: Bool,
       -- | True, if the supergroup is a channel
-      is_channel :: Bool,
+      isChannel :: Bool,
       -- | True, if the supergroup or channel is verified
-      is_verified :: Bool,
+      isVerified :: Bool,
       -- | If non-empty, contains a human-readable description of the reason why access to this supergroup or channel must be restricted
-      restriction_reason :: T,
+      restrictionReason :: T,
       -- | True, if many users reported this supergroup as a scam
-      is_scam :: Bool
+      isScam :: Bool
     }
   deriving (Show, Eq, Generic)
 data SupergroupFullInfo
@@ -1038,41 +1038,41 @@ data SupergroupFullInfo
     { -- | Contains full information about a supergroup or channel
       description :: T,
       -- | Number of members in the supergroup or channel; 0 if unknown
-      member_count :: I32,
+      memberCount :: I32,
       -- | Number of privileged users in the supergroup or channel; 0 if unknown
-      administrator_count :: I32,
+      administratorCount :: I32,
       -- | Number of restricted users in the supergroup; 0 if unknown
-      restricted_count :: I32,
+      restrictedCount :: I32,
       -- | Number of users banned from chat; 0 if unknown
-      banned_count :: I32,
+      bannedCount :: I32,
       -- | Chat identifier of a discussion group for the channel, or a channel, for which the supergroup is the designated discussion group; 0 if none or unknown
-      linked_chat_id :: I53,
+      linkedChatId :: I53,
       -- | Delay between consecutive sent messages for non-administrator supergroup members, in seconds
-      slow_mode_delay :: I32,
+      slowModeDelay :: I32,
       -- | Time left before next message can be sent in the supergroup, in seconds. An updateSupergroupFullInfo update is not triggered when value of this field changes, but both new and old values are non-zero
-      slow_mode_delay_expires_in :: Double,
+      slowModeDelayExpiresIn :: Double,
       -- | True, if members of the chat can be retrieved
-      can_get_members :: Bool,
+      canGetMembers :: Bool,
       -- | True, if the chat username can be changed
-      can_set_username :: Bool,
+      canSetUsername :: Bool,
       -- | True, if the supergroup sticker set can be changed
-      can_set_sticker_set :: Bool,
+      canSetStickerSet :: Bool,
       -- | True, if the supergroup location can be changed
-      can_set_location :: Bool,
+      canSetLocation :: Bool,
       -- | True, if the channel statistics is available
-      can_view_statistics :: Bool,
+      canViewStatistics :: Bool,
       -- | True, if new chat members will have access to old messages. In public or discussion groups and both public and private channels, old messages are always available, so this option affects only private supergroups without a linked chat. The value of this field is only available for chat administrators
-      is_all_history_available :: Bool,
+      isAllHistoryAvailable :: Bool,
       -- | Identifier of the supergroup sticker set; 0 if none
-      sticker_set_id :: I64,
+      stickerSetId :: I64,
       -- | Location to which the supergroup is connected; may be null
-      location :: ChatLocation,
+      location :: (Maybe) (ChatLocation),
       -- | Invite link for this chat
-      invite_link :: T,
+      inviteLink :: T,
       -- | Identifier of the basic group from which supergroup was upgraded; 0 if none
-      upgraded_from_basic_group_id :: I32,
+      upgradedFromBasicGroupId :: I32,
       -- | Identifier of the last message in the basic group from which supergroup was upgraded; 0 if none
-      upgraded_from_max_message_id :: I53
+      upgradedFromMaxMessageId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Describes the current secret chat state
@@ -1096,15 +1096,15 @@ data SecretChat
     { -- | Secret chat identifier
       id :: I32,
       -- | Identifier of the chat partner
-      user_id :: I32,
+      userId :: I32,
       -- | State of the secret chat
       state :: SecretChatState,
       -- | True, if the chat was created by the current user; otherwise false
-      is_outbound :: Bool,
+      isOutbound :: Bool,
       -- | Current message Time To Live setting (self-destruct timer) for the chat, in seconds
       ttl :: I32,
       -- | Hash of the currently used key for comparison with the hash of the chat partner's key. This is a string of 36 little-endian bytes, which must be split into groups of 2 bits, each denoting a pixel of one of 4 colors FFFFFF, D5E6F3, 2D5775, and 2F99C9.
-      key_hash :: ByteString64,
+      keyHash :: ByteString64,
       -- | Secret chat layer; determines features supported by the other client. Video notes are supported if the layer >= 66; nested text entities and underline and strikethrough entities are supported if the layer >= 101
       layer :: I32
     }
@@ -1114,21 +1114,21 @@ data MessageForwardOrigin
   = -- | The message was originally written by a known user 
   MessageForwardOriginUser
     { -- | Identifier of the user that originally sent the message
-      sender_user_id :: I32
+      senderUserId :: I32
     }
   | -- | The message was originally written by a user, which is hidden by their privacy settings 
   MessageForwardOriginHiddenUser
     { -- | Name of the sender
-      sender_name :: T
+      senderName :: T
     }
   | -- | The message was originally a post in a channel
   MessageForwardOriginChannel
     { -- | Identifier of the chat from which the message was originally forwarded
-      chat_id :: I53,
+      chatId :: I53,
       -- | Message identifier of the original message; 0 if unknown
-      message_id :: I53,
+      messageId :: I53,
       -- | Original post author signature
-      author_signature :: T
+      authorSignature :: T
     }
   deriving (Show, Eq, Generic)
 data MessageForwardInfo
@@ -1139,11 +1139,11 @@ data MessageForwardInfo
       -- | Point in time (Unix timestamp) when the message was originally sent
       date :: I32,
       -- | The type of a public service announcement for the forwarded message
-      public_service_announcement_type :: T,
+      publicServiceAnnouncementType :: T,
       -- | For messages forwarded to the chat with the current user (Saved Messages) or to the channel's discussion group, the identifier of the chat from which the message was forwarded last time; 0 if unknown
-      from_chat_id :: I53,
+      fromChatId :: I53,
       -- | For messages forwarded to the chat with the current user (Saved Messages) or to the channel's discussion group, the identifier of the original message from which the new message was forwarded last time; 0 if unknown
-      from_message_id :: I53
+      fromMessageId :: I53
     }
   deriving (Show, Eq, Generic)
 -- | Contains information about the sending state of the message
@@ -1155,13 +1155,13 @@ data MessageSendingState
   | -- | The message failed to be sent 
   MessageSendingStateFailed
     { -- | An error code; 0 if unknown 
-      error_code :: I32,
+      errorCode :: I32,
       -- | Error message
-      error_message :: T,
+      errorMessage :: T,
       -- | True, if the message can be re-sent 
-      can_retry :: Bool,
+      canRetry :: Bool,
       -- | Time left before the message can be re-sent, in seconds. No update is sent when this field changes
-      retry_after :: Double
+      retryAfter :: Double
     }
   deriving (Show, Eq, Generic)
 data Message
@@ -1170,62 +1170,62 @@ data Message
     { -- | Message identifier, unique for the chat to which the message belongs
       id :: I53,
       -- | Identifier of the user who sent the message; 0 if unknown. Currently, it is unknown for channel posts and for channel posts automatically forwarded to discussion group
-      sender_user_id :: I32,
+      senderUserId :: I32,
       -- | Chat identifier
-      chat_id :: I53,
+      chatId :: I53,
       -- | Information about the sending state of the message; may be null
-      sending_state :: MessageSendingState,
+      sendingState :: (Maybe) (MessageSendingState),
       -- | Information about the scheduling state of the message; may be null
-      scheduling_state :: MessageSchedulingState,
+      schedulingState :: (Maybe) (MessageSchedulingState),
       -- | True, if the message is outgoing
-      is_outgoing :: Bool,
+      isOutgoing :: Bool,
       -- | True, if the message can be edited. For live location and poll messages this fields shows whether editMessageLiveLocation or stopPoll can be used with this message by the client
-      can_be_edited :: Bool,
+      canBeEdited :: Bool,
       -- | True, if the message can be forwarded
-      can_be_forwarded :: Bool,
+      canBeForwarded :: Bool,
       -- | True, if the message can be deleted only for the current user while other users will continue to see it
-      can_be_deleted_only_for_self :: Bool,
+      canBeDeletedOnlyForSelf :: Bool,
       -- | True, if the message can be deleted for all users
-      can_be_deleted_for_all_users :: Bool,
+      canBeDeletedForAllUsers :: Bool,
       -- | True, if the message is a channel post. All messages to channels are channel posts, all other messages are not channel posts
-      is_channel_post :: Bool,
+      isChannelPost :: Bool,
       -- | True, if the message contains an unread mention for the current user
-      contains_unread_mention :: Bool,
+      containsUnreadMention :: Bool,
       -- | Point in time (Unix timestamp) when the message was sent
       date :: I32,
       -- | Point in time (Unix timestamp) when the message was last edited
-      edit_date :: I32,
+      editDate :: I32,
       -- | Information about the initial message sender; may be null
-      forward_info :: MessageForwardInfo,
+      forwardInfo :: (Maybe) (MessageForwardInfo),
       -- | If non-zero, the identifier of the message this message is replying to; can be the identifier of a deleted message
-      reply_to_message_id :: I53,
+      replyToMessageId :: I53,
       -- | For self-destructing messages, the message's TTL (Time To Live), in seconds; 0 if none. TDLib will send updateDeleteMessages or updateMessageContent once the TTL expires
       ttl :: I32,
       -- | Time left before the message expires, in seconds
-      ttl_expires_in :: Double,
+      ttlExpiresIn :: Double,
       -- | If non-zero, the user identifier of the bot through which this message was sent
-      via_bot_user_id :: I32,
+      viaBotUserId :: I32,
       -- | For channel posts, optional author signature
-      author_signature :: T,
+      authorSignature :: T,
       -- | Number of times this message was viewed
       views :: I32,
       -- | Unique identifier of an album this message belongs to. Only photos and videos can be grouped together in albums
-      media_album_id :: I64,
+      mediaAlbumId :: I64,
       -- | If non-empty, contains a human-readable description of the reason why access to this message must be restricted
-      restriction_reason :: T,
+      restrictionReason :: T,
       -- | Content of the message
       content :: MessageContent,
       -- | Reply markup for the message; may be null
-      reply_markup :: ReplyMarkup
+      replyMarkup :: (Maybe) (ReplyMarkup)
     }
   deriving (Show, Eq, Generic)
 data Messages
   = -- | Contains a list of messages 
   Messages
     { -- | Approximate total count of messages found 
-      total_count :: I32,
+      totalCount :: I32,
       -- | List of messages; messages may be null
-      messages :: [Message]
+      messages :: [(Maybe) (Message)]
     }
   deriving (Show, Eq, Generic)
 data FoundMessages
@@ -1234,7 +1234,7 @@ data FoundMessages
     { -- | List of messages 
       messages :: [Message],
       -- | Value to pass as from_search_id to get more results
-      next_from_search_id :: I64
+      nextFromSearchId :: I64
     }
   deriving (Show, Eq, Generic)
 -- | Describes the types of chats to which notification settings are applied
@@ -1256,51 +1256,51 @@ data ChatNotificationSettings
   = -- | Contains information about notification settings for a chat
   ChatNotificationSettings
     { -- | If true, mute_for is ignored and the value for the relevant type of chat is used instead 
-      use_default_mute_for :: Bool,
+      useDefaultMuteFor :: Bool,
       -- | Time left before notifications will be unmuted, in seconds
-      mute_for :: I32,
+      muteFor :: I32,
       -- | If true, sound is ignored and the value for the relevant type of chat is used instead 
-      use_default_sound :: Bool,
+      useDefaultSound :: Bool,
       -- | The name of an audio file to be used for notification sounds; only applies to iOS applications
       sound :: T,
       -- | If true, show_preview is ignored and the value for the relevant type of chat is used instead 
-      use_default_show_preview :: Bool,
+      useDefaultShowPreview :: Bool,
       -- | True, if message content should be displayed in notifications
-      show_preview :: Bool,
+      showPreview :: Bool,
       -- | If true, disable_pinned_message_notifications is ignored and the value for the relevant type of chat is used instead 
-      use_default_disable_pinned_message_notifications :: Bool,
+      useDefaultDisablePinnedMessageNotifications :: Bool,
       -- | If true, notifications for incoming pinned messages will be created as for an ordinary unread message
-      disable_pinned_message_notifications :: Bool,
+      disablePinnedMessageNotifications :: Bool,
       -- | If true, disable_mention_notifications is ignored and the value for the relevant type of chat is used instead 
-      use_default_disable_mention_notifications :: Bool,
+      useDefaultDisableMentionNotifications :: Bool,
       -- | If true, notifications for messages with mentions will be created as for an ordinary unread message
-      disable_mention_notifications :: Bool
+      disableMentionNotifications :: Bool
     }
   deriving (Show, Eq, Generic)
 data ScopeNotificationSettings
   = -- | Contains information about notification settings for several chats
   ScopeNotificationSettings
     { -- | Time left before notifications will be unmuted, in seconds
-      mute_for :: I32,
+      muteFor :: I32,
       -- | The name of an audio file to be used for notification sounds; only applies to iOS applications
       sound :: T,
       -- | True, if message content should be displayed in notifications
-      show_preview :: Bool,
+      showPreview :: Bool,
       -- | True, if notifications for incoming pinned messages will be created as for an ordinary unread message
-      disable_pinned_message_notifications :: Bool,
+      disablePinnedMessageNotifications :: Bool,
       -- | True, if notifications for messages with mentions will be created as for an ordinary unread message
-      disable_mention_notifications :: Bool
+      disableMentionNotifications :: Bool
     }
   deriving (Show, Eq, Generic)
 data DraftMessage
   = -- | Contains information about a message draft
   DraftMessage
     { -- | Identifier of the message to reply to; 0 if none
-      reply_to_message_id :: I53,
+      replyToMessageId :: I53,
       -- | Point in time (Unix timestamp) when the draft was created
       date :: I32,
       -- | Content of the message draft; this should always be of type inputMessageText
-      input_message_text :: InputMessageContent
+      inputMessageText :: InputMessageContent
     }
   deriving (Show, Eq, Generic)
 -- | Describes the type of a chat
@@ -1308,26 +1308,26 @@ data ChatType
   = -- | An ordinary chat with a user 
   ChatTypePrivate
     { -- | User identifier
-      user_id :: I32
+      userId :: I32
     }
   | -- | A basic group (i.e., a chat with 0-200 other users) 
   ChatTypeBasicGroup
     { -- | Basic group identifier
-      basic_group_id :: I32
+      basicGroupId :: I32
     }
   | -- | A supergroup (i.e. a chat with up to GetOption("supergroup_max_size") other users), or channel (with unlimited members) 
   ChatTypeSupergroup
     { -- | Supergroup or channel identifier 
-      supergroup_id :: I32,
+      supergroupId :: I32,
       -- | True, if the supergroup is a channel
-      is_channel :: Bool
+      isChannel :: Bool
     }
   | -- | A secret chat with a user 
   ChatTypeSecret
     { -- | Secret chat identifier 
-      secret_chat_id :: I32,
+      secretChatId :: I32,
       -- | User identifier of the secret chat peer
-      user_id :: I32
+      userId :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Describes a list of chats
@@ -1363,67 +1363,67 @@ data Chat
       -- | Type of the chat
       type_ :: ChatType,
       -- | A chat list to which the chat belongs; may be null
-      chat_list :: ChatList,
+      chatList :: (Maybe) (ChatList),
       -- | Chat title
       title :: T,
       -- | Chat photo; may be null
-      photo :: ChatPhoto,
+      photo :: (Maybe) (ChatPhoto),
       -- | Actions that non-administrator chat members are allowed to take in the chat
       permissions :: ChatPermissions,
       -- | Last message in the chat; may be null
-      last_message :: Message,
+      lastMessage :: (Maybe) (Message),
       -- | Descending parameter by which chats are sorted in the main chat list. If the order number of two chats is the same, they must be sorted in descending order by ID. If 0, the position of the chat in the list is undetermined
       order :: I64,
       -- | Source of the chat in a chat list; may be null
-      source :: ChatSource,
+      source :: (Maybe) (ChatSource),
       -- | True, if the chat is pinned
-      is_pinned :: Bool,
+      isPinned :: Bool,
       -- | True, if the chat is marked as unread
-      is_marked_as_unread :: Bool,
+      isMarkedAsUnread :: Bool,
       -- | True, if the chat has scheduled messages
-      has_scheduled_messages :: Bool,
+      hasScheduledMessages :: Bool,
       -- | True, if the chat messages can be deleted only for the current user while other users will continue to see the messages
-      can_be_deleted_only_for_self :: Bool,
+      canBeDeletedOnlyForSelf :: Bool,
       -- | True, if the chat messages can be deleted for all users
-      can_be_deleted_for_all_users :: Bool,
+      canBeDeletedForAllUsers :: Bool,
       -- | True, if the chat can be reported to Telegram moderators through reportChat
-      can_be_reported :: Bool,
+      canBeReported :: Bool,
       -- | Default value of the disable_notification parameter, used when a message is sent to the chat
-      default_disable_notification :: Bool,
+      defaultDisableNotification :: Bool,
       -- | Number of unread messages in the chat
-      unread_count :: I32,
+      unreadCount :: I32,
       -- | Identifier of the last read incoming message
-      last_read_inbox_message_id :: I53,
+      lastReadInboxMessageId :: I53,
       -- | Identifier of the last read outgoing message
-      last_read_outbox_message_id :: I53,
+      lastReadOutboxMessageId :: I53,
       -- | Number of unread messages with a mention/reply in the chat
-      unread_mention_count :: I32,
+      unreadMentionCount :: I32,
       -- | Notification settings for this chat
-      notification_settings :: ChatNotificationSettings,
+      notificationSettings :: ChatNotificationSettings,
       -- | Describes actions which should be possible to do through a chat action bar; may be null
-      action_bar :: ChatActionBar,
+      actionBar :: (Maybe) (ChatActionBar),
       -- | Identifier of the pinned message in the chat; 0 if none
-      pinned_message_id :: I53,
+      pinnedMessageId :: I53,
       -- | Identifier of the message from which reply markup needs to be used; 0 if there is no default custom reply markup in the chat
-      reply_markup_message_id :: I53,
+      replyMarkupMessageId :: I53,
       -- | A draft of a message in the chat; may be null
-      draft_message :: DraftMessage,
+      draftMessage :: (Maybe) (DraftMessage),
       -- | Contains client-specific data associated with the chat. (For example, the chat position or local chat notification settings can be stored here.) Persistent if the message database is used
-      client_data :: T
+      clientData :: T
     }
   deriving (Show, Eq, Generic)
 data Chats
   = -- | Represents a list of chats 
   Chats
     { -- | List of chat identifiers
-      chat_ids :: [I53]
+      chatIds :: [I53]
     }
   deriving (Show, Eq, Generic)
 data ChatNearby
   = -- | Describes a chat located nearby 
   ChatNearby
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Distance to the chat location in meters
       distance :: I32
     }
@@ -1432,35 +1432,35 @@ data ChatsNearby
   = -- | Represents a list of chats located nearby 
   ChatsNearby
     { -- | List of users nearby 
-      users_nearby :: [ChatNearby],
+      usersNearby :: [ChatNearby],
       -- | List of location-based supergroups nearby
-      supergroups_nearby :: [ChatNearby]
+      supergroupsNearby :: [ChatNearby]
     }
   deriving (Show, Eq, Generic)
 data ChatInviteLink
   = -- | Contains a chat invite link 
   ChatInviteLink
     { -- | Chat invite link
-      invite_link :: T
+      inviteLink :: T
     }
   deriving (Show, Eq, Generic)
 data ChatInviteLinkInfo
   = -- | Contains information about a chat invite link
   ChatInviteLinkInfo
     { -- | Chat identifier of the invite link; 0 if the user is not a member of this chat
-      chat_id :: I53,
+      chatId :: I53,
       -- | Contains information about the type of the chat
       type_ :: ChatType,
       -- | Title of the chat
       title :: T,
       -- | Chat photo; may be null
-      photo :: ChatPhoto,
+      photo :: (Maybe) (ChatPhoto),
       -- | Number of members in the chat
-      member_count :: I32,
+      memberCount :: I32,
       -- | User identifiers of some chat members that may be known to the current user
-      member_user_ids :: [I32],
+      memberUserIds :: [I32],
       -- | True, if the chat is a public supergroup or channel, i.e. it has a username or it is a location-based supergroup
-      is_public :: Bool
+      isPublic :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Describes a type of public chats
@@ -1514,9 +1514,9 @@ data KeyboardButtonType
   | -- | A button that allows the user to create and send a poll when pressed; available only in private chats 
   KeyboardButtonTypeRequestPoll
     { -- | If true, only regular polls must be allowed to create 
-      force_regular :: Bool,
+      forceRegular :: Bool,
       -- | If true, only polls in quiz mode must be allowed to create
-      force_quiz :: Bool
+      forceQuiz :: Bool
     }
   deriving (Show, Eq, Generic)
 data KeyboardButton
@@ -1542,7 +1542,7 @@ data InlineKeyboardButtonType
       -- | Unique button identifier 
       id :: I32,
       -- | If non-empty, new text of the button in forwarded messages
-      forward_text :: T
+      forwardText :: T
     }
   | -- | A button that sends a special callback query to a bot 
   InlineKeyboardButtonTypeCallback
@@ -1558,7 +1558,7 @@ data InlineKeyboardButtonType
     { -- | Inline query to be sent to the bot 
       query :: T,
       -- | True, if the inline query should be sent from the current chat
-      in_current_chat :: Bool
+      inCurrentChat :: Bool
     }
   | -- | A button to buy something. This button must be in the first column and row of the keyboard and can be attached only to a message with content of the type messageInvoice
   InlineKeyboardButtonTypeBuy
@@ -1579,23 +1579,23 @@ data ReplyMarkup
   = -- | Instructs clients to remove the keyboard once this message has been received. This kind of keyboard can't be received in an incoming message; instead, UpdateChatReplyMarkup with message_id == 0 will be sent
   ReplyMarkupRemoveKeyboard
     { -- | True, if the keyboard is removed only for the mentioned users or the target user of a reply
-      is_personal :: Bool
+      isPersonal :: Bool
     }
   | -- | Instructs clients to force a reply to this message
   ReplyMarkupForceReply
     { -- | True, if a forced reply must automatically be shown to the current user. For outgoing messages, specify true to show the forced reply only for the mentioned users and for the target user of a reply
-      is_personal :: Bool
+      isPersonal :: Bool
     }
   | -- | Contains a custom keyboard layout to quickly reply to bots
   ReplyMarkupShowKeyboard
     { -- | A list of rows of bot keyboard buttons
       rows_2 :: [[KeyboardButton]],
       -- | True, if the client needs to resize the keyboard vertically
-      resize_keyboard :: Bool,
+      resizeKeyboard :: Bool,
       -- | True, if the client needs to hide the keyboard after use
-      one_time :: Bool,
+      oneTime :: Bool,
       -- | True, if the keyboard must automatically be shown to the current user. For outgoing messages, specify true to show the keyboard only for the mentioned users and for the target user of a reply
-      is_personal :: Bool
+      isPersonal :: Bool
     }
   | -- | Contains an inline keyboard layout
   ReplyMarkupInlineKeyboard
@@ -1610,7 +1610,7 @@ data LoginUrlInfo
     { -- | The URL to open 
       url :: T,
       -- | True, if there is no need to show an ordinary open URL confirm
-      skip_confirm :: Bool
+      skipConfirm :: Bool
     }
   | -- | An authorization confirmation dialog needs to be shown to the user 
   LoginUrlInfoRequestConfirmation
@@ -1619,9 +1619,9 @@ data LoginUrlInfo
       -- | A domain of the URL
       domain :: T,
       -- | User identifier of a bot linked with the website 
-      bot_user_id :: I32,
+      botUserId :: I32,
       -- | True, if the user needs to be requested to give the permission to the bot to send them messages
-      request_write_access :: Bool
+      requestWriteAccess :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Describes a text object inside an instant-view web page
@@ -1663,14 +1663,14 @@ data RichText
       -- | URL 
       url :: T,
       -- | True, if the URL has cached instant view server-side
-      is_cached :: Bool
+      isCached :: Bool
     }
   | -- | A rich text email link 
   RichTextEmailAddress
     { -- | Text 
       text :: RichText,
       -- | Email address
-      email_address :: T
+      emailAddress :: T
     }
   | -- | A subscript rich text 
   RichTextSubscript
@@ -1692,7 +1692,7 @@ data RichText
     { -- | Text 
       text :: RichText,
       -- | Phone number
-      phone_number :: T
+      phoneNumber :: T
     }
   | -- | A small image inside the text 
   RichTextIcon
@@ -1708,7 +1708,7 @@ data RichText
     { -- | The text 
       text :: RichText,
       -- | The text to show on click 
-      reference_text :: RichText,
+      referenceText :: RichText,
       -- | An HTTP URL, opening the reference
       url :: T
     }
@@ -1747,7 +1747,7 @@ data PageBlockListItem
     { -- | Item label 
       label :: T,
       -- | Item blocks
-      page_blocks :: [PageBlock]
+      pageBlocks :: [PageBlock]
     }
   deriving (Show, Eq, Generic)
 -- | Describes a horizontal alignment of a table cell content
@@ -1784,9 +1784,9 @@ data PageBlockTableCell
   = -- | Represents a cell of a table 
   PageBlockTableCell
     { -- | Cell text; may be null. If the text is null, then the cell should be invisible 
-      text :: RichText,
+      text :: (Maybe) (RichText),
       -- | True, if it is a header cell
-      is_header :: Bool,
+      isHeader :: Bool,
       -- | The number of columns the cell should span 
       colspan :: I32,
       -- | The number of rows the cell should span
@@ -1807,11 +1807,11 @@ data PageBlockRelatedArticle
       -- | Contains information about a related article 
       description :: T,
       -- | Article photo; may be null 
-      photo :: Photo,
+      photo :: (Maybe) (Photo),
       -- | Article author; may be empty 
       author :: T,
       -- | Point in time (Unix timestamp) when the article was published; 0 if unknown
-      publish_date :: I32
+      publishDate :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Describes a block of an instant view web page
@@ -1831,7 +1831,7 @@ data PageBlock
     { -- | Author 
       author_2 :: RichText,
       -- | Point in time (Unix timestamp) when the article was published; 0 if unknown
-      publish_date :: I32
+      publishDate :: I32
     }
   | -- | A header 
   PageBlockHeader
@@ -1896,23 +1896,23 @@ data PageBlock
   | -- | An animation 
   PageBlockAnimation
     { -- | Animation file; may be null 
-      animation :: Animation,
+      animation :: (Maybe) (Animation),
       -- | Animation caption 
       caption :: PageBlockCaption,
       -- | True, if the animation should be played automatically
-      need_autoplay :: Bool
+      needAutoplay :: Bool
     }
   | -- | An audio file 
   PageBlockAudio
     { -- | Audio file; may be null 
-      audio :: Audio,
+      audio :: (Maybe) (Audio),
       -- | Audio file caption
       caption :: PageBlockCaption
     }
   | -- | A photo 
   PageBlockPhoto
     { -- | Photo file; may be null 
-      photo_2 :: Photo,
+      photo_2 :: (Maybe) (Photo),
       -- | Photo caption 
       caption :: PageBlockCaption,
       -- | URL that needs to be opened when the photo is clicked
@@ -1921,18 +1921,18 @@ data PageBlock
   | -- | A video 
   PageBlockVideo
     { -- | Video file; may be null 
-      video :: Video,
+      video :: (Maybe) (Video),
       -- | Video caption 
       caption :: PageBlockCaption,
       -- | True, if the video should be played automatically 
-      need_autoplay :: Bool,
+      needAutoplay :: Bool,
       -- | True, if the video should be looped
-      is_looped :: Bool
+      isLooped :: Bool
     }
   | -- | A voice note 
   PageBlockVoiceNote
     { -- | Voice note; may be null 
-      voice_note :: VoiceNote,
+      voiceNote :: (Maybe) (VoiceNote),
       -- | Voice note caption
       caption :: PageBlockCaption
     }
@@ -1948,7 +1948,7 @@ data PageBlock
       -- | HTML-markup of the embedded page 
       html :: T,
       -- | Poster photo, if available; may be null 
-      poster_photo :: Photo,
+      posterPhoto :: (Maybe) (Photo),
       -- | Block width; 0 if unknown 
       width :: I32,
       -- | Block height; 0 if unknown 
@@ -1956,9 +1956,9 @@ data PageBlock
       -- | Block caption 
       caption :: PageBlockCaption,
       -- | True, if the block should be full width 
-      is_full_width :: Bool,
+      isFullWidth :: Bool,
       -- | True, if scrolling should be allowed
-      allow_scrolling :: Bool
+      allowScrolling :: Bool
     }
   | -- | An embedded post 
   PageBlockEmbeddedPost
@@ -1967,25 +1967,25 @@ data PageBlock
       -- | Post author 
       author :: T,
       -- | Post author photo; may be null 
-      author_photo :: Photo,
+      authorPhoto :: (Maybe) (Photo),
       -- | Point in time (Unix timestamp) when the post was created; 0 if unknown 
       date :: I32,
       -- | Post content 
-      page_blocks :: [PageBlock],
+      pageBlocks :: [PageBlock],
       -- | Post caption
       caption :: PageBlockCaption
     }
   | -- | A collage 
   PageBlockCollage
     { -- | Collage item contents 
-      page_blocks :: [PageBlock],
+      pageBlocks :: [PageBlock],
       -- | Block caption
       caption :: PageBlockCaption
     }
   | -- | A slideshow 
   PageBlockSlideshow
     { -- | Slideshow item contents 
-      page_blocks :: [PageBlock],
+      pageBlocks :: [PageBlock],
       -- | Block caption
       caption :: PageBlockCaption
     }
@@ -1994,7 +1994,7 @@ data PageBlock
     { -- | Chat title 
       title :: T,
       -- | Chat photo; may be null 
-      photo :: ChatPhoto,
+      photo :: (Maybe) (ChatPhoto),
       -- | Chat username, by which all other information about the chat should be resolved
       username :: T
     }
@@ -2005,18 +2005,18 @@ data PageBlock
       -- | Table cells 
       cells :: [[PageBlockTableCell]],
       -- | True, if the table is bordered 
-      is_bordered :: Bool,
+      isBordered :: Bool,
       -- | True, if the table is striped
-      is_striped :: Bool
+      isStriped :: Bool
     }
   | -- | A collapsible block 
   PageBlockDetails
     { -- | Always visible heading for the block 
       header :: RichText,
       -- | Block contents 
-      page_blocks :: [PageBlock],
+      pageBlocks :: [PageBlock],
       -- | True, if the block is open by default
-      is_open :: Bool
+      isOpen :: Bool
     }
   | -- | Related articles 
   PageBlockRelatedArticles
@@ -2043,15 +2043,15 @@ data WebPageInstantView
   = -- | Describes an instant view page for a web page
   WebPageInstantView
     { -- | Content of the web page
-      page_blocks :: [PageBlock],
+      pageBlocks :: [PageBlock],
       -- | Number of the instant view views; 0 if unknown
-      view_count :: I32,
+      viewCount :: I32,
       -- | Version of the instant view, currently can be 1 or 2
       version :: I32,
       -- | True, if the instant view must be shown from right to left
-      is_rtl :: Bool,
+      isRtl :: Bool,
       -- | True, if the instant view contains the full page. A network request might be needed to get the full web page instant view
-      is_full :: Bool
+      isFull :: Bool
     }
   deriving (Show, Eq, Generic)
 data WebPage
@@ -2060,45 +2060,45 @@ data WebPage
     { -- | Original URL of the link
       url :: T,
       -- | URL to display
-      display_url :: T,
+      displayUrl :: T,
       -- | Type of the web page. Can be: article, photo, audio, video, document, profile, app, or something else
       type_ :: T,
       -- | Short name of the site (e.g., Google Docs, App Store)
-      site_name :: T,
+      siteName :: T,
       -- | Title of the content
       title :: T,
       -- | Describes a web page preview
       description :: FormattedText,
       -- | Image representing the content; may be null
-      photo :: Photo,
+      photo :: (Maybe) (Photo),
       -- | URL to show in the embedded preview
-      embed_url :: T,
+      embedUrl :: T,
       -- | MIME type of the embedded preview, (e.g., text/html or video/mp4)
-      embed_type :: T,
+      embedType :: T,
       -- | Width of the embedded preview
-      embed_width :: I32,
+      embedWidth :: I32,
       -- | Height of the embedded preview
-      embed_height :: I32,
+      embedHeight :: I32,
       -- | Duration of the content, in seconds
       duration :: I32,
       -- | Author of the content
       author :: T,
       -- | Preview of the content as an animation, if available; may be null
-      animation :: Animation,
+      animation :: (Maybe) (Animation),
       -- | Preview of the content as an audio file, if available; may be null
-      audio :: Audio,
+      audio :: (Maybe) (Audio),
       -- | Preview of the content as a document, if available (currently only available for small PDF files and ZIP archives); may be null
-      document :: Document,
+      document :: (Maybe) (Document),
       -- | Preview of the content as a sticker for small WEBP files, if available; may be null
-      sticker :: Sticker,
+      sticker :: (Maybe) (Sticker),
       -- | Preview of the content as a video, if available; may be null
-      video :: Video,
+      video :: (Maybe) (Video),
       -- | Preview of the content as a video note, if available; may be null
-      video_note :: VideoNote,
+      videoNote :: (Maybe) (VideoNote),
       -- | Preview of the content as a voice note, if available; may be null
-      voice_note :: VoiceNote,
+      voiceNote :: (Maybe) (VoiceNote),
       -- | Version of instant view, available for the web page (currently can be 1 or 2), 0 if none
-      instant_view_version :: I32
+      instantViewVersion :: I32
     }
   deriving (Show, Eq, Generic)
 data BankCardActionOpenUrl
@@ -2123,17 +2123,17 @@ data Address
   = -- | Describes an address 
   Address
     { -- | A two-letter ISO 3166-1 alpha-2 country code 
-      country_code :: T,
+      countryCode :: T,
       -- | State, if applicable 
       state :: T,
       -- | City 
       city :: T,
       -- | First line of the address 
-      street_line1 :: T,
+      streetLine1 :: T,
       -- | Second line of the address 
-      street_line2 :: T,
+      streetLine2 :: T,
       -- | Address postal code
-      postal_code :: T
+      postalCode :: T
     }
   deriving (Show, Eq, Generic)
 data LabeledPricePart
@@ -2151,23 +2151,23 @@ data Invoice
     { -- | ISO 4217 currency code 
       currency :: T,
       -- | A list of objects used to calculate the total price of the product 
-      price_parts :: [LabeledPricePart],
+      priceParts :: [LabeledPricePart],
       -- | True, if the payment is a test payment
-      is_test :: Bool,
+      isTest :: Bool,
       -- | True, if the user's name is needed for payment 
-      need_name :: Bool,
+      needName :: Bool,
       -- | True, if the user's phone number is needed for payment 
-      need_phone_number :: Bool,
+      needPhoneNumber :: Bool,
       -- | True, if the user's email address is needed for payment
-      need_email_address :: Bool,
+      needEmailAddress :: Bool,
       -- | True, if the user's shipping address is needed for payment 
-      need_shipping_address :: Bool,
+      needShippingAddress :: Bool,
       -- | True, if the user's phone number will be sent to the provider
-      send_phone_number_to_provider :: Bool,
+      sendPhoneNumberToProvider :: Bool,
       -- | True, if the user's email address will be sent to the provider 
-      send_email_address_to_provider :: Bool,
+      sendEmailAddressToProvider :: Bool,
       -- | True, if the total price depends on the shipping method
-      is_flexible :: Bool
+      isFlexible :: Bool
     }
   deriving (Show, Eq, Generic)
 data OrderInfo
@@ -2176,11 +2176,11 @@ data OrderInfo
     { -- | Name of the user 
       name :: T,
       -- | Phone number of the user 
-      phone_number :: T,
+      phoneNumber :: T,
       -- | Email address of the user 
-      email_address :: T,
+      emailAddress :: T,
       -- | Shipping address for this order; may be null
-      shipping_address :: Address
+      shippingAddress :: (Maybe) (Address)
     }
   deriving (Show, Eq, Generic)
 data ShippingOption
@@ -2191,7 +2191,7 @@ data ShippingOption
       -- | Option title 
       title :: T,
       -- | A list of objects used to calculate the total shipping costs
-      price_parts :: [LabeledPricePart]
+      priceParts :: [LabeledPricePart]
     }
   deriving (Show, Eq, Generic)
 data SavedCredentials
@@ -2208,14 +2208,14 @@ data InputCredentials
   = -- | Applies if a user chooses some previously saved payment credentials. To use their previously saved credentials, the user must have a valid temporary password 
   InputCredentialsSaved
     { -- | Identifier of the saved credentials
-      saved_credentials_id :: T
+      savedCredentialsId :: T
     }
   | -- | Applies if a user enters new credentials on a payment provider website 
   InputCredentialsNew
     { -- | Contains JSON-encoded data with a credential identifier from the payment provider 
       data_ :: T,
       -- | True, if the credential identifier can be saved on the server side
-      allow_save :: Bool
+      allowSave :: Bool
     }
   | -- | Applies if a user enters new credentials using Android Pay 
   InputCredentialsAndroidPay
@@ -2232,13 +2232,13 @@ data PaymentsProviderStripe
   = -- | Stripe payment provider 
   PaymentsProviderStripe
     { -- | Stripe API publishable key 
-      publishable_key :: T,
+      publishableKey :: T,
       -- | True, if the user country must be provided 
-      need_country :: Bool,
+      needCountry :: Bool,
       -- | True, if the user ZIP/postal code must be provided 
-      need_postal_code :: Bool,
+      needPostalCode :: Bool,
       -- | True, if the cardholder name must be provided
-      need_cardholder_name :: Bool
+      needCardholderName :: Bool
     }
   deriving (Show, Eq, Generic)
 data PaymentForm
@@ -2249,24 +2249,24 @@ data PaymentForm
       -- | Payment form URL 
       url :: T,
       -- | Contains information about the payment provider, if available, to support it natively without the need for opening the URL; may be null
-      payments_provider :: PaymentsProviderStripe,
+      paymentsProvider :: (Maybe) (PaymentsProviderStripe),
       -- | Saved server-side order information; may be null 
-      saved_order_info :: OrderInfo,
+      savedOrderInfo :: (Maybe) (OrderInfo),
       -- | Contains information about saved card credentials; may be null 
-      saved_credentials :: SavedCredentials,
+      savedCredentials :: (Maybe) (SavedCredentials),
       -- | True, if the user can choose to save credentials 
-      can_save_credentials :: Bool,
+      canSaveCredentials :: Bool,
       -- | True, if the user will be able to save credentials protected by a password they set up
-      need_password :: Bool
+      needPassword :: Bool
     }
   deriving (Show, Eq, Generic)
 data ValidatedOrderInfo
   = -- | Contains a temporary identifier of validated order information, which is stored for one hour. Also contains the available shipping options 
   ValidatedOrderInfo
     { -- | Temporary identifier of the order information 
-      order_info_id :: T,
+      orderInfoId :: T,
       -- | Available shipping options
-      shipping_options :: [ShippingOption]
+      shippingOptions :: [ShippingOption]
     }
   deriving (Show, Eq, Generic)
 data PaymentResult
@@ -2275,7 +2275,7 @@ data PaymentResult
     { -- | True, if the payment request was successful; otherwise the verification_url will be not empty 
       success :: Bool,
       -- | URL for additional payment credentials verification
-      verification_url :: T
+      verificationUrl :: T
     }
   deriving (Show, Eq, Generic)
 data PaymentReceipt
@@ -2284,15 +2284,15 @@ data PaymentReceipt
     { -- | Point in time (Unix timestamp) when the payment was made 
       date :: I32,
       -- | User identifier of the payment provider bot 
-      payments_provider_user_id :: I32,
+      paymentsProviderUserId :: I32,
       -- | Contains information about the invoice
       invoice :: Invoice,
       -- | Contains order information; may be null 
-      order_info :: OrderInfo,
+      orderInfo :: (Maybe) (OrderInfo),
       -- | Chosen shipping option; may be null 
-      shipping_option :: ShippingOption,
+      shippingOption :: (Maybe) (ShippingOption),
       -- | Title of the saved credentials
-      credentials_title :: T
+      credentialsTitle :: T
     }
   deriving (Show, Eq, Generic)
 data DatedFile
@@ -2374,25 +2374,25 @@ data PersonalDetails
   = -- | Contains the user's personal details
   PersonalDetails
     { -- | First name of the user written in English; 1-255 characters 
-      first_name :: T,
+      firstName :: T,
       -- | Middle name of the user written in English; 0-255 characters 
-      middle_name :: T,
+      middleName :: T,
       -- | Last name of the user written in English; 1-255 characters
-      last_name :: T,
+      lastName :: T,
       -- | Native first name of the user; 1-255 characters 
-      native_first_name :: T,
+      nativeFirstName :: T,
       -- | Native middle name of the user; 0-255 characters 
-      native_middle_name :: T,
+      nativeMiddleName :: T,
       -- | Native last name of the user; 1-255 characters
-      native_last_name :: T,
+      nativeLastName :: T,
       -- | Birthdate of the user 
       birthdate :: Date,
       -- | Gender of the user, "male" or "female" 
       gender :: T,
       -- | A two-letter ISO 3166-1 alpha-2 country code of the user's country 
-      country_code :: T,
+      countryCode :: T,
       -- | A two-letter ISO 3166-1 alpha-2 country code of the user's residence country
-      residence_country_code :: T
+      residenceCountryCode :: T
     }
   deriving (Show, Eq, Generic)
 data IdentityDocument
@@ -2401,13 +2401,13 @@ data IdentityDocument
     { -- | Document number; 1-24 characters 
       number :: T,
       -- | Document expiry date; may be null 
-      expiry_date :: Date,
+      expiryDate :: (Maybe) (Date),
       -- | Front side of the document
-      front_side :: DatedFile,
+      frontSide :: DatedFile,
       -- | Reverse side of the document; only for driver license and identity card 
-      reverse_side :: DatedFile,
+      reverseSide :: DatedFile,
       -- | Selfie with the document; may be null 
-      selfie :: DatedFile,
+      selfie :: (Maybe) (DatedFile),
       -- | List of files containing a certified English translation of the document
       translation :: [DatedFile]
     }
@@ -2418,11 +2418,11 @@ data InputIdentityDocument
     { -- | Document number; 1-24 characters 
       number :: T,
       -- | Document expiry date, if available 
-      expiry_date :: Date,
+      expiryDate :: Date,
       -- | Front side of the document
-      front_side :: InputFile,
+      frontSide :: InputFile,
       -- | Reverse side of the document; only for driver license and identity card 
-      reverse_side :: InputFile,
+      reverseSide :: InputFile,
       -- | Selfie with the document, if available 
       selfie :: InputFile,
       -- | List of files containing a certified English translation of the document
@@ -2452,7 +2452,7 @@ data PassportElement
   = -- | A Telegram Passport element containing the user's personal details 
   PassportElementPersonalDetails
     { -- | Personal details of the user
-      personal_details :: PersonalDetails
+      personalDetails :: PersonalDetails
     }
   | -- | A Telegram Passport element containing the user's passport 
   PassportElementPassport
@@ -2462,17 +2462,17 @@ data PassportElement
   | -- | A Telegram Passport element containing the user's driver license 
   PassportElementDriverLicense
     { -- | Driver license
-      driver_license :: IdentityDocument
+      driverLicense :: IdentityDocument
     }
   | -- | A Telegram Passport element containing the user's identity card 
   PassportElementIdentityCard
     { -- | Identity card
-      identity_card :: IdentityDocument
+      identityCard :: IdentityDocument
     }
   | -- | A Telegram Passport element containing the user's internal passport 
   PassportElementInternalPassport
     { -- | Internal passport
-      internal_passport :: IdentityDocument
+      internalPassport :: IdentityDocument
     }
   | -- | A Telegram Passport element containing the user's address 
   PassportElementAddress
@@ -2482,37 +2482,37 @@ data PassportElement
   | -- | A Telegram Passport element containing the user's utility bill 
   PassportElementUtilityBill
     { -- | Utility bill
-      utility_bill :: PersonalDocument
+      utilityBill :: PersonalDocument
     }
   | -- | A Telegram Passport element containing the user's bank statement 
   PassportElementBankStatement
     { -- | Bank statement
-      bank_statement :: PersonalDocument
+      bankStatement :: PersonalDocument
     }
   | -- | A Telegram Passport element containing the user's rental agreement 
   PassportElementRentalAgreement
     { -- | Rental agreement
-      rental_agreement :: PersonalDocument
+      rentalAgreement :: PersonalDocument
     }
   | -- | A Telegram Passport element containing the user's passport registration pages 
   PassportElementPassportRegistration
     { -- | Passport registration pages
-      passport_registration :: PersonalDocument
+      passportRegistration :: PersonalDocument
     }
   | -- | A Telegram Passport element containing the user's temporary registration 
   PassportElementTemporaryRegistration
     { -- | Temporary registration
-      temporary_registration :: PersonalDocument
+      temporaryRegistration :: PersonalDocument
     }
   | -- | A Telegram Passport element containing the user's phone number 
   PassportElementPhoneNumber
     { -- | Phone number
-      phone_number :: T
+      phoneNumber :: T
     }
   | -- | A Telegram Passport element containing the user's email address 
   PassportElementEmailAddress
     { -- | Email address
-      email_address :: T
+      emailAddress :: T
     }
   deriving (Show, Eq, Generic)
 -- | Contains information about a Telegram Passport element to be saved
@@ -2520,7 +2520,7 @@ data InputPassportElement
   = -- | A Telegram Passport element to be saved containing the user's personal details 
   InputPassportElementPersonalDetails
     { -- | Personal details of the user
-      personal_details :: PersonalDetails
+      personalDetails :: PersonalDetails
     }
   | -- | A Telegram Passport element to be saved containing the user's passport 
   InputPassportElementPassport
@@ -2530,17 +2530,17 @@ data InputPassportElement
   | -- | A Telegram Passport element to be saved containing the user's driver license 
   InputPassportElementDriverLicense
     { -- | The driver license to be saved
-      driver_license :: InputIdentityDocument
+      driverLicense :: InputIdentityDocument
     }
   | -- | A Telegram Passport element to be saved containing the user's identity card 
   InputPassportElementIdentityCard
     { -- | The identity card to be saved
-      identity_card :: InputIdentityDocument
+      identityCard :: InputIdentityDocument
     }
   | -- | A Telegram Passport element to be saved containing the user's internal passport 
   InputPassportElementInternalPassport
     { -- | The internal passport to be saved
-      internal_passport :: InputIdentityDocument
+      internalPassport :: InputIdentityDocument
     }
   | -- | A Telegram Passport element to be saved containing the user's address 
   InputPassportElementAddress
@@ -2550,37 +2550,37 @@ data InputPassportElement
   | -- | A Telegram Passport element to be saved containing the user's utility bill 
   InputPassportElementUtilityBill
     { -- | The utility bill to be saved
-      utility_bill :: InputPersonalDocument
+      utilityBill :: InputPersonalDocument
     }
   | -- | A Telegram Passport element to be saved containing the user's bank statement 
   InputPassportElementBankStatement
     { -- | The bank statement to be saved
-      bank_statement :: InputPersonalDocument
+      bankStatement :: InputPersonalDocument
     }
   | -- | A Telegram Passport element to be saved containing the user's rental agreement 
   InputPassportElementRentalAgreement
     { -- | The rental agreement to be saved
-      rental_agreement :: InputPersonalDocument
+      rentalAgreement :: InputPersonalDocument
     }
   | -- | A Telegram Passport element to be saved containing the user's passport registration 
   InputPassportElementPassportRegistration
     { -- | The passport registration page to be saved
-      passport_registration :: InputPersonalDocument
+      passportRegistration :: InputPersonalDocument
     }
   | -- | A Telegram Passport element to be saved containing the user's temporary registration 
   InputPassportElementTemporaryRegistration
     { -- | The temporary registration document to be saved
-      temporary_registration :: InputPersonalDocument
+      temporaryRegistration :: InputPersonalDocument
     }
   | -- | A Telegram Passport element to be saved containing the user's phone number 
   InputPassportElementPhoneNumber
     { -- | The phone number to be saved
-      phone_number :: T
+      phoneNumber :: T
     }
   | -- | A Telegram Passport element to be saved containing the user's email address 
   InputPassportElementEmailAddress
     { -- | The email address to be saved
-      email_address :: T
+      emailAddress :: T
     }
   deriving (Show, Eq, Generic)
 data PassportElements
@@ -2599,7 +2599,7 @@ data PassportElementErrorSource
   | -- | One of the data fields contains an error. The error will be considered resolved when the value of the field changes 
   PassportElementErrorSourceDataField
     { -- | Field name
-      field_name :: T
+      fieldName :: T
     }
   | -- | The front side of the document contains an error. The error will be considered resolved when the file with the front side changes
   PassportElementErrorSourceFrontSide
@@ -2616,7 +2616,7 @@ data PassportElementErrorSource
   | -- | One of files with the translation of the document contains an error. The error will be considered resolved when the file changes 
   PassportElementErrorSourceTranslationFile
     { -- | Index of a file with the error
-      file_index :: I32
+      fileIndex :: I32
     }
   | -- | The translation of the document contains an error. The error will be considered resolved when the list of translation files changes
   PassportElementErrorSourceTranslationFiles
@@ -2625,7 +2625,7 @@ data PassportElementErrorSource
   | -- | The file contains an error. The error will be considered resolved when the file changes 
   PassportElementErrorSourceFile
     { -- | Index of a file with the error
-      file_index :: I32
+      fileIndex :: I32
     }
   | -- | The list of attached files contains an error. The error will be considered resolved when the list of files changes
   PassportElementErrorSourceFiles
@@ -2649,18 +2649,18 @@ data PassportSuitableElement
     { -- | Type of the element 
       type_ :: PassportElementType,
       -- | True, if a selfie is required with the identity document
-      is_selfie_required :: Bool,
+      isSelfieRequired :: Bool,
       -- | True, if a certified English translation is required with the document 
-      is_translation_required :: Bool,
+      isTranslationRequired :: Bool,
       -- | True, if personal details must include the user's name in the language of their country of residence
-      is_native_name_required :: Bool
+      isNativeNameRequired :: Bool
     }
   deriving (Show, Eq, Generic)
 data PassportRequiredElement
   = -- | Contains a description of the required Telegram Passport element that was requested by a service 
   PassportRequiredElement
     { -- | List of Telegram Passport elements any of which is enough to provide
-      suitable_elements :: [PassportSuitableElement]
+      suitableElements :: [PassportSuitableElement]
     }
   deriving (Show, Eq, Generic)
 data PassportAuthorizationForm
@@ -2669,9 +2669,9 @@ data PassportAuthorizationForm
     { -- | Unique identifier of the authorization form
       id :: I32,
       -- | Information about the Telegram Passport elements that need to be provided to complete the form
-      required_elements :: [PassportRequiredElement],
+      requiredElements :: [PassportRequiredElement],
       -- | URL for the privacy policy of the service; may be empty
-      privacy_policy_url :: T
+      privacyPolicyUrl :: T
     }
   deriving (Show, Eq, Generic)
 data PassportElementsWithErrors
@@ -2702,11 +2702,11 @@ data EncryptedPassportElement
       -- | Encrypted JSON-encoded data about the user 
       data_ :: ByteString64,
       -- | The front side of an identity document 
-      front_side :: DatedFile,
+      frontSide :: DatedFile,
       -- | The reverse side of an identity document; may be null 
-      reverse_side :: DatedFile,
+      reverseSide :: (Maybe) (DatedFile),
       -- | Selfie with the document; may be null 
-      selfie :: DatedFile,
+      selfie :: (Maybe) (DatedFile),
       -- | List of files containing a certified English translation of the document 
       translation :: [DatedFile],
       -- | List of attached files 
@@ -2722,49 +2722,49 @@ data InputPassportElementErrorSource
   = -- | The element contains an error in an unspecified place. The error will be considered resolved when new data is added 
   InputPassportElementErrorSourceUnspecified
     { -- | Current hash of the entire element
-      element_hash :: ByteString64
+      elementHash :: ByteString64
     }
   | -- | A data field contains an error. The error is considered resolved when the field's value changes 
   InputPassportElementErrorSourceDataField
     { -- | Field name 
-      field_name :: T,
+      fieldName :: T,
       -- | Current data hash
-      data_hash :: ByteString64
+      dataHash :: ByteString64
     }
   | -- | The front side of the document contains an error. The error is considered resolved when the file with the front side of the document changes 
   InputPassportElementErrorSourceFrontSide
     { -- | Current hash of the file containing the front side
-      file_hash :: ByteString64
+      fileHash :: ByteString64
     }
   | -- | The reverse side of the document contains an error. The error is considered resolved when the file with the reverse side of the document changes 
   InputPassportElementErrorSourceReverseSide
     { -- | Current hash of the file containing the reverse side
-      file_hash :: ByteString64
+      fileHash :: ByteString64
     }
   | -- | The selfie contains an error. The error is considered resolved when the file with the selfie changes 
   InputPassportElementErrorSourceSelfie
     { -- | Current hash of the file containing the selfie
-      file_hash :: ByteString64
+      fileHash :: ByteString64
     }
   | -- | One of the files containing the translation of the document contains an error. The error is considered resolved when the file with the translation changes 
   InputPassportElementErrorSourceTranslationFile
     { -- | Current hash of the file containing the translation
-      file_hash :: ByteString64
+      fileHash :: ByteString64
     }
   | -- | The translation of the document contains an error. The error is considered resolved when the list of files changes 
   InputPassportElementErrorSourceTranslationFiles
     { -- | Current hashes of all files with the translation
-      file_hashes :: [ByteString64]
+      fileHashes :: [ByteString64]
     }
   | -- | The file contains an error. The error is considered resolved when the file changes 
   InputPassportElementErrorSourceFile
     { -- | Current hash of the file which has the error
-      file_hash :: ByteString64
+      fileHash :: ByteString64
     }
   | -- | The list of attached files contains an error. The error is considered resolved when the file list changes 
   InputPassportElementErrorSourceFiles
     { -- | Current hashes of all attached files
-      file_hashes :: [ByteString64]
+      fileHashes :: [ByteString64]
     }
   deriving (Show, Eq, Generic)
 data InputPassportElementError
@@ -2785,7 +2785,7 @@ data MessageContent
     { -- | Text of the message 
       text_2 :: FormattedText,
       -- | A preview of the web page that's mentioned in the text; may be null
-      web_page :: WebPage
+      webPage :: (Maybe) (WebPage)
     }
   | -- | An animation message (GIF-style). 
   MessageAnimation
@@ -2794,7 +2794,7 @@ data MessageContent
       -- | Animation caption 
       caption :: FormattedText,
       -- | True, if the animation thumbnail must be blurred and the animation must be shown only while tapped
-      is_secret :: Bool
+      isSecret :: Bool
     }
   | -- | An audio message 
   MessageAudio
@@ -2817,7 +2817,7 @@ data MessageContent
       -- | Photo caption 
       caption :: FormattedText,
       -- | True, if the photo must be blurred and must be shown only while tapped
-      is_secret :: Bool
+      isSecret :: Bool
     }
   | -- | An expired photo message (self-destructed after TTL has elapsed)
   MessageExpiredPhoto
@@ -2835,7 +2835,7 @@ data MessageContent
       -- | Video caption 
       caption :: FormattedText,
       -- | True, if the video thumbnail must be blurred and the video must be shown only while tapped
-      is_secret :: Bool
+      isSecret :: Bool
     }
   | -- | An expired video message (self-destructed after TTL has elapsed)
   MessageExpiredVideo
@@ -2844,29 +2844,29 @@ data MessageContent
   | -- | A video note message 
   MessageVideoNote
     { -- | The video note description 
-      video_note :: VideoNote,
+      videoNote :: VideoNote,
       -- | True, if at least one of the recipients has viewed the video note 
-      is_viewed :: Bool,
+      isViewed :: Bool,
       -- | True, if the video note thumbnail must be blurred and the video note must be shown only while tapped
-      is_secret :: Bool
+      isSecret :: Bool
     }
   | -- | A voice note message 
   MessageVoiceNote
     { -- | The voice note description 
-      voice_note :: VoiceNote,
+      voiceNote :: VoiceNote,
       -- | Voice note caption 
       caption :: FormattedText,
       -- | True, if at least one of the recipients has listened to the voice note
-      is_listened :: Bool
+      isListened :: Bool
     }
   | -- | A message with a location 
   MessageLocation
     { -- | The location description 
       location :: Location,
       -- | Time relative to the message sent date until which the location can be updated, in seconds
-      live_period :: I32,
+      livePeriod :: I32,
       -- | Left time for which the location can be updated, in seconds. updateMessageContent is not sent when this field changes
-      expires_in :: I32
+      expiresIn :: I32
     }
   | -- | A message with information about a venue 
   MessageVenue
@@ -2881,15 +2881,15 @@ data MessageContent
   | -- | A dice message. The dice value is randomly generated by the server
   MessageDice
     { -- | The animated sticker with the initial dice animation; may be null if unknown. updateMessageContent will be sent when the sticker became known
-      initial_state_sticker :: Sticker,
+      initialStateSticker :: (Maybe) (Sticker),
       -- | The animated sticker with the final dice animation; may be null if unknown. updateMessageContent will be sent when the sticker became known
-      final_state_sticker :: Sticker,
+      finalStateSticker :: (Maybe) (Sticker),
       -- | Emoji on which the dice throw animation is based
       emoji :: T,
       -- | The dice value. If the value is 0, the dice don't have final state yet
       value :: I32,
       -- | Number of frame after which a success animation like a shower of confetti needs to be shown on updateMessageSendSucceeded
-      success_animation_frame_number :: I32
+      successAnimationFrameNumber :: I32
     }
   | -- | A message with a game 
   MessageGame
@@ -2908,24 +2908,24 @@ data MessageContent
       -- | A message with an invoice from a bot 
       description :: T,
       -- | Product photo; may be null 
-      photo :: Photo,
+      photo_2 :: (Maybe) (Photo),
       -- | Currency for the product price 
       currency :: T,
       -- | Product total price in the minimal quantity of the currency
-      total_amount :: I53,
+      totalAmount :: I53,
       -- | Unique invoice bot start_parameter. To share an invoice use the URL https://t.me/{bot_username}?start={start_parameter} 
-      start_parameter :: T,
+      startParameter :: T,
       -- | True, if the invoice is a test invoice
-      is_test :: Bool,
+      isTest :: Bool,
       -- | True, if the shipping address should be specified 
-      need_shipping_address :: Bool,
+      needShippingAddress :: Bool,
       -- | The identifier of the message with the receipt, after the product has been purchased
-      receipt_message_id :: I53
+      receiptMessageId :: I53
     }
   | -- | A message with information about an ended call 
   MessageCall
     { -- | Reason why the call was discarded 
-      discard_reason :: CallDiscardReason,
+      discardReason :: CallDiscardReason,
       -- | Call duration, in seconds
       duration :: I32
     }
@@ -2934,7 +2934,7 @@ data MessageContent
     { -- | Title of the basic group 
       title :: T,
       -- | User identifiers of members in the basic group
-      member_user_ids :: [I32]
+      memberUserIds :: [I32]
     }
   | -- | A newly created supergroup or channel 
   MessageSupergroupChatCreate
@@ -2958,7 +2958,7 @@ data MessageContent
   | -- | New chat members were added 
   MessageChatAddMembers
     { -- | User identifiers of the new members
-      member_user_ids :: [I32]
+      memberUserIds :: [I32]
     }
   | -- | A new member joined the chat by invite link
   MessageChatJoinByLink
@@ -2967,24 +2967,24 @@ data MessageContent
   | -- | A chat member was deleted 
   MessageChatDeleteMember
     { -- | User identifier of the deleted chat member
-      user_id :: I32
+      userId :: I32
     }
   | -- | A basic group was upgraded to a supergroup and was deactivated as the result 
   MessageChatUpgradeTo
     { -- | Identifier of the supergroup to which the basic group was upgraded
-      supergroup_id :: I32
+      supergroupId :: I32
     }
   | -- | A supergroup has been created from a basic group 
   MessageChatUpgradeFrom
     { -- | Title of the newly created supergroup 
       title :: T,
       -- | The identifier of the original basic group
-      basic_group_id :: I32
+      basicGroupId :: I32
     }
   | -- | A message has been pinned 
   MessagePinMessage
     { -- | Identifier of the pinned message, can be an identifier of a deleted message or 0
-      message_id :: I53
+      messageId :: I53
     }
   | -- | A screenshot of a message in the chat has been taken
   MessageScreenshotTaken
@@ -3003,39 +3003,39 @@ data MessageContent
   | -- | A new high score was achieved in a game 
   MessageGameScore
     { -- | Identifier of the message with the game, can be an identifier of a deleted message 
-      game_message_id :: I53,
+      gameMessageId :: I53,
       -- | Identifier of the game; may be different from the games presented in the message with the game 
-      game_id :: I64,
+      gameId :: I64,
       -- | New score
       score :: I32
     }
   | -- | A payment has been completed 
   MessagePaymentSuccessful
     { -- | Identifier of the message with the corresponding invoice; can be an identifier of a deleted message 
-      invoice_message_id :: I53,
+      invoiceMessageId :: I53,
       -- | Currency for the price of the product 
       currency :: T,
       -- | Total price for the product, in the minimal quantity of the currency
-      total_amount :: I53
+      totalAmount :: I53
     }
   | -- | A payment has been completed; for bots only 
   MessagePaymentSuccessfulBot
     { -- | Identifier of the message with the corresponding invoice; can be an identifier of a deleted message 
-      invoice_message_id :: I53,
+      invoiceMessageId :: I53,
       -- | Currency for price of the product
       currency :: T,
       -- | Total price for the product, in the minimal quantity of the currency 
-      total_amount :: I53,
+      totalAmount :: I53,
       -- | Invoice payload 
-      invoice_payload :: ByteString64,
+      invoicePayload :: ByteString64,
       -- | Identifier of the shipping option chosen by the user; may be empty if not applicable 
-      shipping_option_id :: T,
+      shippingOptionId :: T,
       -- | Information about the order; may be null
-      order_info :: OrderInfo,
+      orderInfo :: (Maybe) (OrderInfo),
       -- | Telegram payment identifier 
-      telegram_payment_charge_id :: T,
+      telegramPaymentChargeId :: T,
       -- | Provider payment identifier
-      provider_payment_charge_id :: T
+      providerPaymentChargeId :: T
     }
   | -- | A contact has registered with Telegram
   MessageContactRegistered
@@ -3044,7 +3044,7 @@ data MessageContent
   | -- | The current user has connected a website by logging in using Telegram Login Widget on it 
   MessageWebsiteConnected
     { -- | Domain name of the connected website
-      domain_name :: T
+      domainName :: T
     }
   | -- | Telegram Passport data has been sent 
   MessagePassportDataSent
@@ -3134,7 +3134,7 @@ data TextEntityType
   | -- | A text shows instead of a raw mention of the user (e.g., when the user has no username) 
   TextEntityTypeMentionName
     { -- | Identifier of the mentioned user
-      user_id :: I32
+      userId :: I32
     }
   deriving (Show, Eq, Generic)
 data InputThumbnail
@@ -3153,7 +3153,7 @@ data MessageSchedulingState
   = -- | The message will be sent at the specified date 
   MessageSchedulingStateSendAtDate
     { -- | Date the message will be sent. The date must be within 367 days in the future
-      send_date :: I32
+      sendDate :: I32
     }
   | -- | The message will be sent when the peer will be online. Applicable to private chats only and when the exact online status of the peer is known
   MessageSchedulingStateSendWhenOnline
@@ -3164,11 +3164,11 @@ data SendMessageOptions
   = -- | Options to be used when a message is send
   SendMessageOptions
     { -- | Pass true to disable notification for the message. Must be false if the message is sent to a secret chat
-      disable_notification :: Bool,
+      disableNotification :: Bool,
       -- | Pass true if the message is sent from the background
-      from_background :: Bool,
+      fromBackground :: Bool,
       -- | Message scheduling state. Messages sent to a secret chat, live location messages and self-destructing messages can't be scheduled
-      scheduling_state :: MessageSchedulingState
+      schedulingState :: MessageSchedulingState
     }
   deriving (Show, Eq, Generic)
 -- | The content of a message to send
@@ -3178,9 +3178,9 @@ data InputMessageContent
     { -- | Formatted text to be sent; 1-GetOption("message_text_length_max") characters. Only Bold, Italic, Underline, Strikethrough, Code, Pre, PreCode, TextUrl and MentionName entities are allowed to be specified manually
       text :: FormattedText,
       -- | True, if rich web page previews for URLs in the message text should be disabled 
-      disable_web_page_preview :: Bool,
+      disableWebPagePreview :: Bool,
       -- | True, if a chat message draft should be deleted
-      clear_draft :: Bool
+      clearDraft :: Bool
     }
   | -- | An animation message (GIF-style). 
   InputMessageAnimation
@@ -3202,7 +3202,7 @@ data InputMessageContent
     { -- | Audio file to be sent 
       audio :: InputFile,
       -- | Thumbnail of the cover for the album, if available 
-      album_cover_thumbnail :: InputThumbnail,
+      albumCoverThumbnail :: InputThumbnail,
       -- | Duration of the audio, in seconds; may be replaced by the server 
       duration :: I32,
       -- | Title of the audio; 0-64 characters; may be replaced by the server
@@ -3228,7 +3228,7 @@ data InputMessageContent
       -- | Photo thumbnail to be sent, this is sent to the other party in secret chats only 
       thumbnail :: InputThumbnail,
       -- | File identifiers of the stickers added to the photo, if applicable 
-      added_sticker_file_ids :: [I32],
+      addedStickerFileIds :: [I32],
       -- | Photo width 
       width :: I32,
       -- | Photo height 
@@ -3256,7 +3256,7 @@ data InputMessageContent
       -- | Video thumbnail, if available 
       thumbnail :: InputThumbnail,
       -- | File identifiers of the stickers added to the video, if applicable
-      added_sticker_file_ids :: [I32],
+      addedStickerFileIds :: [I32],
       -- | Duration of the video, in seconds 
       duration :: I32,
       -- | Video width 
@@ -3264,7 +3264,7 @@ data InputMessageContent
       -- | Video height 
       height :: I32,
       -- | True, if the video should be tried to be streamed
-      supports_streaming :: Bool,
+      supportsStreaming :: Bool,
       -- | Video caption; 0-GetOption("message_caption_length_max") characters 
       caption :: FormattedText,
       -- | Video TTL (Time To Live), in seconds (0-60). A non-zero TTL can be specified only in private chats
@@ -3273,7 +3273,7 @@ data InputMessageContent
   | -- | A video note message 
   InputMessageVideoNote
     { -- | Video note to be sent 
-      video_note :: InputFile,
+      videoNote :: InputFile,
       -- | Video thumbnail, if available 
       thumbnail :: InputThumbnail,
       -- | Duration of the video, in seconds 
@@ -3284,7 +3284,7 @@ data InputMessageContent
   | -- | A voice note message 
   InputMessageVoiceNote
     { -- | Voice note to be sent 
-      voice_note :: InputFile,
+      voiceNote :: InputFile,
       -- | Duration of the voice note, in seconds 
       duration :: I32,
       -- | Waveform representation of the voice note, in 5-bit format 
@@ -3297,7 +3297,7 @@ data InputMessageContent
     { -- | Location to be sent 
       location :: Location,
       -- | Period for which the location can be updated, in seconds; should be between 60 and 86400 for a live location and 0 otherwise
-      live_period :: I32
+      livePeriod :: I32
     }
   | -- | A message with information about a venue 
   InputMessageVenue
@@ -3314,14 +3314,14 @@ data InputMessageContent
     { -- | Emoji on which the dice throw animation is based 
       emoji :: T,
       -- | True, if a chat message draft should be deleted
-      clear_draft :: Bool
+      clearDraft :: Bool
     }
   | -- | A message with a game; not supported for channels or secret chats 
   InputMessageGame
     { -- | User identifier of the bot that owns the game 
-      bot_user_id :: I32,
+      botUserId :: I32,
       -- | Short name of the game
-      game_short_name :: T
+      gameShortName :: T
     }
   | -- | A message with an invoice; can be used only by bots and only in private chats 
   InputMessageInvoice
@@ -3332,21 +3332,21 @@ data InputMessageContent
       -- | A message with an invoice; can be used only by bots and only in private chats 
       description :: T,
       -- | Product photo URL; optional 
-      photo_url :: T,
+      photoUrl :: T,
       -- | Product photo size 
-      photo_size :: I32,
+      photoSize :: I32,
       -- | Product photo width 
-      photo_width :: I32,
+      photoWidth :: I32,
       -- | Product photo height
-      photo_height :: I32,
+      photoHeight :: I32,
       -- | The invoice payload 
       payload :: ByteString64,
       -- | Payment provider token 
-      provider_token :: T,
+      providerToken :: T,
       -- | JSON-encoded data about the invoice, which will be shared with the payment provider 
-      provider_data :: T,
+      providerData :: T,
       -- | Unique invoice bot start_parameter for the generation of this invoice
-      start_parameter :: T
+      startParameter :: T
     }
   | -- | A message with a poll. Polls can't be sent to secret chats. Polls can be sent only to a private chat with a bot 
   InputMessagePoll
@@ -3355,28 +3355,28 @@ data InputMessageContent
       -- | List of poll answer options, 2-10 strings 1-100 characters each
       options :: [T],
       -- | True, if the poll voters are anonymous. Non-anonymous polls can't be sent or forwarded to channels 
-      is_anonymous :: Bool,
+      isAnonymous :: Bool,
       -- | Type of the poll
       type_ :: PollType,
       -- | Amount of time the poll will be active after creation, in seconds; for bots only
-      open_period :: I32,
+      openPeriod :: I32,
       -- | Point in time (Unix timestamp) when the poll will be automatically closed; for bots only
-      close_date :: I32,
+      closeDate :: I32,
       -- | True, if the poll needs to be sent already closed; for bots only
-      is_closed :: Bool
+      isClosed :: Bool
     }
   | -- | A forwarded message 
   InputMessageForwarded
     { -- | Identifier for the chat this forwarded message came from 
-      from_chat_id :: I53,
+      fromChatId :: I53,
       -- | Identifier of the message to forward
-      message_id :: I53,
+      messageId :: I53,
       -- | True, if a game message should be shared within a launched game; applies only to game messages
-      in_game_share :: Bool,
+      inGameShare :: Bool,
       -- | True, if content of the message needs to be copied without a link to the original message. Always true if the message is forwarded to a secret chat
-      send_copy :: Bool,
+      sendCopy :: Bool,
       -- | True, if media caption of the message copy needs to be removed. Ignored if send_copy is false
-      remove_caption :: Bool
+      removeCaption :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Represents a filter for message search results
@@ -3524,7 +3524,7 @@ data UserStatus
   | -- | The user is offline 
   UserStatusOffline
     { -- | Point in time (Unix timestamp) when the user was last online
-      was_online :: I32
+      wasOnline :: I32
     }
   | -- | The user was online recently
   UserStatusRecently
@@ -3563,19 +3563,19 @@ data StickerSet
       -- | Name of the sticker set 
       name :: T,
       -- | Sticker set thumbnail in WEBP format with width and height 100; may be null. The file can be downloaded only before the thumbnail is changed
-      thumbnail :: PhotoSize,
+      thumbnail :: (Maybe) (PhotoSize),
       -- | True, if the sticker set has been installed by the current user 
-      is_installed :: Bool,
+      isInstalled :: Bool,
       -- | True, if the sticker set has been archived. A sticker set can't be installed and archived simultaneously
-      is_archived :: Bool,
+      isArchived :: Bool,
       -- | True, if the sticker set is official 
-      is_official :: Bool,
+      isOfficial :: Bool,
       -- | True, is the stickers in the set are animated 
-      is_animated :: Bool,
+      isAnimated :: Bool,
       -- | True, if the stickers in the set are masks 
-      is_masks :: Bool,
+      isMasks :: Bool,
       -- | True for already viewed trending sticker sets
-      is_viewed :: Bool,
+      isViewed :: Bool,
       -- | List of stickers in this set 
       stickers :: [Sticker],
       -- | A list of emoji corresponding to the stickers in the same order. The list is only for informational purposes, because a sticker is always sent with a fixed emoji from the corresponding Sticker object
@@ -3592,19 +3592,19 @@ data StickerSetInfo
       -- | Name of the sticker set 
       name :: T,
       -- | Sticker set thumbnail in WEBP format with width and height 100; may be null
-      thumbnail :: PhotoSize,
+      thumbnail :: (Maybe) (PhotoSize),
       -- | True, if the sticker set has been installed by current user 
-      is_installed :: Bool,
+      isInstalled :: Bool,
       -- | True, if the sticker set has been archived. A sticker set can't be installed and archived simultaneously
-      is_archived :: Bool,
+      isArchived :: Bool,
       -- | True, if the sticker set is official 
-      is_official :: Bool,
+      isOfficial :: Bool,
       -- | True, is the stickers in the set are animated 
-      is_animated :: Bool,
+      isAnimated :: Bool,
       -- | True, if the stickers in the set are masks 
-      is_masks :: Bool,
+      isMasks :: Bool,
       -- | True for already viewed trending sticker sets
-      is_viewed :: Bool,
+      isViewed :: Bool,
       -- | Total number of stickers in the set 
       size :: I32,
       -- | Contains up to the first 5 stickers from the set, depending on the context. If the client needs more stickers the full set should be requested
@@ -3615,7 +3615,7 @@ data StickerSets
   = -- | Represents a list of sticker sets 
   StickerSets
     { -- | Approximate total number of sticker sets found 
-      total_count :: I32,
+      totalCount :: I32,
       -- | List of sticker sets
       sets :: [StickerSetInfo]
     }
@@ -3647,15 +3647,15 @@ data CallProtocol
   = -- | Specifies the supported call protocols
   CallProtocol
     { -- | True, if UDP peer-to-peer connections are supported
-      udp_p2p :: Bool,
+      udpP2p :: Bool,
       -- | True, if connection through UDP reflectors is supported
-      udp_reflector :: Bool,
+      udpReflector :: Bool,
       -- | The minimum supported API layer; use 65
-      min_layer :: I32,
+      minLayer :: I32,
       -- | The maximum supported API layer; use 65
-      max_layer :: I32,
+      maxLayer :: I32,
       -- | List of supported libtgvoip versions
-      library_versions :: [T]
+      libraryVersions :: [T]
     }
   deriving (Show, Eq, Generic)
 data CallConnection
@@ -3670,7 +3670,7 @@ data CallConnection
       -- | Reflector port number 
       port :: I32,
       -- | Connection peer tag
-      peer_tag :: ByteString64
+      peerTag :: ByteString64
     }
   deriving (Show, Eq, Generic)
 data CallId
@@ -3685,9 +3685,9 @@ data CallState
   = -- | The call is pending, waiting to be accepted by a user 
   CallStatePending
     { -- | True, if the call has already been created by the server 
-      is_created :: Bool,
+      isCreated :: Bool,
       -- | True, if the call has already been received by the other party
-      is_received :: Bool
+      isReceived :: Bool
     }
   | -- | The call has been answered and encryption keys are being exchanged
   CallStateExchangingKeys
@@ -3702,11 +3702,11 @@ data CallState
       -- | A JSON-encoded call config 
       config :: T,
       -- | Call encryption key 
-      encryption_key :: ByteString64,
+      encryptionKey :: ByteString64,
       -- | Encryption key emojis fingerprint 
       emojis :: [T],
       -- | True, if peer-to-peer connection is allowed by users privacy settings
-      allow_p2p :: Bool
+      allowP2p :: Bool
     }
   | -- | The call is hanging up after discardCall has been called
   CallStateHangingUp
@@ -3717,9 +3717,9 @@ data CallState
     { -- | The reason, why the call has ended 
       reason :: CallDiscardReason,
       -- | True, if the call rating should be sent to the server 
-      need_rating :: Bool,
+      needRating :: Bool,
       -- | True, if the call debug information should be sent to the server
-      need_debug_information :: Bool
+      needDebugInformation :: Bool
     }
   | -- | The call has ended with an error 
   CallStateError
@@ -3764,9 +3764,9 @@ data Call
     { -- | Call identifier, not persistent 
       id :: I32,
       -- | Peer user identifier 
-      user_id :: I32,
+      userId :: I32,
       -- | True, if the call is outgoing 
-      is_outgoing :: Bool,
+      isOutgoing :: Bool,
       -- | Call state
       state :: CallState
     }
@@ -3775,11 +3775,11 @@ data PhoneNumberAuthenticationSettings
   = -- | Contains settings for the authentication of the user's phone number
   PhoneNumberAuthenticationSettings
     { -- | Pass true if the authentication code may be sent via flash call to the specified phone number
-      allow_flash_call :: Bool,
+      allowFlashCall :: Bool,
       -- | Pass true if the authenticated phone number is used on the current device
-      is_current_phone_number :: Bool,
+      isCurrentPhoneNumber :: Bool,
       -- | For official applications only. True, if the app can use Android SMS Retriever API (requires Google Play Services >= 10.2) to automatically receive the authentication code from the SMS. See https://developers.google.com/identity/sms-retriever/ for more details
-      allow_sms_retriever_api :: Bool
+      allowSmsRetrieverApi :: Bool
     }
   deriving (Show, Eq, Generic)
 data Animations
@@ -3793,9 +3793,9 @@ data ImportedContacts
   = -- | Represents the result of an ImportContacts request 
   ImportedContacts
     { -- | User identifiers of the imported contacts in the same order as they were specified in the request; 0 if the contact is not yet a registered user
-      user_ids :: [I32],
+      userIds :: [I32],
       -- | The number of users that imported the corresponding contact; 0 for already registered users or if unavailable
-      importer_count :: [I32]
+      importerCount :: [I32]
     }
   deriving (Show, Eq, Generic)
 data HttpUrl
@@ -3814,23 +3814,23 @@ data InputInlineQueryResult
       -- | Title of the query result
       title :: T,
       -- | URL of the result thumbnail (JPEG, GIF, or MPEG4), if it exists 
-      thumbnail_url :: T,
+      thumbnailUrl :: T,
       -- | MIME type of the video thumbnail. If non-empty, must be one of "image/jpeg", "image/gif" and "video/mp4"
-      thumbnail_mime_type :: T,
+      thumbnailMimeType :: T,
       -- | The URL of the video file (file size must not exceed 1MB) 
-      video_url :: T,
+      videoUrl :: T,
       -- | MIME type of the video file. Must be one of "image/gif" and "video/mp4"
-      video_mime_type :: T,
+      videoMimeType :: T,
       -- | Duration of the video, in seconds 
-      video_duration :: I32,
+      videoDuration :: I32,
       -- | Width of the video 
-      video_width :: I32,
+      videoWidth :: I32,
       -- | Height of the video
-      video_height :: I32,
+      videoHeight :: I32,
       -- | The message reply markup. Must be of type replyMarkupInlineKeyboard or null
-      reply_markup :: ReplyMarkup,
+      replyMarkup :: ReplyMarkup,
       -- | The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageAnimation, InputMessageLocation, InputMessageVenue or InputMessageContact
-      input_message_content :: InputMessageContent
+      inputMessageContent :: InputMessageContent
     }
   | -- | Represents a link to an article or web page 
   InputInlineQueryResultArticle
@@ -3839,21 +3839,21 @@ data InputInlineQueryResult
       -- | URL of the result, if it exists 
       url :: T,
       -- | True, if the URL must be not shown 
-      hide_url :: Bool,
+      hideUrl :: Bool,
       -- | Title of the result
       title :: T,
       -- | Represents a link to an article or web page 
       description :: T,
       -- | URL of the result thumbnail, if it exists 
-      thumbnail_url :: T,
+      thumbnailUrl :: T,
       -- | Thumbnail width, if known 
-      thumbnail_width :: I32,
+      thumbnailWidth :: I32,
       -- | Thumbnail height, if known
-      thumbnail_height :: I32,
+      thumbnailHeight :: I32,
       -- | The message reply markup. Must be of type replyMarkupInlineKeyboard or null
-      reply_markup :: ReplyMarkup,
+      replyMarkup :: ReplyMarkup,
       -- | The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageLocation, InputMessageVenue or InputMessageContact
-      input_message_content :: InputMessageContent
+      inputMessageContent :: InputMessageContent
     }
   | -- | Represents a link to an MP3 audio file 
   InputInlineQueryResultAudio
@@ -3864,13 +3864,13 @@ data InputInlineQueryResult
       -- | Performer of the audio file
       performer :: T,
       -- | The URL of the audio file 
-      audio_url :: T,
+      audioUrl :: T,
       -- | Audio file duration, in seconds
-      audio_duration :: I32,
+      audioDuration :: I32,
       -- | The message reply markup. Must be of type replyMarkupInlineKeyboard or null
-      reply_markup :: ReplyMarkup,
+      replyMarkup :: ReplyMarkup,
       -- | The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageAudio, InputMessageLocation, InputMessageVenue or InputMessageContact
-      input_message_content :: InputMessageContent
+      inputMessageContent :: InputMessageContent
     }
   | -- | Represents a user contact 
   InputInlineQueryResultContact
@@ -3879,15 +3879,15 @@ data InputInlineQueryResult
       -- | User contact 
       contact :: Contact,
       -- | URL of the result thumbnail, if it exists 
-      thumbnail_url :: T,
+      thumbnailUrl :: T,
       -- | Thumbnail width, if known 
-      thumbnail_width :: I32,
+      thumbnailWidth :: I32,
       -- | Thumbnail height, if known
-      thumbnail_height :: I32,
+      thumbnailHeight :: I32,
       -- | The message reply markup. Must be of type replyMarkupInlineKeyboard or null
-      reply_markup :: ReplyMarkup,
+      replyMarkup :: ReplyMarkup,
       -- | The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageLocation, InputMessageVenue or InputMessageContact
-      input_message_content :: InputMessageContent
+      inputMessageContent :: InputMessageContent
     }
   | -- | Represents a link to a file 
   InputInlineQueryResultDocument
@@ -3898,28 +3898,28 @@ data InputInlineQueryResult
       -- | Represents a link to a file 
       description :: T,
       -- | URL of the file 
-      document_url :: T,
+      documentUrl :: T,
       -- | MIME type of the file content; only "application/pdf" and "application/zip" are currently allowed
-      mime_type :: T,
+      mimeType :: T,
       -- | The URL of the file thumbnail, if it exists 
-      thumbnail_url :: T,
+      thumbnailUrl :: T,
       -- | Width of the thumbnail 
-      thumbnail_width :: I32,
+      thumbnailWidth :: I32,
       -- | Height of the thumbnail
-      thumbnail_height :: I32,
+      thumbnailHeight :: I32,
       -- | The message reply markup. Must be of type replyMarkupInlineKeyboard or null
-      reply_markup :: ReplyMarkup,
+      replyMarkup :: ReplyMarkup,
       -- | The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageDocument, InputMessageLocation, InputMessageVenue or InputMessageContact
-      input_message_content :: InputMessageContent
+      inputMessageContent :: InputMessageContent
     }
   | -- | Represents a game 
   InputInlineQueryResultGame
     { -- | Unique identifier of the query result 
       id :: T,
       -- | Short name of the game 
-      game_short_name :: T,
+      gameShortName :: T,
       -- | Message reply markup. Must be of type replyMarkupInlineKeyboard or null
-      reply_markup :: ReplyMarkup
+      replyMarkup :: ReplyMarkup
     }
   | -- | Represents a point on the map 
   InputInlineQueryResultLocation
@@ -3928,19 +3928,19 @@ data InputInlineQueryResult
       -- | Location result 
       location :: Location,
       -- | Amount of time relative to the message sent time until the location can be updated, in seconds 
-      live_period :: I32,
+      livePeriod :: I32,
       -- | Title of the result 
       title :: T,
       -- | URL of the result thumbnail, if it exists 
-      thumbnail_url :: T,
+      thumbnailUrl :: T,
       -- | Thumbnail width, if known 
-      thumbnail_width :: I32,
+      thumbnailWidth :: I32,
       -- | Thumbnail height, if known
-      thumbnail_height :: I32,
+      thumbnailHeight :: I32,
       -- | The message reply markup. Must be of type replyMarkupInlineKeyboard or null
-      reply_markup :: ReplyMarkup,
+      replyMarkup :: ReplyMarkup,
       -- | The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageLocation, InputMessageVenue or InputMessageContact
-      input_message_content :: InputMessageContent
+      inputMessageContent :: InputMessageContent
     }
   | -- | Represents link to a JPEG image 
   InputInlineQueryResultPhoto
@@ -3951,34 +3951,34 @@ data InputInlineQueryResult
       -- | Represents link to a JPEG image 
       description :: T,
       -- | URL of the photo thumbnail, if it exists
-      thumbnail_url :: T,
+      thumbnailUrl :: T,
       -- | The URL of the JPEG photo (photo size must not exceed 5MB) 
-      photo_url :: T,
+      photoUrl :: T,
       -- | Width of the photo 
-      photo_width :: I32,
+      photoWidth :: I32,
       -- | Height of the photo
-      photo_height :: I32,
+      photoHeight :: I32,
       -- | The message reply markup. Must be of type replyMarkupInlineKeyboard or null
-      reply_markup :: ReplyMarkup,
+      replyMarkup :: ReplyMarkup,
       -- | The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessagePhoto, InputMessageLocation, InputMessageVenue or InputMessageContact
-      input_message_content :: InputMessageContent
+      inputMessageContent :: InputMessageContent
     }
   | -- | Represents a link to a WEBP or TGS sticker 
   InputInlineQueryResultSticker
     { -- | Unique identifier of the query result 
       id :: T,
       -- | URL of the sticker thumbnail, if it exists
-      thumbnail_url :: T,
+      thumbnailUrl :: T,
       -- | The URL of the WEBP or TGS sticker (sticker file size must not exceed 5MB) 
-      sticker_url :: T,
+      stickerUrl :: T,
       -- | Width of the sticker 
-      sticker_width :: I32,
+      stickerWidth :: I32,
       -- | Height of the sticker
-      sticker_height :: I32,
+      stickerHeight :: I32,
       -- | The message reply markup. Must be of type replyMarkupInlineKeyboard or null
-      reply_markup :: ReplyMarkup,
+      replyMarkup :: ReplyMarkup,
       -- | The content of the message to be sent. Must be one of the following types: InputMessageText, inputMessageSticker, InputMessageLocation, InputMessageVenue or InputMessageContact
-      input_message_content :: InputMessageContent
+      inputMessageContent :: InputMessageContent
     }
   | -- | Represents information about a venue 
   InputInlineQueryResultVenue
@@ -3987,15 +3987,15 @@ data InputInlineQueryResult
       -- | Venue result 
       venue :: Venue,
       -- | URL of the result thumbnail, if it exists 
-      thumbnail_url :: T,
+      thumbnailUrl :: T,
       -- | Thumbnail width, if known 
-      thumbnail_width :: I32,
+      thumbnailWidth :: I32,
       -- | Thumbnail height, if known
-      thumbnail_height :: I32,
+      thumbnailHeight :: I32,
       -- | The message reply markup. Must be of type replyMarkupInlineKeyboard or null
-      reply_markup :: ReplyMarkup,
+      replyMarkup :: ReplyMarkup,
       -- | The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageLocation, InputMessageVenue or InputMessageContact
-      input_message_content :: InputMessageContent
+      inputMessageContent :: InputMessageContent
     }
   | -- | Represents a link to a page containing an embedded video player or a video file 
   InputInlineQueryResultVideo
@@ -4006,21 +4006,21 @@ data InputInlineQueryResult
       -- | Represents a link to a page containing an embedded video player or a video file 
       description :: T,
       -- | The URL of the video thumbnail (JPEG), if it exists 
-      thumbnail_url :: T,
+      thumbnailUrl :: T,
       -- | URL of the embedded video player or video file 
-      video_url :: T,
+      videoUrl :: T,
       -- | MIME type of the content of the video URL, only "text/html" or "video/mp4" are currently supported
-      mime_type :: T,
+      mimeType :: T,
       -- | Width of the video 
-      video_width :: I32,
+      videoWidth :: I32,
       -- | Height of the video 
-      video_height :: I32,
+      videoHeight :: I32,
       -- | Video duration, in seconds
-      video_duration :: I32,
+      videoDuration :: I32,
       -- | The message reply markup. Must be of type replyMarkupInlineKeyboard or null
-      reply_markup :: ReplyMarkup,
+      replyMarkup :: ReplyMarkup,
       -- | The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageVideo, InputMessageLocation, InputMessageVenue or InputMessageContact
-      input_message_content :: InputMessageContent
+      inputMessageContent :: InputMessageContent
     }
   | -- | Represents a link to an opus-encoded audio file within an OGG container, single channel audio 
   InputInlineQueryResultVoiceNote
@@ -4029,13 +4029,13 @@ data InputInlineQueryResult
       -- | Title of the voice note
       title :: T,
       -- | The URL of the voice note file 
-      voice_note_url :: T,
+      voiceNoteUrl :: T,
       -- | Duration of the voice note, in seconds
-      voice_note_duration :: I32,
+      voiceNoteDuration :: I32,
       -- | The message reply markup. Must be of type replyMarkupInlineKeyboard or null
-      reply_markup :: ReplyMarkup,
+      replyMarkup :: ReplyMarkup,
       -- | The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageVoiceNote, InputMessageLocation, InputMessageVenue or InputMessageContact
-      input_message_content :: InputMessageContent
+      inputMessageContent :: InputMessageContent
     }
   deriving (Show, Eq, Generic)
 -- | Represents a single result of an inline query
@@ -4047,13 +4047,13 @@ data InlineQueryResult
       -- | URL of the result, if it exists 
       url :: T,
       -- | True, if the URL must be not shown 
-      hide_url :: Bool,
+      hideUrl :: Bool,
       -- | Title of the result
       title :: T,
       -- | Represents a link to an article or web page 
       description :: T,
       -- | Result thumbnail; may be null
-      thumbnail :: PhotoSize
+      thumbnail :: (Maybe) (PhotoSize)
     }
   | -- | Represents a user contact 
   InlineQueryResultContact
@@ -4062,7 +4062,7 @@ data InlineQueryResult
       -- | A user contact 
       contact :: Contact,
       -- | Result thumbnail; may be null
-      thumbnail :: PhotoSize
+      thumbnail :: (Maybe) (PhotoSize)
     }
   | -- | Represents a point on the map 
   InlineQueryResultLocation
@@ -4073,7 +4073,7 @@ data InlineQueryResult
       -- | Title of the result 
       title :: T,
       -- | Result thumbnail; may be null
-      thumbnail :: PhotoSize
+      thumbnail :: (Maybe) (PhotoSize)
     }
   | -- | Represents information about a venue 
   InlineQueryResultVenue
@@ -4082,7 +4082,7 @@ data InlineQueryResult
       -- | Venue result 
       venue :: Venue,
       -- | Result thumbnail; may be null
-      thumbnail :: PhotoSize
+      thumbnail :: (Maybe) (PhotoSize)
     }
   | -- | Represents information about a game 
   InlineQueryResultGame
@@ -4152,7 +4152,7 @@ data InlineQueryResult
     { -- | Unique identifier of the query result 
       id :: T,
       -- | Voice note 
-      voice_note :: VoiceNote,
+      voiceNote :: VoiceNote,
       -- | Title of the voice note
       title :: T
     }
@@ -4161,15 +4161,15 @@ data InlineQueryResults
   = -- | Represents the results of the inline query. Use sendInlineQueryResultMessage to send the result of the query 
   InlineQueryResults
     { -- | Unique identifier of the inline query 
-      inline_query_id :: I64,
+      inlineQueryId :: I64,
       -- | The offset for the next request. If empty, there are no more results 
-      next_offset :: T,
+      nextOffset :: T,
       -- | Results of the query
       results :: [InlineQueryResult],
       -- | If non-empty, this text should be shown on the button, which opens a private chat with the bot and sends the bot a start message with the switch_pm_parameter 
-      switch_pm_text :: T,
+      switchPmText :: T,
       -- | Parameter for the bot start message
-      switch_pm_parameter :: T
+      switchPmParameter :: T
     }
   deriving (Show, Eq, Generic)
 -- | Represents a payload of a callback query
@@ -4182,7 +4182,7 @@ data CallbackQueryPayload
   | -- | The payload from a game callback button 
   CallbackQueryPayloadGame
     { -- | A short name of the game that was attached to the callback button
-      game_short_name :: T
+      gameShortName :: T
     }
   deriving (Show, Eq, Generic)
 data CallbackQueryAnswer
@@ -4191,7 +4191,7 @@ data CallbackQueryAnswer
     { -- | Text of the answer 
       text :: T,
       -- | True, if an alert should be shown to the user instead of a toast notification 
-      show_alert :: Bool,
+      showAlert :: Bool,
       -- | URL to be opened
       url :: T
     }
@@ -4209,7 +4209,7 @@ data GameHighScore
     { -- | Position in the high score table 
       position :: I32,
       -- | User identifier 
-      user_id :: I32,
+      userId :: I32,
       -- | User score
       score :: I32
     }
@@ -4226,9 +4226,9 @@ data ChatEventAction
   = -- | A message was edited 
   ChatEventMessageEdited
     { -- | The original message before the edit 
-      old_message :: Message,
+      oldMessage :: Message,
       -- | The message after it was edited
-      new_message :: Message
+      newMessage :: Message
     }
   | -- | A message was deleted 
   ChatEventMessageDeleted
@@ -4260,105 +4260,105 @@ data ChatEventAction
   | -- | A new chat member was invited 
   ChatEventMemberInvited
     { -- | New member user identifier 
-      user_id :: I32,
+      userId :: I32,
       -- | New member status
       status :: ChatMemberStatus
     }
   | -- | A chat member has gained/lost administrator status, or the list of their administrator privileges has changed 
   ChatEventMemberPromoted
     { -- | Chat member user identifier 
-      user_id :: I32,
+      userId :: I32,
       -- | Previous status of the chat member 
-      old_status :: ChatMemberStatus,
+      oldStatus :: ChatMemberStatus,
       -- | New status of the chat member
-      new_status :: ChatMemberStatus
+      newStatus :: ChatMemberStatus
     }
   | -- | A chat member was restricted/unrestricted or banned/unbanned, or the list of their restrictions has changed 
   ChatEventMemberRestricted
     { -- | Chat member user identifier 
-      user_id :: I32,
+      userId :: I32,
       -- | Previous status of the chat member 
-      old_status :: ChatMemberStatus,
+      oldStatus :: ChatMemberStatus,
       -- | New status of the chat member
-      new_status :: ChatMemberStatus
+      newStatus :: ChatMemberStatus
     }
   | -- | The chat title was changed 
   ChatEventTitleChanged
     { -- | Previous chat title 
-      old_title :: T,
+      oldTitle :: T,
       -- | New chat title
-      new_title :: T
+      newTitle :: T
     }
   | -- | The chat permissions was changed 
   ChatEventPermissionsChanged
     { -- | Previous chat permissions 
-      old_permissions :: ChatPermissions,
+      oldPermissions :: ChatPermissions,
       -- | New chat permissions
-      new_permissions :: ChatPermissions
+      newPermissions :: ChatPermissions
     }
   | -- | The chat description was changed 
   ChatEventDescriptionChanged
     { -- | Previous chat description 
-      old_description :: T,
+      oldDescription :: T,
       -- | New chat description
-      new_description :: T
+      newDescription :: T
     }
   | -- | The chat username was changed 
   ChatEventUsernameChanged
     { -- | Previous chat username 
-      old_username :: T,
+      oldUsername :: T,
       -- | New chat username
-      new_username :: T
+      newUsername :: T
     }
   | -- | The chat photo was changed 
   ChatEventPhotoChanged
     { -- | Previous chat photo value; may be null 
-      old_photo :: Photo,
+      oldPhoto :: (Maybe) (Photo),
       -- | New chat photo value; may be null
-      new_photo :: Photo
+      newPhoto :: (Maybe) (Photo)
     }
   | -- | The can_invite_users permission of a supergroup chat was toggled 
   ChatEventInvitesToggled
     { -- | New value of can_invite_users permission
-      can_invite_users :: Bool
+      canInviteUsers :: Bool
     }
   | -- | The linked chat of a supergroup was changed 
   ChatEventLinkedChatChanged
     { -- | Previous supergroup linked chat identifier 
-      old_linked_chat_id :: I53,
+      oldLinkedChatId :: I53,
       -- | New supergroup linked chat identifier
-      new_linked_chat_id :: I53
+      newLinkedChatId :: I53
     }
   | -- | The slow_mode_delay setting of a supergroup was changed 
   ChatEventSlowModeDelayChanged
     { -- | Previous value of slow_mode_delay 
-      old_slow_mode_delay :: I32,
+      oldSlowModeDelay :: I32,
       -- | New value of slow_mode_delay
-      new_slow_mode_delay :: I32
+      newSlowModeDelay :: I32
     }
   | -- | The sign_messages setting of a channel was toggled 
   ChatEventSignMessagesToggled
     { -- | New value of sign_messages
-      sign_messages :: Bool
+      signMessages :: Bool
     }
   | -- | The supergroup sticker set was changed 
   ChatEventStickerSetChanged
     { -- | Previous identifier of the chat sticker set; 0 if none 
-      old_sticker_set_id :: I64,
+      oldStickerSetId :: I64,
       -- | New identifier of the chat sticker set; 0 if none
-      new_sticker_set_id :: I64
+      newStickerSetId :: I64
     }
   | -- | The supergroup location was changed 
   ChatEventLocationChanged
     { -- | Previous location; may be null 
-      old_location :: ChatLocation,
+      oldLocation :: (Maybe) (ChatLocation),
       -- | New location; may be null
-      new_location :: ChatLocation
+      newLocation :: (Maybe) (ChatLocation)
     }
   | -- | The is_all_history_available setting of a supergroup was toggled 
   ChatEventIsAllHistoryAvailableToggled
     { -- | New value of is_all_history_available
-      is_all_history_available :: Bool
+      isAllHistoryAvailable :: Bool
     }
   deriving (Show, Eq, Generic)
 data ChatEvent
@@ -4369,7 +4369,7 @@ data ChatEvent
       -- | Point in time (Unix timestamp) when the event happened 
       date :: I32,
       -- | Identifier of the user who performed the action that triggered the event 
-      user_id :: I32,
+      userId :: I32,
       -- | Action performed by the user
       action :: ChatEventAction
     }
@@ -4385,25 +4385,25 @@ data ChatEventLogFilters
   = -- | Represents a set of filters used to obtain a chat event log
   ChatEventLogFilters
     { -- | True, if message edits should be returned
-      message_edits :: Bool,
+      messageEdits :: Bool,
       -- | True, if message deletions should be returned
-      message_deletions :: Bool,
+      messageDeletions :: Bool,
       -- | True, if pin/unpin events should be returned
-      message_pins :: Bool,
+      messagePins :: Bool,
       -- | True, if members joining events should be returned
-      member_joins :: Bool,
+      memberJoins :: Bool,
       -- | True, if members leaving events should be returned
-      member_leaves :: Bool,
+      memberLeaves :: Bool,
       -- | True, if invited member events should be returned
-      member_invites :: Bool,
+      memberInvites :: Bool,
       -- | True, if member promotion/demotion events should be returned
-      member_promotions :: Bool,
+      memberPromotions :: Bool,
       -- | True, if member restricted/unrestricted/banned/unbanned events should be returned
-      member_restrictions :: Bool,
+      memberRestrictions :: Bool,
       -- | True, if changes in chat information should be returned
-      info_changes :: Bool,
+      infoChanges :: Bool,
       -- | True, if changes in chat settings should be returned
-      setting_changes :: Bool
+      settingChanges :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Represents the value of a string in a language pack
@@ -4416,17 +4416,17 @@ data LanguagePackStringValue
   | -- | A language pack string which has different forms based on the number of some object it mentions. See https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html for more info
   LanguagePackStringValuePluralized
     { -- | Value for zero objects 
-      zero_value :: T,
+      zeroValue :: T,
       -- | Value for one object 
-      one_value :: T,
+      oneValue :: T,
       -- | Value for two objects
-      two_value :: T,
+      twoValue :: T,
       -- | Value for few objects 
-      few_value :: T,
+      fewValue :: T,
       -- | Value for many objects 
-      many_value :: T,
+      manyValue :: T,
       -- | Default value
-      other_value :: T
+      otherValue :: T
     }
   | -- | A deleted language pack string, the value should be taken from the built-in english language pack
   LanguagePackStringValueDeleted
@@ -4455,36 +4455,36 @@ data LanguagePackInfo
     { -- | Unique language pack identifier
       id :: T,
       -- | Identifier of a base language pack; may be empty. If a string is missed in the language pack, then it should be fetched from base language pack. Unsupported in custom language packs
-      base_language_pack_id :: T,
+      baseLanguagePackId :: T,
       -- | Language name 
       name :: T,
       -- | Name of the language in that language
-      native_name :: T,
+      nativeName :: T,
       -- | A language code to be used to apply plural forms. See https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html for more info
-      plural_code :: T,
+      pluralCode :: T,
       -- | True, if the language pack is official 
-      is_official :: Bool,
+      isOfficial :: Bool,
       -- | True, if the language pack strings are RTL 
-      is_rtl :: Bool,
+      isRtl :: Bool,
       -- | True, if the language pack is a beta language pack
-      is_beta :: Bool,
+      isBeta :: Bool,
       -- | True, if the language pack is installed by the current user
-      is_installed :: Bool,
+      isInstalled :: Bool,
       -- | Total number of non-deleted strings from the language pack 
-      total_string_count :: I32,
+      totalStringCount :: I32,
       -- | Total number of translated strings from the language pack
-      translated_string_count :: I32,
+      translatedStringCount :: I32,
       -- | Total number of non-deleted strings from the language pack available locally 
-      local_string_count :: I32,
+      localStringCount :: I32,
       -- | Link to language translation interface; empty for custom local language packs
-      translation_url :: T
+      translationUrl :: T
     }
   deriving (Show, Eq, Generic)
 data LocalizationTargetInfo
   = -- | Contains information about the current localization target 
   LocalizationTargetInfo
     { -- | List of available language packs for this application
-      language_packs :: [LanguagePackInfo]
+      languagePacks :: [LanguagePackInfo]
     }
   deriving (Show, Eq, Generic)
 -- | Represents a data needed to subscribe for push notifications through registerDevice method. To use specific push notification service, you must specify the correct application platform and upload valid server authentication data at https://my.telegram.org
@@ -4499,42 +4499,42 @@ data DeviceToken
   | -- | A token for Apple Push Notification service 
   DeviceTokenApplePush
     { -- | Device token; may be empty to de-register a device 
-      device_token :: T,
+      deviceToken :: T,
       -- | True, if App Sandbox is enabled
-      is_app_sandbox :: Bool
+      isAppSandbox :: Bool
     }
   | -- | A token for Apple Push Notification service VoIP notifications 
   DeviceTokenApplePushVoIP
     { -- | Device token; may be empty to de-register a device 
-      device_token :: T,
+      deviceToken :: T,
       -- | True, if App Sandbox is enabled 
-      is_app_sandbox :: Bool,
+      isAppSandbox :: Bool,
       -- | True, if push notifications should be additionally encrypted
       encrypt :: Bool
     }
   | -- | A token for Windows Push Notification Services 
   DeviceTokenWindowsPush
     { -- | The access token that will be used to send notifications; may be empty to de-register a device
-      access_token :: T
+      accessToken :: T
     }
   | -- | A token for Microsoft Push Notification Service 
   DeviceTokenMicrosoftPush
     { -- | Push notification channel URI; may be empty to de-register a device
-      channel_uri :: T
+      channelUri :: T
     }
   | -- | A token for Microsoft Push Notification Service VoIP channel 
   DeviceTokenMicrosoftPushVoIP
     { -- | Push notification channel URI; may be empty to de-register a device
-      channel_uri :: T
+      channelUri :: T
     }
   | -- | A token for web Push API 
   DeviceTokenWebPush
     { -- | Absolute URL exposed by the push service where the application server can send push messages; may be empty to de-register a device
       endpoint :: T,
       -- | Base64url-encoded P-256 elliptic curve Diffie-Hellman public key 
-      p256dh_base64url :: T,
+      p256dhBase64url :: T,
       -- | Base64url-encoded authentication secret
-      auth_base64url :: T
+      authBase64url :: T
     }
   | -- | A token for Simple Push API for Firefox OS 
   DeviceTokenSimplePush
@@ -4554,7 +4554,7 @@ data DeviceToken
   | -- | A token for Tizen Push Service 
   DeviceTokenTizenPush
     { -- | Push service registration identifier; may be empty to de-register a device
-      reg_id :: T
+      regId :: T
     }
   deriving (Show, Eq, Generic)
 data PushReceiverId
@@ -4574,11 +4574,11 @@ data BackgroundFill
   | -- | Describes a gradient fill of a background 
   BackgroundFillGradient
     { -- | A top color of the background in the RGB24 format 
-      top_color :: I32,
+      topColor :: I32,
       -- | A bottom color of the background in the RGB24 format
-      bottom_color :: I32,
+      bottomColor :: I32,
       -- | Clockwise rotation angle of the gradient, in degrees; 0-359. Should be always divisible by 45
-      rotation_angle :: I32
+      rotationAngle :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Describes the type of a background
@@ -4586,9 +4586,9 @@ data BackgroundType
   = -- | A wallpaper in JPEG format
   BackgroundTypeWallpaper
     { -- | True, if the wallpaper must be downscaled to fit in 450x450 square and then box-blurred with radius 12
-      is_blurred :: Bool,
+      isBlurred :: Bool,
       -- | True, if the background needs to be slightly moved when device is tilted
-      is_moving :: Bool
+      isMoving :: Bool
     }
   | -- | A PNG or TGV (gzipped subset of SVG with MIME type "application/x-tgwallpattern") pattern to be combined with the background fill chosen by the user
   BackgroundTypePattern
@@ -4597,7 +4597,7 @@ data BackgroundType
       -- | Intensity of the pattern when it is shown above the filled background, 0-100
       intensity :: I32,
       -- | True, if the background needs to be slightly moved when device is tilted
-      is_moving :: Bool
+      isMoving :: Bool
     }
   | -- | A filled background 
   BackgroundTypeFill
@@ -4611,13 +4611,13 @@ data Background
     { -- | Unique background identifier
       id :: I64,
       -- | True, if this is one of default backgrounds
-      is_default :: Bool,
+      isDefault :: Bool,
       -- | True, if the background is dark and is recommended to be used with dark theme
-      is_dark :: Bool,
+      isDark :: Bool,
       -- | Unique background name
       name :: T,
       -- | Document with the background; may be null. Null only for filled backgrounds
-      document :: Document,
+      document :: (Maybe) (Document),
       -- | Type of the background
       type_ :: BackgroundType
     }
@@ -4639,7 +4639,7 @@ data InputBackground
   | -- | A background from the server 
   InputBackgroundRemote
     { -- | The background identifier
-      background_id :: I64
+      backgroundId :: I64
     }
   deriving (Show, Eq, Generic)
 data Hashtags
@@ -4662,12 +4662,12 @@ data CanTransferOwnershipResult
   | -- | The 2-step verification was enabled recently, user needs to wait 
   CanTransferOwnershipResultPasswordTooFresh
     { -- | Time left before the session can be used to transfer ownership of a chat, in seconds
-      retry_after :: I32
+      retryAfter :: I32
     }
   | -- | The session was created recently, user needs to wait 
   CanTransferOwnershipResultSessionTooFresh
     { -- | Time left before the session can be used to transfer ownership of a chat, in seconds
-      retry_after :: I32
+      retryAfter :: I32
     }
   deriving (Show, Eq, Generic)
 -- | Represents result of checking whether a username can be set for a chat
@@ -4698,30 +4698,30 @@ data PushMessageContent
   = -- | A general message with hidden content 
   PushMessageContentHidden
     { -- | True, if the message is a pinned message with the specified content
-      is_pinned :: Bool
+      isPinned :: Bool
     }
   | -- | An animation message (GIF-style). 
   PushMessageContentAnimation
     { -- | Message content; may be null 
-      animation :: Animation,
+      animation :: (Maybe) (Animation),
       -- | Animation caption 
       caption :: T,
       -- | True, if the message is a pinned message with the specified content
-      is_pinned :: Bool
+      isPinned :: Bool
     }
   | -- | An audio message 
   PushMessageContentAudio
     { -- | Message content; may be null 
-      audio :: Audio,
+      audio :: (Maybe) (Audio),
       -- | True, if the message is a pinned message with the specified content
-      is_pinned :: Bool
+      isPinned :: Bool
     }
   | -- | A message with a user contact 
   PushMessageContentContact
     { -- | Contact's name 
       name :: T,
       -- | True, if the message is a pinned message with the specified content
-      is_pinned :: Bool
+      isPinned :: Bool
     }
   | -- | A contact has registered with Telegram
   PushMessageContentContactRegistered
@@ -4730,16 +4730,16 @@ data PushMessageContent
   | -- | A document message (a general file) 
   PushMessageContentDocument
     { -- | Message content; may be null 
-      document :: Document,
+      document :: (Maybe) (Document),
       -- | True, if the message is a pinned message with the specified content
-      is_pinned :: Bool
+      isPinned :: Bool
     }
   | -- | A message with a game 
   PushMessageContentGame
     { -- | Game title, empty for pinned game message 
       title :: T,
       -- | True, if the message is a pinned message with the specified content
-      is_pinned :: Bool
+      isPinned :: Bool
     }
   | -- | A new high score was achieved in a game 
   PushMessageContentGameScore
@@ -4748,41 +4748,41 @@ data PushMessageContent
       -- | New score, 0 for pinned message 
       score :: I32,
       -- | True, if the message is a pinned message with the specified content
-      is_pinned :: Bool
+      isPinned :: Bool
     }
   | -- | A message with an invoice from a bot 
   PushMessageContentInvoice
     { -- | Product price 
       price :: T,
       -- | True, if the message is a pinned message with the specified content
-      is_pinned :: Bool
+      isPinned :: Bool
     }
   | -- | A message with a location 
   PushMessageContentLocation
     { -- | True, if the location is live 
-      is_live :: Bool,
+      isLive :: Bool,
       -- | True, if the message is a pinned message with the specified content
-      is_pinned :: Bool
+      isPinned :: Bool
     }
   | -- | A photo message 
   PushMessageContentPhoto
     { -- | Message content; may be null 
-      photo :: Photo,
+      photo :: (Maybe) (Photo),
       -- | Photo caption 
       caption :: T,
       -- | True, if the photo is secret 
-      is_secret :: Bool,
+      isSecret :: Bool,
       -- | True, if the message is a pinned message with the specified content
-      is_pinned :: Bool
+      isPinned :: Bool
     }
   | -- | A message with a poll 
   PushMessageContentPoll
     { -- | Poll question 
       question :: T,
       -- | True, if the poll is regular and not in quiz mode 
-      is_regular :: Bool,
+      isRegular :: Bool,
       -- | True, if the message is a pinned message with the specified content
-      is_pinned :: Bool
+      isPinned :: Bool
     }
   | -- | A screenshot of a message in the chat has been taken
   PushMessageContentScreenshotTaken
@@ -4791,43 +4791,43 @@ data PushMessageContent
   | -- | A message with a sticker 
   PushMessageContentSticker
     { -- | Message content; may be null 
-      sticker :: Sticker,
+      sticker :: (Maybe) (Sticker),
       -- | Emoji corresponding to the sticker; may be empty 
       emoji :: T,
       -- | True, if the message is a pinned message with the specified content
-      is_pinned :: Bool
+      isPinned :: Bool
     }
   | -- | A text message 
   PushMessageContentText
     { -- | Message text 
       text :: T,
       -- | True, if the message is a pinned message with the specified content
-      is_pinned :: Bool
+      isPinned :: Bool
     }
   | -- | A video message 
   PushMessageContentVideo
     { -- | Message content; may be null 
-      video :: Video,
+      video :: (Maybe) (Video),
       -- | Video caption 
       caption :: T,
       -- | True, if the video is secret 
-      is_secret :: Bool,
+      isSecret :: Bool,
       -- | True, if the message is a pinned message with the specified content
-      is_pinned :: Bool
+      isPinned :: Bool
     }
   | -- | A video note message 
   PushMessageContentVideoNote
     { -- | Message content; may be null 
-      video_note :: VideoNote,
+      videoNote :: (Maybe) (VideoNote),
       -- | True, if the message is a pinned message with the specified content
-      is_pinned :: Bool
+      isPinned :: Bool
     }
   | -- | A voice note message 
   PushMessageContentVoiceNote
     { -- | Message content; may be null 
-      voice_note :: VoiceNote,
+      voiceNote :: (Maybe) (VoiceNote),
       -- | True, if the message is a pinned message with the specified content
-      is_pinned :: Bool
+      isPinned :: Bool
     }
   | -- | A newly created basic group
   PushMessageContentBasicGroupChatCreate
@@ -4836,11 +4836,11 @@ data PushMessageContent
   | -- | New chat members were invited to a group 
   PushMessageContentChatAddMembers
     { -- | Name of the added member 
-      member_name :: T,
+      memberName :: T,
       -- | True, if the current user was added to the group
-      is_current_user :: Bool,
+      isCurrentUser :: Bool,
       -- | True, if the user has returned to the group themself
-      is_returned :: Bool
+      isReturned :: Bool
     }
   | -- | A chat photo was edited
   PushMessageContentChatChangePhoto
@@ -4854,11 +4854,11 @@ data PushMessageContent
   | -- | A chat member was deleted 
   PushMessageContentChatDeleteMember
     { -- | Name of the deleted member 
-      member_name :: T,
+      memberName :: T,
       -- | True, if the current user was deleted from the group
-      is_current_user :: Bool,
+      isCurrentUser :: Bool,
       -- | True, if the user has left the group themself
-      is_left :: Bool
+      isLeft :: Bool
     }
   | -- | A new member joined the chat by invite link
   PushMessageContentChatJoinByLink
@@ -4867,16 +4867,16 @@ data PushMessageContent
   | -- | A forwarded messages 
   PushMessageContentMessageForwards
     { -- | Number of forwarded messages
-      total_count :: I32
+      totalCount :: I32
     }
   | -- | A media album 
   PushMessageContentMediaAlbum
     { -- | Number of messages in the album 
-      total_count :: I32,
+      totalCount :: I32,
       -- | True, if the album has at least one photo 
-      has_photos :: Bool,
+      hasPhotos :: Bool,
       -- | True, if the album has at least one video
-      has_videos :: Bool
+      hasVideos :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Contains detailed information about a notification
@@ -4893,18 +4893,18 @@ data NotificationType
   | -- | New call was received 
   NotificationTypeNewCall
     { -- | Call identifier
-      call_id :: I32
+      callId :: I32
     }
   | -- | New message was received through a push notification
   NotificationTypeNewPushMessage
     { -- | The message identifier. The message will not be available in the chat history, but the ID can be used in viewMessages and as reply_to_message_id
-      message_id :: I53,
+      messageId :: I53,
       -- | Sender of the message; 0 if unknown. Corresponding user may be inaccessible
-      sender_user_id :: I32,
+      senderUserId :: I32,
       -- | Name of the sender; can be different from the name of the sender user
-      sender_name :: T,
+      senderName :: T,
       -- | True, if the message is outgoing
-      is_outgoing :: Bool,
+      isOutgoing :: Bool,
       -- | Push message content
       content :: PushMessageContent
     }
@@ -4936,7 +4936,7 @@ data Notification
       -- | Notification date
       date :: I32,
       -- | True, if the notification was initially silent 
-      is_silent :: Bool,
+      isSilent :: Bool,
       -- | Notification type
       type_ :: NotificationType
     }
@@ -4949,9 +4949,9 @@ data NotificationGroup
       -- | Type of the group
       type_ :: NotificationGroupType,
       -- | Identifier of a chat to which all notifications in the group belong
-      chat_id :: I53,
+      chatId :: I53,
       -- | Total number of active notifications in the group 
-      total_count :: I32,
+      totalCount :: I32,
       -- | The list of active notifications
       notifications :: [Notification]
     }
@@ -5032,12 +5032,12 @@ data UserPrivacySettingRule
   | -- | A rule to allow certain specified users to do something 
   UserPrivacySettingRuleAllowUsers
     { -- | The user identifiers, total number of users in all rules must not exceed 1000
-      user_ids :: [I32]
+      userIds :: [I32]
     }
   | -- | A rule to allow all members of certain specified basic groups and supergroups to doing something 
   UserPrivacySettingRuleAllowChatMembers
     { -- | The chat identifiers, total number of chats in all rules must not exceed 20
-      chat_ids :: [I53]
+      chatIds :: [I53]
     }
   | -- | A rule to restrict all users from doing something
   UserPrivacySettingRuleRestrictAll
@@ -5050,12 +5050,12 @@ data UserPrivacySettingRule
   | -- | A rule to restrict all specified users from doing something 
   UserPrivacySettingRuleRestrictUsers
     { -- | The user identifiers, total number of users in all rules must not exceed 1000
-      user_ids :: [I32]
+      userIds :: [I32]
     }
   | -- | A rule to restrict all members of specified basic groups and supergroups from doing something 
   UserPrivacySettingRuleRestrictChatMembers
     { -- | The chat identifiers, total number of chats in all rules must not exceed 20
-      chat_ids :: [I53]
+      chatIds :: [I53]
     }
   deriving (Show, Eq, Generic)
 data UserPrivacySettingRules
@@ -5113,27 +5113,27 @@ data Session
     { -- | Session identifier 
       id :: I64,
       -- | True, if this session is the current session
-      is_current :: Bool,
+      isCurrent :: Bool,
       -- | True, if a password is needed to complete authorization of the session
-      is_password_pending :: Bool,
+      isPasswordPending :: Bool,
       -- | Telegram API identifier, as provided by the application 
-      api_id :: I32,
+      apiId :: I32,
       -- | Name of the application, as provided by the application
-      application_name :: T,
+      applicationName :: T,
       -- | The version of the application, as provided by the application 
-      application_version :: T,
+      applicationVersion :: T,
       -- | True, if the application is an official application or uses the api_id of an official application
-      is_official_application :: Bool,
+      isOfficialApplication :: Bool,
       -- | Model of the device the application has been run or is running on, as provided by the application 
-      device_model :: T,
+      deviceModel :: T,
       -- | Operating system the application has been run or is running on, as provided by the application
       platform :: T,
       -- | Version of the operating system the application has been run or is running on, as provided by the application 
-      system_version :: T,
+      systemVersion :: T,
       -- | Point in time (Unix timestamp) when the user has logged in
-      log_in_date :: I32,
+      logInDate :: I32,
       -- | Point in time (Unix timestamp) when the session was last used 
-      last_active_date :: I32,
+      lastActiveDate :: I32,
       -- | IP address from which the session was created, in human-readable format
       ip :: T,
       -- | A two-letter country code for the country from which the session was created, based on the IP address 
@@ -5155,17 +5155,17 @@ data ConnectedWebsite
     { -- | Website identifier
       id :: I64,
       -- | The domain name of the website
-      domain_name :: T,
+      domainName :: T,
       -- | User identifier of a bot linked with the website
-      bot_user_id :: I32,
+      botUserId :: I32,
       -- | The version of a browser used to log in
       browser :: T,
       -- | Operating system the browser is running on
       platform :: T,
       -- | Point in time (Unix timestamp) when the user was logged in
-      log_in_date :: I32,
+      logInDate :: I32,
       -- | Point in time (Unix timestamp) when obtained authorization was last used
-      last_active_date :: I32,
+      lastActiveDate :: I32,
       -- | IP address from which the user was logged in, in human-readable format
       ip :: T,
       -- | Human-readable description of a country and a region, from which the user was logged in, based on the IP address
@@ -5224,13 +5224,13 @@ data MessageLinkInfo
   = -- | Contains information about a link to a message in a chat
   MessageLinkInfo
     { -- | True, if the link is a public link for a message in a chat
-      is_public :: Bool,
+      isPublic :: Bool,
       -- | If found, identifier of the chat to which the message belongs, 0 otherwise
-      chat_id :: I53,
+      chatId :: I53,
       -- | If found, the linked message; may be null
-      message :: Message,
+      message :: (Maybe) (Message),
       -- | True, if the whole media album to which the message belongs is linked
-      for_album :: Bool
+      forAlbum :: Bool
     }
   deriving (Show, Eq, Generic)
 data FilePart
@@ -5311,7 +5311,7 @@ data StorageStatisticsByFileType
   = -- | Contains the storage usage statistics for a specific file type 
   StorageStatisticsByFileType
     { -- | File type 
-      file_type :: FileType,
+      fileType :: FileType,
       -- | Total size of the files 
       size :: I53,
       -- | Total number of files
@@ -5322,13 +5322,13 @@ data StorageStatisticsByChat
   = -- | Contains the storage usage statistics for a specific chat 
   StorageStatisticsByChat
     { -- | Chat identifier; 0 if none 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Total size of the files in the chat 
       size :: I53,
       -- | Total number of files in the chat 
       count :: I32,
       -- | Statistics split by file types
-      by_file_type :: [StorageStatisticsByFileType]
+      byFileType :: [StorageStatisticsByFileType]
     }
   deriving (Show, Eq, Generic)
 data StorageStatistics
@@ -5339,22 +5339,22 @@ data StorageStatistics
       -- | Total number of files 
       count :: I32,
       -- | Statistics split by chats
-      by_chat :: [StorageStatisticsByChat]
+      byChat :: [StorageStatisticsByChat]
     }
   deriving (Show, Eq, Generic)
 data StorageStatisticsFast
   = -- | Contains approximate storage usage statistics, excluding files of unknown file type 
   StorageStatisticsFast
     { -- | Approximate total size of files 
-      files_size :: I53,
+      filesSize :: I53,
       -- | Approximate number of files
-      file_count :: I32,
+      fileCount :: I32,
       -- | Size of the database 
-      database_size :: I53,
+      databaseSize :: I53,
       -- | Size of the language pack database 
-      language_pack_database_size :: I53,
+      languagePackDatabaseSize :: I53,
       -- | Size of the TDLib internal log
-      log_size :: I53
+      logSize :: I53
     }
   deriving (Show, Eq, Generic)
 data DatabaseStatistics
@@ -5392,22 +5392,22 @@ data NetworkStatisticsEntry
   = -- | Contains information about the total amount of data that was used to send and receive files 
   NetworkStatisticsEntryFile
     { -- | Type of the file the data is part of 
-      file_type :: FileType,
+      fileType :: FileType,
       -- | Type of the network the data was sent through. Call setNetworkType to maintain the actual network type
-      network_type :: NetworkType,
+      networkType :: NetworkType,
       -- | Total number of bytes sent 
-      sent_bytes :: I53,
+      sentBytes :: I53,
       -- | Total number of bytes received
-      received_bytes :: I53
+      receivedBytes :: I53
     }
   | -- | Contains information about the total amount of data that was used for calls 
   NetworkStatisticsEntryCall
     { -- | Type of the network the data was sent through. Call setNetworkType to maintain the actual network type
-      network_type :: NetworkType,
+      networkType :: NetworkType,
       -- | Total number of bytes sent 
-      sent_bytes :: I53,
+      sentBytes :: I53,
       -- | Total number of bytes received 
-      received_bytes :: I53,
+      receivedBytes :: I53,
       -- | Total call duration, in seconds
       duration :: Double
     }
@@ -5416,7 +5416,7 @@ data NetworkStatistics
   = -- | A full list of available network statistic entries 
   NetworkStatistics
     { -- | Point in time (Unix timestamp) when the app began collecting statistics 
-      since_date :: I32,
+      sinceDate :: I32,
       -- | Network statistics entries
       entries :: [NetworkStatisticsEntry]
     }
@@ -5425,21 +5425,21 @@ data AutoDownloadSettings
   = -- | Contains auto-download settings
   AutoDownloadSettings
     { -- | True, if the auto-download is enabled
-      is_auto_download_enabled :: Bool,
+      isAutoDownloadEnabled :: Bool,
       -- | The maximum size of a photo file to be auto-downloaded
-      max_photo_file_size :: I32,
+      maxPhotoFileSize :: I32,
       -- | The maximum size of a video file to be auto-downloaded
-      max_video_file_size :: I32,
+      maxVideoFileSize :: I32,
       -- | The maximum size of other file types to be auto-downloaded
-      max_other_file_size :: I32,
+      maxOtherFileSize :: I32,
       -- | The maximum suggested bitrate for uploaded videos
-      video_upload_bitrate :: I32,
+      videoUploadBitrate :: I32,
       -- | True, if the beginning of videos needs to be preloaded for instant playback
-      preload_large_videos :: Bool,
+      preloadLargeVideos :: Bool,
       -- | True, if the next audio track needs to be preloaded while the user is listening to an audio file
-      preload_next_audio :: Bool,
+      preloadNextAudio :: Bool,
       -- | True, if "use less data for calls" option needs to be enabled
-      use_less_data_for_calls :: Bool
+      useLessDataForCalls :: Bool
     }
   deriving (Show, Eq, Generic)
 data AutoDownloadSettingsPresets
@@ -5512,12 +5512,12 @@ data TMeUrlType
   = -- | A URL linking to a user 
   TMeUrlTypeUser
     { -- | Identifier of the user
-      user_id :: I32
+      userId :: I32
     }
   | -- | A URL linking to a public supergroup or channel 
   TMeUrlTypeSupergroup
     { -- | Identifier of the supergroup or channel
-      supergroup_id :: I53
+      supergroupId :: I53
     }
   | -- | A chat invite link 
   TMeUrlTypeChatInvite
@@ -5527,7 +5527,7 @@ data TMeUrlType
   | -- | A URL linking to a sticker set 
   TMeUrlTypeStickerSet
     { -- | Identifier of the sticker set
-      sticker_set_id :: I64
+      stickerSetId :: I64
     }
   deriving (Show, Eq, Generic)
 data TMeUrl
@@ -5573,7 +5573,7 @@ data DeepLinkInfo
     { -- | Text to be shown to the user 
       text :: FormattedText,
       -- | True, if user should be asked to update the application
-      need_update_application :: Bool
+      needUpdateApplication :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Describes the way the text should be parsed for TextEntities
@@ -5604,7 +5604,7 @@ data ProxyType
       -- | Password for logging in; may be empty 
       password :: T,
       -- | Pass true if the proxy supports only HTTP requests and doesn't support transparent TCP connections via HTTP CONNECT method
-      http_only :: Bool
+      httpOnly :: Bool
     }
   | -- | An MTProto proxy server 
   ProxyTypeMtproto
@@ -5622,9 +5622,9 @@ data Proxy
       -- | Proxy server port 
       port :: I32,
       -- | Point in time (Unix timestamp) when the proxy was last used; 0 if never 
-      last_used_date :: I32,
+      lastUsedDate :: I32,
       -- | True, if the proxy is enabled now 
-      is_enabled :: Bool,
+      isEnabled :: Bool,
       -- | Type of the proxy
       type_ :: ProxyType
     }
@@ -5645,7 +5645,7 @@ data InputSticker
       -- | Emojis corresponding to the sticker
       emojis :: T,
       -- | For masks, position where the mask should be placed; may be null
-      mask_position :: MaskPosition
+      maskPosition :: (Maybe) (MaskPosition)
     }
   | -- | An animated sticker in TGS format
   InputStickerAnimated
@@ -5659,9 +5659,9 @@ data DateRange
   = -- | Represents a date range 
   DateRange
     { -- | Point in time (Unix timestamp) at which the date range begins 
-      start_date :: I32,
+      startDate :: I32,
       -- | Point in time (Unix timestamp) at which the date range ends
-      end_date :: I32
+      endDate :: I32
     }
   deriving (Show, Eq, Generic)
 data StatisticsValue
@@ -5670,9 +5670,9 @@ data StatisticsValue
     { -- | The value 
       value :: Double,
       -- | The value for the previous day 
-      previous_value :: Double,
+      previousValue :: Double,
       -- | The growth rate of the value, as a percentage
-      growth_rate_percentage :: Double
+      growthRatePercentage :: Double
     }
   deriving (Show, Eq, Generic)
 -- | Describes a statistics graph
@@ -5680,9 +5680,9 @@ data StatisticsGraph
   = -- | A graph data 
   StatisticsGraphData
     { -- | Graph data in JSON format 
-      json_data :: T,
+      jsonData :: T,
       -- | If non-empty, a token which can be used to receive a zoomed in graph
-      zoom_token :: T
+      zoomToken :: T
     }
   | -- | The graph data to be asynchronously loaded through getChatStatisticsGraph 
   StatisticsGraphAsync
@@ -5692,18 +5692,18 @@ data StatisticsGraph
   | -- | An error message to be shown to the user instead of the graph 
   StatisticsGraphError
     { -- | The error message
-      error_message :: T
+      errorMessage :: T
     }
   deriving (Show, Eq, Generic)
 data ChatStatisticsMessageInteractionCounters
   = -- | Contains statistics about interactions with a message
   ChatStatisticsMessageInteractionCounters
     { -- | Message identifier
-      message_id :: I53,
+      messageId :: I53,
       -- | Number of times the message was viewed
-      view_count :: I32,
+      viewCount :: I32,
       -- | Number of times the message was forwarded
-      forward_count :: I32
+      forwardCount :: I32
     }
   deriving (Show, Eq, Generic)
 data ChatStatistics
@@ -5712,33 +5712,33 @@ data ChatStatistics
     { -- | A period to which the statistics applies
       period :: DateRange,
       -- | Number of members in the chat
-      member_count :: StatisticsValue,
+      memberCount :: StatisticsValue,
       -- | Mean number of times the recently sent messages was viewed
-      mean_view_count :: StatisticsValue,
+      meanViewCount :: StatisticsValue,
       -- | Mean number of times the recently sent messages was shared
-      mean_share_count :: StatisticsValue,
+      meanShareCount :: StatisticsValue,
       -- | A percentage of users with enabled notifications for the chat
-      enabled_notifications_percentage :: Double,
+      enabledNotificationsPercentage :: Double,
       -- | A graph containing number of members in the chat
-      member_count_graph :: StatisticsGraph,
+      memberCountGraph :: StatisticsGraph,
       -- | A graph containing number of members joined and left the chat
-      join_graph :: StatisticsGraph,
+      joinGraph :: StatisticsGraph,
       -- | A graph containing number of members muted and unmuted the chat
-      mute_graph :: StatisticsGraph,
+      muteGraph :: StatisticsGraph,
       -- | A graph containing number of message views in a given hour in the last two weeks
-      view_count_by_hour_graph :: StatisticsGraph,
+      viewCountByHourGraph :: StatisticsGraph,
       -- | A graph containing number of message views per source
-      view_count_by_source_graph :: StatisticsGraph,
+      viewCountBySourceGraph :: StatisticsGraph,
       -- | A graph containing number of new member joins per source
-      join_by_source_graph :: StatisticsGraph,
+      joinBySourceGraph :: StatisticsGraph,
       -- | A graph containing number of users viewed chat messages per language
-      language_graph :: StatisticsGraph,
+      languageGraph :: StatisticsGraph,
       -- | A graph containing number of chat message views and shares
-      message_interaction_graph :: StatisticsGraph,
+      messageInteractionGraph :: StatisticsGraph,
       -- | A graph containing number of views of associated with the chat instant views
-      instant_view_interaction_graph :: StatisticsGraph,
+      instantViewInteractionGraph :: StatisticsGraph,
       -- | Detailed statistics about number of views and shares of recently sent messages
-      recent_message_interactions :: [ChatStatisticsMessageInteractionCounters]
+      recentMessageInteractions :: [ChatStatisticsMessageInteractionCounters]
     }
   deriving (Show, Eq, Generic)
 -- | Contains notifications about data changes
@@ -5746,7 +5746,7 @@ data Update
   = -- | The user authorization state has changed 
   UpdateAuthorizationState
     { -- | New authorization state
-      authorization_state :: AuthorizationState
+      authorizationState :: AuthorizationState
     }
   | -- | A new message was received; can also be an outgoing message 
   UpdateNewMessage
@@ -5756,79 +5756,79 @@ data Update
   | -- | A request to send a message has reached the Telegram server. This doesn't mean that the message will be sent successfully or even that the send message request will be processed. This update will be sent only if the option "use_quick_ack" is set to true. This update may be sent multiple times for the same message
   UpdateMessageSendAcknowledged
     { -- | The chat identifier of the sent message 
-      chat_id :: I53,
+      chatId :: I53,
       -- | A temporary message identifier
-      message_id :: I53
+      messageId :: I53
     }
   | -- | A message has been successfully sent 
   UpdateMessageSendSucceeded
     { -- | Information about the sent message. Usually only the message identifier, date, and content are changed, but almost all other fields can also change 
       message :: Message,
       -- | The previous temporary message identifier
-      old_message_id :: I53
+      oldMessageId :: I53
     }
   | -- | A message failed to send. Be aware that some messages being sent can be irrecoverably deleted, in which case updateDeleteMessages will be received instead of this update
   UpdateMessageSendFailed
     { -- | Contains information about the message which failed to send 
       message :: Message,
       -- | The previous temporary message identifier 
-      old_message_id :: I53,
+      oldMessageId :: I53,
       -- | An error code 
-      error_code :: I32,
+      errorCode :: I32,
       -- | Error message
-      error_message :: T
+      errorMessage :: T
     }
   | -- | The message content has changed 
   UpdateMessageContent
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Message identifier 
-      message_id :: I53,
+      messageId :: I53,
       -- | New message content
-      new_content :: MessageContent
+      newContent :: MessageContent
     }
   | -- | A message was edited. Changes in the message content will come in a separate updateMessageContent 
   UpdateMessageEdited
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Message identifier 
-      message_id :: I53,
+      messageId :: I53,
       -- | Point in time (Unix timestamp) when the message was edited 
-      edit_date :: I32,
+      editDate :: I32,
       -- | New message reply markup; may be null
-      reply_markup :: ReplyMarkup
+      replyMarkup :: (Maybe) (ReplyMarkup)
     }
   | -- | The view count of the message has changed 
   UpdateMessageViews
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Message identifier 
-      message_id :: I53,
+      messageId :: I53,
       -- | New value of the view count
       views :: I32
     }
   | -- | The message content was opened. Updates voice note messages to "listened", video note messages to "viewed" and starts the TTL timer for self-destructing messages 
   UpdateMessageContentOpened
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Message identifier
-      message_id :: I53
+      messageId :: I53
     }
   | -- | A message with an unread mention was read 
   UpdateMessageMentionRead
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Message identifier 
-      message_id :: I53,
+      messageId :: I53,
       -- | The new number of unread mention messages left in the chat
-      unread_mention_count :: I32
+      unreadMentionCount :: I32
     }
   | -- | A message with a live location was viewed. When the update is received, the client is supposed to update the live location
   UpdateMessageLiveLocationViewed
     { -- | Identifier of the chat with the live location message 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the message with live location
-      message_id :: I53
+      messageId :: I53
     }
   | -- | A new chat has been loaded/created. This update is guaranteed to come before the chat identifier is returned to the client. The chat field changes will be reported through separate updates 
   UpdateNewChat
@@ -5838,185 +5838,185 @@ data Update
   | -- | The list to which the chat belongs was changed. This update is guaranteed to be sent only when chat.order == 0 and the current or the new chat list is null 
   UpdateChatChatList
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | The new chat's chat list; may be null
-      chat_list :: ChatList
+      chatList_2 :: (Maybe) (ChatList)
     }
   | -- | The title of a chat was changed 
   UpdateChatTitle
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | The new chat title
       title :: T
     }
   | -- | A chat photo was changed 
   UpdateChatPhoto
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | The new chat photo; may be null
-      photo :: ChatPhoto
+      photo :: (Maybe) (ChatPhoto)
     }
   | -- | Chat permissions was changed 
   UpdateChatPermissions
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | The new chat permissions
       permissions :: ChatPermissions
     }
   | -- | The last message of a chat was changed. If last_message is null, then the last message in the chat became unknown. Some new unknown messages might be added to the chat in this case 
   UpdateChatLastMessage
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | The new last message in the chat; may be null 
-      last_message :: Message,
+      lastMessage :: (Maybe) (Message),
       -- | New value of the chat order
       order :: I64
     }
   | -- | The order of the chat in the chat list has changed. Instead of this update updateChatLastMessage, updateChatIsPinned, updateChatDraftMessage, or updateChatSource might be sent 
   UpdateChatOrder
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | New value of the order
       order :: I64
     }
   | -- | A chat was pinned or unpinned 
   UpdateChatIsPinned
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | New value of is_pinned 
-      is_pinned :: Bool,
+      isPinned :: Bool,
       -- | New value of the chat order
       order :: I64
     }
   | -- | A chat was marked as unread or was read 
   UpdateChatIsMarkedAsUnread
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | New value of is_marked_as_unread
-      is_marked_as_unread :: Bool
+      isMarkedAsUnread :: Bool
     }
   | -- | A chat's source in the chat list has changed 
   UpdateChatSource
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | New chat's source; may be null 
-      source :: ChatSource,
+      source :: (Maybe) (ChatSource),
       -- | New value of chat order
       order :: I64
     }
   | -- | A chat's has_scheduled_messages field has changed 
   UpdateChatHasScheduledMessages
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | New value of has_scheduled_messages
-      has_scheduled_messages :: Bool
+      hasScheduledMessages :: Bool
     }
   | -- | The value of the default disable_notification parameter, used when a message is sent to the chat, was changed 
   UpdateChatDefaultDisableNotification
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | The new default_disable_notification value
-      default_disable_notification :: Bool
+      defaultDisableNotification :: Bool
     }
   | -- | Incoming messages were read or number of unread messages has been changed 
   UpdateChatReadInbox
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the last read incoming message 
-      last_read_inbox_message_id :: I53,
+      lastReadInboxMessageId :: I53,
       -- | The number of unread messages left in the chat
-      unread_count :: I32
+      unreadCount :: I32
     }
   | -- | Outgoing messages were read 
   UpdateChatReadOutbox
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of last read outgoing message
-      last_read_outbox_message_id :: I53
+      lastReadOutboxMessageId :: I53
     }
   | -- | The chat unread_mention_count has changed 
   UpdateChatUnreadMentionCount
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | The number of unread mention messages left in the chat
-      unread_mention_count :: I32
+      unreadMentionCount :: I32
     }
   | -- | Notification settings for a chat were changed 
   UpdateChatNotificationSettings
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | The new notification settings
-      notification_settings_2 :: ChatNotificationSettings
+      notificationSettings_2 :: ChatNotificationSettings
     }
   | -- | Notification settings for some type of chats were updated 
   UpdateScopeNotificationSettings
     { -- | Types of chats for which notification settings were updated 
       scope :: NotificationSettingsScope,
       -- | The new notification settings
-      notification_settings :: ScopeNotificationSettings
+      notificationSettings :: ScopeNotificationSettings
     }
   | -- | The chat action bar was changed 
   UpdateChatActionBar
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | The new value of the action bar; may be null
-      action_bar :: ChatActionBar
+      actionBar :: (Maybe) (ChatActionBar)
     }
   | -- | The chat pinned message was changed 
   UpdateChatPinnedMessage
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | The new identifier of the pinned message; 0 if there is no pinned message in the chat
-      pinned_message_id :: I53
+      pinnedMessageId :: I53
     }
   | -- | The default chat reply markup was changed. Can occur because new messages with reply markup were received or because an old reply markup was hidden by the user
   UpdateChatReplyMarkup
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the message from which reply markup needs to be used; 0 if there is no default custom reply markup in the chat
-      reply_markup_message_id :: I53
+      replyMarkupMessageId :: I53
     }
   | -- | A chat draft has changed. Be aware that the update may come in the currently opened chat but with old content of the draft. If the user has changed the content of the draft, this update shouldn't be applied 
   UpdateChatDraftMessage
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | The new draft message; may be null 
-      draft_message :: DraftMessage,
+      draftMessage :: (Maybe) (DraftMessage),
       -- | New value of the chat order
       order :: I64
     }
   | -- | The number of online group members has changed. This update with non-zero count is sent only for currently opened chats. There is no guarantee that it will be sent just after the count has changed 
   UpdateChatOnlineMemberCount
     { -- | Identifier of the chat 
-      chat_id :: I53,
+      chatId :: I53,
       -- | New number of online members in the chat, or 0 if unknown
-      online_member_count :: I32
+      onlineMemberCount :: I32
     }
   | -- | A notification was changed 
   UpdateNotification
     { -- | Unique notification group identifier 
-      notification_group_id :: I32,
+      notificationGroupId :: I32,
       -- | Changed notification
       notification :: Notification
     }
   | -- | A list of active notifications in a notification group has changed
   UpdateNotificationGroup
     { -- | Unique notification group identifier
-      notification_group_id :: I32,
+      notificationGroupId :: I32,
       -- | New type of the notification group
       type_2 :: NotificationGroupType,
       -- | Identifier of a chat to which all notifications in the group belong
-      chat_id :: I53,
+      chatId :: I53,
       -- | Chat identifier, which notification settings must be applied to the added notifications
-      notification_settings_chat_id :: I53,
+      notificationSettingsChatId :: I53,
       -- | True, if the notifications should be shown without sound
-      is_silent :: Bool,
+      isSilent :: Bool,
       -- | Total number of unread notifications in the group, can be bigger than number of active notifications
-      total_count :: I32,
+      totalCount :: I32,
       -- | List of added group notifications, sorted by notification ID 
-      added_notifications :: [Notification],
+      addedNotifications :: [Notification],
       -- | Identifiers of removed group notifications, sorted by notification ID
-      removed_notification_ids :: [I32]
+      removedNotificationIds :: [I32]
     }
   | -- | Contains active notifications that was shown on previous application launches. This update is sent only if the message database is used. In that case it comes once before any updateNotification and updateNotificationGroup update 
   UpdateActiveNotifications
@@ -6026,34 +6026,34 @@ data Update
   | -- | Describes whether there are some pending notification updates. Can be used to prevent application from killing, while there are some pending notifications
   UpdateHavePendingNotifications
     { -- | True, if there are some delayed notification updates, which will be sent soon
-      have_delayed_notifications :: Bool,
+      haveDelayedNotifications :: Bool,
       -- | True, if there can be some yet unreceived notifications, which are being fetched from the server
-      have_unreceived_notifications :: Bool
+      haveUnreceivedNotifications :: Bool
     }
   | -- | Some messages were deleted 
   UpdateDeleteMessages
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifiers of the deleted messages
-      message_ids :: [I53],
+      messageIds :: [I53],
       -- | True, if the messages are permanently deleted by a user (as opposed to just becoming inaccessible)
-      is_permanent :: Bool,
+      isPermanent :: Bool,
       -- | True, if the messages are deleted only from the cache and can possibly be retrieved again in the future
-      from_cache :: Bool
+      fromCache :: Bool
     }
   | -- | User activity in the chat has changed 
   UpdateUserChatAction
     { -- | Chat identifier 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of a user performing an action 
-      user_id :: I32,
+      userId :: I32,
       -- | The action description
       action :: ChatAction
     }
   | -- | The user went online or offline 
   UpdateUserStatus
     { -- | User identifier 
-      user_id :: I32,
+      userId :: I32,
       -- | New status of the user
       status :: UserStatus
     }
@@ -6065,7 +6065,7 @@ data Update
   | -- | Some data of a basic group has changed. This update is guaranteed to come before the basic group identifier is returned to the client 
   UpdateBasicGroup
     { -- | New data about the group
-      basic_group :: BasicGroup
+      basicGroup :: BasicGroup
     }
   | -- | Some data of a supergroup or a channel has changed. This update is guaranteed to come before the supergroup identifier is returned to the client 
   UpdateSupergroup
@@ -6075,28 +6075,28 @@ data Update
   | -- | Some data of a secret chat has changed. This update is guaranteed to come before the secret chat identifier is returned to the client 
   UpdateSecretChat
     { -- | New data about the secret chat
-      secret_chat :: SecretChat
+      secretChat :: SecretChat
     }
   | -- | Some data from userFullInfo has been changed 
   UpdateUserFullInfo
     { -- | User identifier 
-      user_id :: I32,
+      userId :: I32,
       -- | New full information about the user
-      user_full_info :: UserFullInfo
+      userFullInfo :: UserFullInfo
     }
   | -- | Some data from basicGroupFullInfo has been changed 
   UpdateBasicGroupFullInfo
     { -- | Identifier of a basic group 
-      basic_group_id :: I32,
+      basicGroupId :: I32,
       -- | New full information about the group
-      basic_group_full_info :: BasicGroupFullInfo
+      basicGroupFullInfo :: BasicGroupFullInfo
     }
   | -- | Some data from supergroupFullInfo has been changed 
   UpdateSupergroupFullInfo
     { -- | Identifier of the supergroup or channel 
-      supergroup_id :: I32,
+      supergroupId :: I32,
       -- | New full information about the supergroup
-      supergroup_full_info :: SupergroupFullInfo
+      supergroupFullInfo :: SupergroupFullInfo
     }
   | -- | Service notification from the server. Upon receiving this the client must show a popup with the content of the notification
   UpdateServiceNotification
@@ -6113,18 +6113,18 @@ data Update
   | -- | The file generation process needs to be started by the client
   UpdateFileGenerationStart
     { -- | Unique identifier for the generation process
-      generation_id :: I64,
+      generationId :: I64,
       -- | The path to a file from which a new file is generated; may be empty
-      original_path :: T,
+      originalPath :: T,
       -- | The path to a file that should be created and where the new file should be generated
-      destination_path :: T,
+      destinationPath :: T,
       -- | String specifying the conversion applied to the original file. If conversion is "#url#" than original_path contains an HTTP/HTTPS URL of a file, which should be downloaded by the client
       conversion :: T
     }
   | -- | File generation is no longer needed 
   UpdateFileGenerationStop
     { -- | Unique identifier for the generation process
-      generation_id :: I64
+      generationId :: I64
     }
   | -- | New call was created or information about a call was updated 
   UpdateCall
@@ -6141,26 +6141,26 @@ data Update
   | -- | Number of unread messages in a chat list has changed. This update is sent only if the message database is used 
   UpdateUnreadMessageCount
     { -- | The chat list with changed number of unread messages
-      chat_list :: ChatList,
+      chatList :: ChatList,
       -- | Total number of unread messages 
-      unread_count :: I32,
+      unreadCount :: I32,
       -- | Total number of unread messages in unmuted chats
-      unread_unmuted_count :: I32
+      unreadUnmutedCount :: I32
     }
   | -- | Number of unread chats, i.e. with unread messages or marked as unread, has changed. This update is sent only if the message database is used
   UpdateUnreadChatCount
     { -- | The chat list with changed number of unread messages
-      chat_list :: ChatList,
+      chatList :: ChatList,
       -- | Approximate total number of chats in the chat list
-      total_count :: I32,
+      totalCount :: I32,
       -- | Total number of unread chats 
-      unread_count :: I32,
+      unreadCount :: I32,
       -- | Total number of unread unmuted chats
-      unread_unmuted_count :: I32,
+      unreadUnmutedCount :: I32,
       -- | Total number of chats marked as unread 
-      marked_as_unread_count :: I32,
+      markedAsUnreadCount :: I32,
       -- | Total number of unmuted chats marked as unread
-      marked_as_unread_unmuted_count :: I32
+      markedAsUnreadUnmutedCount :: I32
     }
   | -- | An option changed its value 
   UpdateOption
@@ -6172,50 +6172,50 @@ data Update
   | -- | A sticker set has changed 
   UpdateStickerSet
     { -- | The sticker set
-      sticker_set :: StickerSet
+      stickerSet :: StickerSet
     }
   | -- | The list of installed sticker sets was updated 
   UpdateInstalledStickerSets
     { -- | True, if the list of installed mask sticker sets was updated 
-      is_masks :: Bool,
+      isMasks :: Bool,
       -- | The new list of installed ordinary sticker sets
-      sticker_set_ids :: [I64]
+      stickerSetIds :: [I64]
     }
   | -- | The list of trending sticker sets was updated or some of them were viewed 
   UpdateTrendingStickerSets
     { -- | The prefix of the list of trending sticker sets with the newest trending sticker sets
-      sticker_sets :: StickerSets
+      stickerSets :: StickerSets
     }
   | -- | The list of recently used stickers was updated 
   UpdateRecentStickers
     { -- | True, if the list of stickers attached to photo or video files was updated, otherwise the list of sent stickers is updated 
-      is_attached :: Bool,
+      isAttached :: Bool,
       -- | The new list of file identifiers of recently used stickers
-      sticker_ids :: [I32]
+      stickerIds :: [I32]
     }
   | -- | The list of favorite stickers was updated 
   UpdateFavoriteStickers
     { -- | The new list of file identifiers of favorite stickers
-      sticker_ids :: [I32]
+      stickerIds :: [I32]
     }
   | -- | The list of saved animations was updated 
   UpdateSavedAnimations
     { -- | The new list of file identifiers of saved animations
-      animation_ids :: [I32]
+      animationIds :: [I32]
     }
   | -- | The selected background has changed 
   UpdateSelectedBackground
     { -- | True, if background for dark theme has changed 
-      for_dark_theme :: Bool,
+      forDarkTheme :: Bool,
       -- | The new selected background; may be null
-      background :: Background
+      background :: (Maybe) (Background)
     }
   | -- | Some language pack strings have been updated 
   UpdateLanguagePackStrings
     { -- | Localization target to which the language pack belongs 
-      localization_target :: T,
+      localizationTarget :: T,
       -- | Identifier of the updated language pack 
-      language_pack_id :: T,
+      languagePackId :: T,
       -- | List of changed language pack strings
       strings :: [LanguagePackString]
     }
@@ -6227,14 +6227,14 @@ data Update
   | -- | New terms of service must be accepted by the user. If the terms of service are declined, then the deleteAccount method should be called with the reason "Decline ToS update" 
   UpdateTermsOfService
     { -- | Identifier of the terms of service 
-      terms_of_service_id :: T,
+      termsOfServiceId :: T,
       -- | The new terms of service
-      terms_of_service :: TermsOfService
+      termsOfService :: TermsOfService
     }
   | -- | The list of users nearby has changed. The update is sent only 60 seconds after a successful searchChatsNearby request 
   UpdateUsersNearby
     { -- | The new list of users nearby
-      users_nearby :: [ChatNearby]
+      usersNearby :: [ChatNearby]
     }
   | -- | The list of supported dice emojis has changed 
   UpdateDiceEmojis
@@ -6246,9 +6246,9 @@ data Update
     { -- | Unique query identifier 
       id :: I64,
       -- | Identifier of the user who sent the query 
-      sender_user_id :: I32,
+      senderUserId :: I32,
       -- | User location, provided by the client; may be null
-      user_location :: Location,
+      userLocation :: (Maybe) (Location),
       -- | Text of the query 
       query :: T,
       -- | Offset of the first entry to return
@@ -6257,28 +6257,28 @@ data Update
   | -- | The user has chosen a result of an inline query; for bots only 
   UpdateNewChosenInlineResult
     { -- | Identifier of the user who sent the query 
-      sender_user_id :: I32,
+      senderUserId :: I32,
       -- | User location, provided by the client; may be null
-      user_location :: Location,
+      userLocation :: (Maybe) (Location),
       -- | Text of the query 
       query :: T,
       -- | Identifier of the chosen result 
-      result_id :: T,
+      resultId :: T,
       -- | Identifier of the sent inline message, if known
-      inline_message_id :: T
+      inlineMessageId :: T
     }
   | -- | A new incoming callback query; for bots only 
   UpdateNewCallbackQuery
     { -- | Unique query identifier 
       id :: I64,
       -- | Identifier of the user who sent the query
-      sender_user_id :: I32,
+      senderUserId :: I32,
       -- | Identifier of the chat where the query was sent 
-      chat_id :: I53,
+      chatId :: I53,
       -- | Identifier of the message, from which the query originated
-      message_id :: I53,
+      messageId :: I53,
       -- | Identifier that uniquely corresponds to the chat to which the message was sent 
-      chat_instance :: I64,
+      chatInstance :: I64,
       -- | Query payload
       payload :: CallbackQueryPayload
     }
@@ -6287,11 +6287,11 @@ data Update
     { -- | Unique query identifier 
       id :: I64,
       -- | Identifier of the user who sent the query 
-      sender_user_id :: I32,
+      senderUserId :: I32,
       -- | Identifier of the inline message, from which the query originated
-      inline_message_id :: T,
+      inlineMessageId :: T,
       -- | An identifier uniquely corresponding to the chat a message was sent to 
-      chat_instance :: I64,
+      chatInstance :: I64,
       -- | Query payload
       payload :: CallbackQueryPayload
     }
@@ -6300,28 +6300,28 @@ data Update
     { -- | Unique query identifier 
       id :: I64,
       -- | Identifier of the user who sent the query 
-      sender_user_id :: I32,
+      senderUserId :: I32,
       -- | Invoice payload 
-      invoice_payload_2 :: T,
+      invoicePayload_2 :: T,
       -- | User shipping address
-      shipping_address :: Address
+      shippingAddress :: Address
     }
   | -- | A new incoming pre-checkout query; for bots only. Contains full information about a checkout 
   UpdateNewPreCheckoutQuery
     { -- | Unique query identifier 
       id :: I64,
       -- | Identifier of the user who sent the query 
-      sender_user_id :: I32,
+      senderUserId :: I32,
       -- | Currency for the product price 
       currency :: T,
       -- | Total price for the product, in the minimal quantity of the currency
-      total_amount :: I53,
+      totalAmount :: I53,
       -- | Invoice payload 
-      invoice_payload :: ByteString64,
+      invoicePayload :: ByteString64,
       -- | Identifier of a shipping option chosen by the user; may be empty if not applicable 
-      shipping_option_id :: T,
+      shippingOptionId :: T,
       -- | Information about the order; may be null
-      order_info :: OrderInfo
+      orderInfo :: (Maybe) (OrderInfo)
     }
   | -- | A new incoming event; for bots only 
   UpdateNewCustomEvent
@@ -6345,11 +6345,11 @@ data Update
   | -- | A user changed the answer to a poll; for bots only 
   UpdatePollAnswer
     { -- | Unique poll identifier 
-      poll_id :: I64,
+      pollId :: I64,
       -- | The user, who changed the answer to the poll 
-      user_id :: I32,
+      userId :: I32,
       -- | 0-based identifiers of answer options, chosen by the user
-      option_ids :: [I32]
+      optionIds :: [I32]
     }
   deriving (Show, Eq, Generic)
 data Updates
@@ -6370,7 +6370,7 @@ data LogStream
     { -- | Path to the file to where the internal TDLib log will be written 
       path :: T,
       -- | The maximum size of the file to where the internal TDLib log is written before the file will be auto-rotated
-      max_file_size :: I53
+      maxFileSize :: I53
     }
   | -- | The log is written nowhere
   LogStreamEmpty
@@ -6381,7 +6381,7 @@ data LogVerbosityLevel
   = -- | Contains a TDLib internal log verbosity level 
   LogVerbosityLevel
     { -- | Log verbosity level
-      verbosity_level :: I32
+      verbosityLevel :: I32
     }
   deriving (Show, Eq, Generic)
 data LogTags
