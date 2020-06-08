@@ -52,7 +52,7 @@ checkAuthenticationCode ::
   T ->
   Sem r (Error ∪ Ok)
 checkAuthenticationCode _1 = runCmd $ CheckAuthenticationCode _1
--- | Requests QR code authentication by scanning a QR code on another logged in device. Works only when the current authorization state is authorizationStateWaitPhoneNumber 
+-- | Requests QR code authentication by scanning a QR code on another logged in device. Works only when the current authorization state is authorizationStateWaitPhoneNumber,
 requestQrCodeAuthentication ::
   Member TDLib r =>
   -- | List of user identifiers of other users currently using the client
@@ -320,7 +320,7 @@ getRemoteFile ::
   FileType ->
   Sem r (Error ∪ File)
 getRemoteFile _1 _2 = runCmd $ GetRemoteFile _1 _2
--- | Returns an ordered list of chats in a chat list. Chats are sorted by the pair (order, chat_id) in decreasing order. (For example, to get a list of chats from the beginning, the offset_order should be equal to a biggest signed 64-bit number 9223372036854775807 == 2^63 - 1).
+-- | Returns an ordered list of chats in a chat list. Chats are sorted by the pair (chat.position.order, chat.id) in descending order. (For example, to get a list of chats from the beginning, the offset_order should be equal to a biggest signed 64-bit number 9223372036854775807 == 2^63 - 1).
 getChats ::
   Member TDLib r =>
   -- | The chat list in which to return chats
@@ -347,7 +347,7 @@ searchPublicChats ::
   T ->
   Sem r (Error ∪ Chats)
 searchPublicChats _1 = runCmd $ SearchPublicChats _1
--- | Searches for the specified query in the title and username of already known chats, this is an offline request. Returns chats in the order seen in the chat list 
+-- | Searches for the specified query in the title and username of already known chats, this is an offline request. Returns chats in the order seen in the main chat list 
 searchChats ::
   Member TDLib r =>
   -- | Query to search for. If the query is empty, returns up to 20 recently found chats 
@@ -356,7 +356,7 @@ searchChats ::
   I32 ->
   Sem r (Error ∪ Chats)
 searchChats _1 _2 = runCmd $ SearchChats _1 _2
--- | Searches for the specified query in the title and username of already known chats via request to the server. Returns chats in the order seen in the chat list 
+-- | Searches for the specified query in the title and username of already known chats via request to the server. Returns chats in the order seen in the main chat list 
 searchChatsOnServer ::
   Member TDLib r =>
   -- | Query to search for 
@@ -1289,15 +1289,71 @@ upgradeBasicGroupChatToSupergroupChat ::
   I53 ->
   Sem r (Error ∪ Chat)
 upgradeBasicGroupChatToSupergroupChat _1 = runCmd $ UpgradeBasicGroupChatToSupergroupChat _1
--- | Moves a chat to a different chat list. Current chat list of the chat must ne non-null 
-setChatChatList ::
+-- | Returns chat lists to which the chat can be added. This is an offline request 
+getChatListsToAddChat ::
+  Member TDLib r =>
+  -- | Chat identifier
+  I53 ->
+  Sem r (Error ∪ ChatLists)
+getChatListsToAddChat _1 = runCmd $ GetChatListsToAddChat _1
+-- | Adds a chat to a chat list. A chat can't be simultaneously in Main and Archive chat lists, so it is automatically removed from another one if needed
+addChatToList ::
   Member TDLib r =>
   -- | Chat identifier 
   I53 ->
-  -- | New chat list of the chat. The chat with the current user (Saved Messages) and the chat 777000 (Telegram) can't be moved to the Archive chat list
+  -- | The chat list. Use getChatListsToAddChat to get suitable chat lists
   ChatList ->
   Sem r (Error ∪ Ok)
-setChatChatList _1 _2 = runCmd $ SetChatChatList _1 _2
+addChatToList _1 _2 = runCmd $ AddChatToList _1 _2
+-- | Returns information about a chat filter by its identifier 
+getChatFilter ::
+  Member TDLib r =>
+  -- | Chat filter identifier
+  I32 ->
+  Sem r (Error ∪ ChatFilter)
+getChatFilter _1 = runCmd $ GetChatFilter _1
+-- | Creates new chat filter. Returns information about the created chat filter 
+createChatFilter ::
+  Member TDLib r =>
+  -- | Chat filter
+  ChatFilter ->
+  Sem r (Error ∪ ChatFilterInfo)
+createChatFilter _1 = runCmd $ CreateChatFilter _1
+-- | Edits existing chat filter. Returns information about the edited chat filter 
+editChatFilter ::
+  Member TDLib r =>
+  -- | Chat filter identifier 
+  I32 ->
+  -- | The edited chat filter
+  ChatFilter ->
+  Sem r (Error ∪ ChatFilterInfo)
+editChatFilter _1 _2 = runCmd $ EditChatFilter _1 _2
+-- | Deletes existing chat filter 
+deleteChatFilter ::
+  Member TDLib r =>
+  -- | Chat filter identifier
+  I32 ->
+  Sem r (Error ∪ Ok)
+deleteChatFilter _1 = runCmd $ DeleteChatFilter _1
+-- | Changes the order of chat filters 
+reorderChatFilters ::
+  Member TDLib r =>
+  -- | Identifiers of chat filters in the new correct order
+  [I32] ->
+  Sem r (Error ∪ Ok)
+reorderChatFilters _1 = runCmd $ ReorderChatFilters _1
+-- | Returns recommended chat filters for the current user
+getRecommendedChatFilters ::
+  Member TDLib r =>
+  Sem r (Error ∪ RecommendedChatFilters)
+getRecommendedChatFilters  = runCmd $ GetRecommendedChatFilters 
+-- | Returns default icon name for a filter. This is an offline method. Can be called before authorization. Can be called synchronously 
+getChatFilterDefaultIconName ::
+  Member TDLib r =>
+  -- | Chat filter
+  ChatFilter ->
+  Sem r (Error ∪ Text)
+getChatFilterDefaultIconName _1 = runCmd $ GetChatFilterDefaultIconName _1
 -- | Changes the chat title. Supported only for basic groups, supergroups and channels. Requires can_change_info rights. The title will not be changed until the request to the server has been completed
 setChatTitle ::
   Member TDLib r =>
@@ -1343,15 +1399,6 @@ setChatNotificationSettings ::
   ChatNotificationSettings ->
   Sem r (Error ∪ Ok)
 setChatNotificationSettings _1 _2 = runCmd $ SetChatNotificationSettings _1 _2
--- | Changes the pinned state of a chat. You can pin up to GetOption("pinned_chat_count_max")/GetOption("pinned_archived_chat_count_max") non-secret chats and the same number of secret chats in the main/archive chat list 
-toggleChatIsPinned ::
-  Member TDLib r =>
-  -- | Chat identifier 
-  I53 ->
-  -- | New value of is_pinned
-  Bool ->
-  Sem r (Error ∪ Ok)
-toggleChatIsPinned _1 _2 = runCmd $ ToggleChatIsPinned _1 _2
 -- | Changes the marked as unread state of a chat 
 toggleChatIsMarkedAsUnread ::
   Member TDLib r =>
@@ -1560,6 +1607,17 @@ resetAllNotificationSettings ::
   Member TDLib r =>
   Sem r (Error ∪ Ok)
 resetAllNotificationSettings  = runCmd $ ResetAllNotificationSettings 
+-- | Changes the pinned state of a chat. You can pin up to GetOption("pinned_chat_count_max")/GetOption("pinned_archived_chat_count_max") non-secret chats and the same number of secret chats in the main/arhive chat list
+toggleChatIsPinned ::
+  Member TDLib r =>
+  -- | Chat list in which to change the pinned state of the chat 
+  ChatList ->
+  -- | Chat identifier 
+  I53 ->
+  -- | True, if the chat is pinned
+  Bool ->
+  Sem r (Error ∪ Ok)
+toggleChatIsPinned _1 _2 _3 = runCmd $ ToggleChatIsPinned _1 _2 _3
 -- | Changes the order of pinned chats 
 setPinnedChats ::
   Member TDLib r =>
@@ -2936,7 +2994,7 @@ setAlarm ::
   Double ->
   Sem r (Error ∪ Ok)
 setAlarm _1 = runCmd $ SetAlarm _1
--- | Uses current user IP address to found their country. Returns two-letter ISO 3166-1 alpha-2 country code. Can be called before authorization
+-- | Uses current user IP address to find their country. Returns two-letter ISO 3166-1 alpha-2 country code. Can be called before authorization
 getCountryCode ::
   Member TDLib r =>
   Sem r (Error ∪ Text)

@@ -64,7 +64,7 @@ data CheckAuthenticationCode
   deriving (Show, Eq, Generic)
 -- | Parameter of Function requestQrCodeAuthentication
 data RequestQrCodeAuthentication
-  = -- | Requests QR code authentication by scanning a QR code on another logged in device. Works only when the current authorization state is authorizationStateWaitPhoneNumber 
+  = -- | Requests QR code authentication by scanning a QR code on another logged in device. Works only when the current authorization state is authorizationStateWaitPhoneNumber,
   RequestQrCodeAuthentication
     { -- | List of user identifiers of other users currently using the client
       otherUserIds :: [I32]
@@ -380,7 +380,7 @@ data GetRemoteFile
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getChats
 data GetChats
-  = -- | Returns an ordered list of chats in a chat list. Chats are sorted by the pair (order, chat_id) in decreasing order. (For example, to get a list of chats from the beginning, the offset_order should be equal to a biggest signed 64-bit number 9223372036854775807 == 2^63 - 1).
+  = -- | Returns an ordered list of chats in a chat list. Chats are sorted by the pair (chat.position.order, chat.id) in descending order. (For example, to get a list of chats from the beginning, the offset_order should be equal to a biggest signed 64-bit number 9223372036854775807 == 2^63 - 1).
   GetChats
     { -- | The chat list in which to return chats
       chatList :: ChatList,
@@ -410,7 +410,7 @@ data SearchPublicChats
   deriving (Show, Eq, Generic)
 -- | Parameter of Function searchChats
 data SearchChats
-  = -- | Searches for the specified query in the title and username of already known chats, this is an offline request. Returns chats in the order seen in the chat list 
+  = -- | Searches for the specified query in the title and username of already known chats, this is an offline request. Returns chats in the order seen in the main chat list 
   SearchChats
     { -- | Query to search for. If the query is empty, returns up to 20 recently found chats 
       query :: T,
@@ -420,7 +420,7 @@ data SearchChats
   deriving (Show, Eq, Generic)
 -- | Parameter of Function searchChatsOnServer
 data SearchChatsOnServer
-  = -- | Searches for the specified query in the title and username of already known chats via request to the server. Returns chats in the order seen in the chat list 
+  = -- | Searches for the specified query in the title and username of already known chats via request to the server. Returns chats in the order seen in the main chat list 
   SearchChatsOnServer
     { -- | Query to search for 
       query :: T,
@@ -1446,14 +1446,79 @@ data UpgradeBasicGroupChatToSupergroupChat
       chatId :: I53
     }
   deriving (Show, Eq, Generic)
--- | Parameter of Function setChatChatList
-data SetChatChatList
-  = -- | Moves a chat to a different chat list. Current chat list of the chat must ne non-null 
-  SetChatChatList
+-- | Parameter of Function getChatListsToAddChat
+data GetChatListsToAddChat
+  = -- | Returns chat lists to which the chat can be added. This is an offline request 
+  GetChatListsToAddChat
+    { -- | Chat identifier
+      chatId :: I53
+    }
+  deriving (Show, Eq, Generic)
+-- | Parameter of Function addChatToList
+data AddChatToList
+  = -- | Adds a chat to a chat list. A chat can't be simultaneously in Main and Archive chat lists, so it is automatically removed from another one if needed
+  AddChatToList
     { -- | Chat identifier 
       chatId :: I53,
-      -- | New chat list of the chat. The chat with the current user (Saved Messages) and the chat 777000 (Telegram) can't be moved to the Archive chat list
+      -- | The chat list. Use getChatListsToAddChat to get suitable chat lists
       chatList :: ChatList
+    }
+  deriving (Show, Eq, Generic)
+-- | Parameter of Function getChatFilter
+data GetChatFilter
+  = -- | Returns information about a chat filter by its identifier 
+  GetChatFilter
+    { -- | Chat filter identifier
+      chatFilterId :: I32
+    }
+  deriving (Show, Eq, Generic)
+-- | Parameter of Function createChatFilter
+data CreateChatFilter
+  = -- | Creates new chat filter. Returns information about the created chat filter 
+  CreateChatFilter
+    { -- | Chat filter
+      filter :: ChatFilter
+    }
+  deriving (Show, Eq, Generic)
+-- | Parameter of Function editChatFilter
+data EditChatFilter
+  = -- | Edits existing chat filter. Returns information about the edited chat filter 
+  EditChatFilter
+    { -- | Chat filter identifier 
+      chatFilterId :: I32,
+      -- | The edited chat filter
+      filter :: ChatFilter
+    }
+  deriving (Show, Eq, Generic)
+-- | Parameter of Function deleteChatFilter
+data DeleteChatFilter
+  = -- | Deletes existing chat filter 
+  DeleteChatFilter
+    { -- | Chat filter identifier
+      chatFilterId :: I32
+    }
+  deriving (Show, Eq, Generic)
+-- | Parameter of Function reorderChatFilters
+data ReorderChatFilters
+  = -- | Changes the order of chat filters 
+  ReorderChatFilters
+    { -- | Identifiers of chat filters in the new correct order
+      chatFilterIds :: [I32]
+    }
+  deriving (Show, Eq, Generic)
+-- | Parameter of Function getRecommendedChatFilters
+data GetRecommendedChatFilters
+  = -- | Returns recommended chat filters for the current user
+  GetRecommendedChatFilters
+    { 
+    }
+  deriving (Show, Eq, Generic)
+-- | Parameter of Function getChatFilterDefaultIconName
+data GetChatFilterDefaultIconName
+  = -- | Returns default icon name for a filter. This is an offline method. Can be called before authorization. Can be called synchronously 
+  GetChatFilterDefaultIconName
+    { -- | Chat filter
+      filter :: ChatFilter
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function setChatTitle
@@ -1504,16 +1569,6 @@ data SetChatNotificationSettings
       chatId :: I53,
       -- | New notification settings for the chat. If the chat is muted for more than 1 week, it is considered to be muted forever
       notificationSettings :: ChatNotificationSettings
-    }
-  deriving (Show, Eq, Generic)
--- | Parameter of Function toggleChatIsPinned
-data ToggleChatIsPinned
-  = -- | Changes the pinned state of a chat. You can pin up to GetOption("pinned_chat_count_max")/GetOption("pinned_archived_chat_count_max") non-secret chats and the same number of secret chats in the main/archive chat list 
-  ToggleChatIsPinned
-    { -- | Chat identifier 
-      chatId :: I53,
-      -- | New value of is_pinned
-      isPinned :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function toggleChatIsMarkedAsUnread
@@ -1748,6 +1803,18 @@ data ResetAllNotificationSettings
   = -- | Resets all notification settings to their default values. By default, all chats are unmuted, the sound is set to "default" and message previews are shown
   ResetAllNotificationSettings
     { 
+    }
+  deriving (Show, Eq, Generic)
+-- | Parameter of Function toggleChatIsPinned
+data ToggleChatIsPinned
+  = -- | Changes the pinned state of a chat. You can pin up to GetOption("pinned_chat_count_max")/GetOption("pinned_archived_chat_count_max") non-secret chats and the same number of secret chats in the main/arhive chat list
+  ToggleChatIsPinned
+    { -- | Chat list in which to change the pinned state of the chat 
+      chatList :: ChatList,
+      -- | Chat identifier 
+      chatId :: I53,
+      -- | True, if the chat is pinned
+      isPinned :: Bool
     }
   deriving (Show, Eq, Generic)
 -- | Parameter of Function setPinnedChats
@@ -3320,7 +3387,7 @@ data SetAlarm
   deriving (Show, Eq, Generic)
 -- | Parameter of Function getCountryCode
 data GetCountryCode
-  = -- | Uses current user IP address to found their country. Returns two-letter ISO 3166-1 alpha-2 country code. Can be called before authorization
+  = -- | Uses current user IP address to find their country. Returns two-letter ISO 3166-1 alpha-2 country code. Can be called before authorization
   GetCountryCode
     { 
     }

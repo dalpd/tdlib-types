@@ -340,6 +340,46 @@ data Minithumbnail
       data_ :: ByteString64
     }
   deriving (Show, Eq, Generic)
+-- | Describes format of the thumbnail
+data ThumbnailFormat
+  = -- | The thumbnail is in JPEG format
+  ThumbnailFormatJpeg
+    { 
+    }
+  | -- | The thumbnail is in PNG format. It will be used only for background patterns
+  ThumbnailFormatPng
+    { 
+    }
+  | -- | The thumbnail is in WEBP format. It will be used only for some stickers
+  ThumbnailFormatWebp
+    { 
+    }
+  | -- | The thumbnail is in static GIF format. It will be used only for some bot inline results
+  ThumbnailFormatGif
+    { 
+    }
+  | -- | The thumbnail is in TGS format. It will be used only for animated sticker sets
+  ThumbnailFormatTgs
+    { 
+    }
+  | -- | The thumbnail is in MPEG4 format. It will be used only for some animations and videos
+  ThumbnailFormatMpeg4
+    { 
+    }
+  deriving (Show, Eq, Generic)
+data Thumbnail
+  = -- | Represents a thumbnail 
+  Thumbnail
+    { -- | Thumbnail format 
+      format :: ThumbnailFormat,
+      -- | Thumbnail width 
+      width :: I32,
+      -- | Thumbnail height 
+      height :: I32,
+      -- | The thumbnail
+      file :: File
+    }
+  deriving (Show, Eq, Generic)
 -- | Part of the face, relative to which a mask should be placed
 data MaskPoint
   = -- | A mask should be placed relatively to the forehead
@@ -415,10 +455,12 @@ data Animation
       fileName :: T,
       -- | MIME type of the file, usually "image/gif" or "video/mp4"
       mimeType :: T,
+      -- | True, if stickers were added to the animation. The list of corresponding sticker set can be received using getAttachedStickerSets
+      hasStickers :: Bool,
       -- | Animation minithumbnail; may be null 
       minithumbnail :: (Maybe) (Minithumbnail),
-      -- | Animation thumbnail; may be null 
-      thumbnail :: (Maybe) (PhotoSize),
+      -- | Animation thumbnail in JPEG or MPEG4 format; may be null 
+      thumbnail :: (Maybe) (Thumbnail),
       -- | File containing the animation
       animation :: File
     }
@@ -436,10 +478,10 @@ data Audio
       fileName :: T,
       -- | The MIME type of the file; as defined by the sender 
       mimeType :: T,
-      -- | The minithumbnail of the album cover; may be null 
+      -- | The minithumbnail of the album cover; may be null
       albumCoverMinithumbnail :: (Maybe) (Minithumbnail),
-      -- | The thumbnail of the album cover; as defined by the sender. The full size thumbnail should be extracted from the downloaded file; may be null 
-      albumCoverThumbnail :: (Maybe) (PhotoSize),
+      -- | The thumbnail of the album cover in JPEG format; as defined by the sender. The full size thumbnail should be extracted from the downloaded file; may be null 
+      albumCoverThumbnail :: (Maybe) (Thumbnail),
       -- | File containing the audio
       audio :: File
     }
@@ -454,7 +496,7 @@ data Document
       -- | Document minithumbnail; may be null 
       minithumbnail :: (Maybe) (Minithumbnail),
       -- | Document thumbnail in JPEG or PNG format (PNG will be used only for background patterns); as defined by the sender; may be null 
-      thumbnail :: (Maybe) (PhotoSize),
+      thumbnail :: (Maybe) (Thumbnail),
       -- | File containing the document
       document :: File
     }
@@ -462,7 +504,7 @@ data Document
 data Photo
   = -- | Describes a photo 
   Photo
-    { -- | True, if stickers were added to the photo 
+    { -- | True, if stickers were added to the photo. The list of corresponding sticker sets can be received using getAttachedStickerSets
       hasStickers :: Bool,
       -- | Photo minithumbnail; may be null 
       minithumbnail :: (Maybe) (Minithumbnail),
@@ -485,10 +527,10 @@ data Sticker
       isAnimated :: Bool,
       -- | True, if the sticker is a mask 
       isMask :: Bool,
-      -- | Position where the mask should be placed; may be null 
+      -- | Position where the mask should be placed; may be null
       maskPosition :: (Maybe) (MaskPosition),
       -- | Sticker thumbnail in WEBP or JPEG format; may be null 
-      thumbnail :: (Maybe) (PhotoSize),
+      thumbnail :: (Maybe) (Thumbnail),
       -- | File containing the sticker
       sticker :: File
     }
@@ -504,16 +546,16 @@ data Video
       height :: I32,
       -- | Original name of the file; as defined by the sender 
       fileName :: T,
-      -- | MIME type of the file; as defined by the sender 
+      -- | MIME type of the file; as defined by the sender
       mimeType :: T,
-      -- | True, if stickers were added to the video
+      -- | True, if stickers were added to the video. The list of corresponding sticker sets can be received using getAttachedStickerSets
       hasStickers :: Bool,
       -- | True, if the video should be tried to be streamed 
       supportsStreaming :: Bool,
-      -- | Video minithumbnail; may be null 
+      -- | Video minithumbnail; may be null
       minithumbnail :: (Maybe) (Minithumbnail),
-      -- | Video thumbnail; as defined by the sender; may be null 
-      thumbnail :: (Maybe) (PhotoSize),
+      -- | Video thumbnail in JPEG or MPEG4 format; as defined by the sender; may be null 
+      thumbnail :: (Maybe) (Thumbnail),
       -- | File containing the video
       video :: File
     }
@@ -521,14 +563,14 @@ data Video
 data VideoNote
   = -- | Describes a video note. The video must be equal in width and height, cropped to a circle, and stored in MPEG4 format 
   VideoNote
-    { -- | Duration of the video, in seconds; as defined by the sender 
+    { -- | Duration of the video, in seconds; as defined by the sender
       duration :: I32,
       -- | Video width and height; as defined by the sender 
       length :: I32,
-      -- | Video minithumbnail; may be null 
+      -- | Video minithumbnail; may be null
       minithumbnail :: (Maybe) (Minithumbnail),
-      -- | Video thumbnail; as defined by the sender; may be null 
-      thumbnail :: (Maybe) (PhotoSize),
+      -- | Video thumbnail in JPEG format; as defined by the sender; may be null 
+      thumbnail :: (Maybe) (Thumbnail),
       -- | File containing the video
       video :: File
     }
@@ -1330,6 +1372,64 @@ data ChatType
       userId :: I32
     }
   deriving (Show, Eq, Generic)
+data ChatFilter
+  = -- | Represents a filter of user chats
+  ChatFilter
+    { -- | The title of the filter; 1-12 characters without line feeds
+      title :: T,
+      -- | The icon name for short filter representation. If non-empty, must be one of "All", "Unread", "Unmuted", "Bots", "Channels", "Groups", "Private", "Custom", "Setup", "Cat", "Crown", "Favorite", "Flower", "Game", "Home", "Love", "Mask", "Party", "Sport", "Study", "Trade", "Travel", "Work".
+      iconName :: T,
+      -- | The chat identifiers of pinned chats in the filtered chat list
+      pinnedChatIds :: [I53],
+      -- | The chat identifiers of always included chats in the filtered chat list
+      includedChatIds :: [I53],
+      -- | The chat identifiers of always excluded chats in the filtered chat list
+      excludedChatIds :: [I53],
+      -- | True, if the muted chats need to be excluded
+      excludeMuted :: Bool,
+      -- | True, if read chats need to be excluded
+      excludeRead :: Bool,
+      -- | True, if archived chats need to be excluded
+      excludeArchived :: Bool,
+      -- | True, if contacts need to be included
+      includeContacts :: Bool,
+      -- | True, if non-contact users need to be included
+      includeNonContacts :: Bool,
+      -- | True, if bots need to be included
+      includeBots :: Bool,
+      -- | True, if basic groups and supergroups need to be included
+      includeGroups :: Bool,
+      -- | True, if channels need to be included
+      includeChannels :: Bool
+    }
+  deriving (Show, Eq, Generic)
+data ChatFilterInfo
+  = -- | Contains basic information about a chat filter
+  ChatFilterInfo
+    { -- | Unique chat filter identifier
+      id :: I32,
+      -- | The title of the filter; 1-12 characters without line feeds
+      title :: T,
+      -- | The icon name for short filter representation. One of "All", "Unread", "Unmuted", "Bots", "Channels", "Groups", "Private", "Custom", "Setup", "Cat", "Crown", "Favorite", "Flower", "Game", "Home", "Love", "Mask", "Party", "Sport", "Study", "Trade", "Travel", "Work"
+      iconName :: T
+    }
+  deriving (Show, Eq, Generic)
+data RecommendedChatFilter
+  = -- | Describes a recommended chat filter 
+  RecommendedChatFilter
+    { -- | The chat filter 
+      filter :: ChatFilter,
+      -- | Describes a recommended chat filter 
+      description :: T
+    }
+  deriving (Show, Eq, Generic)
+data RecommendedChatFilters
+  = -- | Contains a list of recommended chat filters 
+  RecommendedChatFilters
+    { -- | List of recommended chat filters
+      chatFilters :: [RecommendedChatFilter]
+    }
+  deriving (Show, Eq, Generic)
 -- | Describes a list of chats
 data ChatList
   = -- | A main list of chats
@@ -1340,8 +1440,20 @@ data ChatList
   ChatListArchive
     { 
     }
+  | -- | A list of chats belonging to a chat filter 
+  ChatListFilter
+    { -- | Chat filter identifier
+      chatFilterId :: I32
+    }
   deriving (Show, Eq, Generic)
--- | Describes a reason why the chat is shown in a chat list
+data ChatLists
+  = -- | Contains a list of chat lists 
+  ChatLists
+    { -- | List of chat lists
+      chatLists :: [ChatList]
+    }
+  deriving (Show, Eq, Generic)
+-- | Describes a reason why an external chat is shown in a chat list
 data ChatSource
   = -- | The chat is sponsored by the user's MTProxy server
   ChatSourceMtprotoProxy
@@ -1355,6 +1467,19 @@ data ChatSource
       text :: T
     }
   deriving (Show, Eq, Generic)
+data ChatPosition
+  = -- | Describes a position of a chat in a chat list
+  ChatPosition
+    { -- | The chat list
+      list :: ChatList,
+      -- | A parameter used to determine order of the chat in the chat list. Chats must be sorted by the pair (order, chat.id) in descending order
+      order :: I64,
+      -- | True, if the chat is pinned in the chat list
+      isPinned :: Bool,
+      -- | Source of the chat in the chat list; may be null
+      source :: (Maybe) (ChatSource)
+    }
+  deriving (Show, Eq, Generic)
 data Chat
   = -- | A chat. (Can be a private chat, basic group, supergroup, or secret chat)
   Chat
@@ -1362,8 +1487,6 @@ data Chat
       id :: I53,
       -- | Type of the chat
       type_ :: ChatType,
-      -- | A chat list to which the chat belongs; may be null
-      chatList :: (Maybe) (ChatList),
       -- | Chat title
       title :: T,
       -- | Chat photo; may be null
@@ -1372,12 +1495,8 @@ data Chat
       permissions :: ChatPermissions,
       -- | Last message in the chat; may be null
       lastMessage :: (Maybe) (Message),
-      -- | Descending parameter by which chats are sorted in the main chat list. If the order number of two chats is the same, they must be sorted in descending order by ID. If 0, the position of the chat in the list is undetermined
-      order :: I64,
-      -- | Source of the chat in a chat list; may be null
-      source :: (Maybe) (ChatSource),
-      -- | True, if the chat is pinned
-      isPinned :: Bool,
+      -- | Positions of the chat in chat lists
+      positions :: [ChatPosition],
       -- | True, if the chat is marked as unread
       isMarkedAsUnread :: Bool,
       -- | True, if the chat has scheduled messages
@@ -1408,7 +1527,7 @@ data Chat
       replyMarkupMessageId :: I53,
       -- | A draft of a message in the chat; may be null
       draftMessage :: (Maybe) (DraftMessage),
-      -- | Contains client-specific data associated with the chat. (For example, the chat position or local chat notification settings can be stored here.) Persistent if the message database is used
+      -- | Contains client-specific data associated with the chat. (For example, the chat scroll position or local chat notification settings can be stored here.) Persistent if the message database is used
       clientData :: T
     }
   deriving (Show, Eq, Generic)
@@ -3188,6 +3307,8 @@ data InputMessageContent
       animation :: InputFile,
       -- | Animation thumbnail, if available 
       thumbnail :: InputThumbnail,
+      -- | File identifiers of the stickers added to the animation, if applicable
+      addedStickerFileIds :: [I32],
       -- | Duration of the animation, in seconds 
       duration :: I32,
       -- | Width of the animation; may be replaced by the server 
@@ -3562,8 +3683,8 @@ data StickerSet
       title :: T,
       -- | Name of the sticker set 
       name :: T,
-      -- | Sticker set thumbnail in WEBP format with width and height 100; may be null. The file can be downloaded only before the thumbnail is changed
-      thumbnail :: (Maybe) (PhotoSize),
+      -- | Sticker set thumbnail in WEBP or TGS format with width and height 100; may be null. The file can be downloaded only before the thumbnail is changed
+      thumbnail :: (Maybe) (Thumbnail),
       -- | True, if the sticker set has been installed by the current user 
       isInstalled :: Bool,
       -- | True, if the sticker set has been archived. A sticker set can't be installed and archived simultaneously
@@ -3591,8 +3712,8 @@ data StickerSetInfo
       title :: T,
       -- | Name of the sticker set 
       name :: T,
-      -- | Sticker set thumbnail in WEBP format with width and height 100; may be null
-      thumbnail :: (Maybe) (PhotoSize),
+      -- | Sticker set thumbnail in WEBP or TGS format with width and height 100; may be null
+      thumbnail :: (Maybe) (Thumbnail),
       -- | True, if the sticker set has been installed by current user 
       isInstalled :: Bool,
       -- | True, if the sticker set has been archived. A sticker set can't be installed and archived simultaneously
@@ -4052,8 +4173,8 @@ data InlineQueryResult
       title :: T,
       -- | Represents a link to an article or web page 
       description :: T,
-      -- | Result thumbnail; may be null
-      thumbnail :: (Maybe) (PhotoSize)
+      -- | Result thumbnail in JPEG format; may be null
+      thumbnail :: (Maybe) (Thumbnail)
     }
   | -- | Represents a user contact 
   InlineQueryResultContact
@@ -4061,8 +4182,8 @@ data InlineQueryResult
       id :: T,
       -- | A user contact 
       contact :: Contact,
-      -- | Result thumbnail; may be null
-      thumbnail :: (Maybe) (PhotoSize)
+      -- | Result thumbnail in JPEG format; may be null
+      thumbnail :: (Maybe) (Thumbnail)
     }
   | -- | Represents a point on the map 
   InlineQueryResultLocation
@@ -4072,8 +4193,8 @@ data InlineQueryResult
       location :: Location,
       -- | Title of the result 
       title :: T,
-      -- | Result thumbnail; may be null
-      thumbnail :: (Maybe) (PhotoSize)
+      -- | Result thumbnail in JPEG format; may be null
+      thumbnail :: (Maybe) (Thumbnail)
     }
   | -- | Represents information about a venue 
   InlineQueryResultVenue
@@ -4081,8 +4202,8 @@ data InlineQueryResult
       id :: T,
       -- | Venue result 
       venue :: Venue,
-      -- | Result thumbnail; may be null
-      thumbnail :: (Maybe) (PhotoSize)
+      -- | Result thumbnail in JPEG format; may be null
+      thumbnail :: (Maybe) (Thumbnail)
     }
   | -- | Represents information about a game 
   InlineQueryResultGame
@@ -5835,13 +5956,6 @@ data Update
     { -- | The chat
       chat :: Chat
     }
-  | -- | The list to which the chat belongs was changed. This update is guaranteed to be sent only when chat.order == 0 and the current or the new chat list is null 
-  UpdateChatChatList
-    { -- | Chat identifier 
-      chatId :: I53,
-      -- | The new chat's chat list; may be null
-      chatList_2 :: (Maybe) (ChatList)
-    }
   | -- | The title of a chat was changed 
   UpdateChatTitle
     { -- | Chat identifier 
@@ -5869,24 +5983,15 @@ data Update
       chatId :: I53,
       -- | The new last message in the chat; may be null 
       lastMessage :: (Maybe) (Message),
-      -- | New value of the chat order
-      order :: I64
+      -- | The new chat positions in the chat lists
+      positions :: [ChatPosition]
     }
-  | -- | The order of the chat in the chat list has changed. Instead of this update updateChatLastMessage, updateChatIsPinned, updateChatDraftMessage, or updateChatSource might be sent 
-  UpdateChatOrder
+  | -- | The position of a chat in a chat list has changed. Instead of this update updateChatLastMessage or updateChatDraftMessage might be sent 
+  UpdateChatPosition
     { -- | Chat identifier 
       chatId :: I53,
-      -- | New value of the order
-      order :: I64
-    }
-  | -- | A chat was pinned or unpinned 
-  UpdateChatIsPinned
-    { -- | Chat identifier 
-      chatId :: I53,
-      -- | New value of is_pinned 
-      isPinned :: Bool,
-      -- | New value of the chat order
-      order :: I64
+      -- | New chat position. If new order is 0, then the chat needs to be removed from the list
+      position :: ChatPosition
     }
   | -- | A chat was marked as unread or was read 
   UpdateChatIsMarkedAsUnread
@@ -5894,15 +5999,6 @@ data Update
       chatId :: I53,
       -- | New value of is_marked_as_unread
       isMarkedAsUnread :: Bool
-    }
-  | -- | A chat's source in the chat list has changed 
-  UpdateChatSource
-    { -- | Chat identifier 
-      chatId :: I53,
-      -- | New chat's source; may be null 
-      source :: (Maybe) (ChatSource),
-      -- | New value of chat order
-      order :: I64
     }
   | -- | A chat's has_scheduled_messages field has changed 
   UpdateChatHasScheduledMessages
@@ -5982,8 +6078,13 @@ data Update
       chatId :: I53,
       -- | The new draft message; may be null 
       draftMessage :: (Maybe) (DraftMessage),
-      -- | New value of the chat order
-      order :: I64
+      -- | The new chat positions in the chat lists
+      positions :: [ChatPosition]
+    }
+  | -- | The list of chat filters or a chat filter has changed 
+  UpdateChatFilters
+    { -- | The new list of chat filters
+      chatFilters :: [ChatFilterInfo]
     }
   | -- | The number of online group members has changed. This update with non-zero count is sent only for currently opened chats. There is no guarantee that it will be sent just after the count has changed 
   UpdateChatOnlineMemberCount
@@ -6239,6 +6340,13 @@ data Update
   | -- | The list of supported dice emojis has changed 
   UpdateDiceEmojis
     { -- | The new list of supported dice emojis
+      emojis :: [T]
+    }
+  | -- | The parameters of animation search through GetOption("animation_search_bot_username") bot has changed 
+  UpdateAnimationSearchParameters
+    { -- | Name of the animation search provider 
+      provider :: T,
+      -- | The new list of emojis suggested for searching
       emojis :: [T]
     }
   | -- | A new incoming inline query; for bots only 
